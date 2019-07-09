@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/clojure:openjdk-8-lein
+    working_directory: /tmp/workspace
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v2-dependencies-{{ checksum "project.clj" }}
+      - run:
+          command: |
+            bash generate.sh
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v2-dependencies-{{ checksum "project.clj" }}
+      - persist_to_workspace:
+          root: target
+          paths: out
+
+  deploy:
+    docker:
+      - image: node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: target
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent netlify-cli
+      - run:
+          name: Deploy dev docs to netlify
+          command: netlify deploy --auth=${NETLIFY_PERSONAL_ACCESS_TOKEN} --site=${NETLIFY_SITE_ID} --dir=target/out --prod
+
+workflows:
+  version: 2
+  all_test:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
