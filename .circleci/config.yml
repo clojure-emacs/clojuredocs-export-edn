@@ -37,12 +37,16 @@ jobs:
 
 workflows:
   version: 2
-  all_test:
+  deploy_to_netlify:
+    triggers:
+      - schedule:
+          cron: "0 1 * * *"
+          filters:
+            branches:
+              only:
+                - master
     jobs:
       - build
       - deploy:
           requires:
             - build
-          filters:
-            branches:
-              only: master
