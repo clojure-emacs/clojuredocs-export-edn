@@ -1,14 +1,15 @@
 # clojuredocs-export-edn
 
-A Clojure library designed to ... well, that part is up to you.
+Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and deploy to [Netlify](https://www.netlify.com) daily.
 
-## Usage
-
-FIXME
+* Deployed EDN fle
+  * https://clojuredocs-edn.netlify.com/export.edn
+* Deploy task
+  * https://github.com/liquidz/clojuredocs-export-edn/blob/master/.circleci/config.yml
 
 ## License
 
-Copyright © 2019 FIXME
+Copyright © 2019 [Masashi Iizuka](https://twitter.com/uochan)
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
