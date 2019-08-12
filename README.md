@@ -7,6 +7,7 @@ Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https
 
 * Deployed EDN file
   * https://clojuredocs-edn.netlify.com/export.edn
+  * https://clojuredocs-edn.netlify.com/export.compact.edn
 * Deploy task
   * https://github.com/liquidz/clojuredocs-export-edn/blob/master/.circleci/config.yml
 
