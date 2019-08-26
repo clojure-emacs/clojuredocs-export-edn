@@ -2,4 +2,4 @@
 
 mkdir -p target/out
 \cp -pf index.html target/out
-lein run
+lein test

@@ -32,9 +32,3 @@
   (->> (:vars raw-data)
        (map compact-values)
        (reduce (fn [res x] (assoc res (keyword (:ns x) (:name x)) x)) {})))
-
-(defn -main []
-  (spit "target/out/export.edn"
-        (pr-str raw-data))
-  (spit "target/out/export.compact.edn"
-        (pr-str compact-data)))
