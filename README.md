@@ -1,6 +1,6 @@
 # clojuredocs-export-edn
-[![CircleCI](https://img.shields.io/circleci/project/github/liquidz/clojuredocs-export-edn/master.svg)](https://circleci.com/gh/liquidz/clojuredocs-export-edn)
-[![Dependencies Status](https://versions.deps.co/liquidz/clojuredocs-export-edn/status.svg)](https://versions.deps.co/liquidz/clojuredocs-export-edn)
+[![CircleCI](https://img.shields.io/circleci/project/github/clojure-emacs/clojuredocs-export-edn/master.svg)](https://circleci.com/gh/clojure-emacs/clojuredocs-export-edn)
+[![Dependencies Status](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn/status.svg)](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn)
 
 
 Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and deploy to [Netlify](https://www.netlify.com) daily.
