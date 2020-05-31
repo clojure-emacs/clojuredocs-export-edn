@@ -6,8 +6,8 @@
 Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and deploy to [Netlify](https://www.netlify.com) daily.
 
 * Deployed EDN file
-  * https://clojuredocs-edn.netlify.com/export.edn
-  * https://clojuredocs-edn.netlify.com/export.compact.edn
+  * https://clojuredocs-edn.netlify.com/export.edn (all the data in the JSON export, retaining its format)
+  * https://clojuredocs-edn.netlify.com/export.compact.edn (drops all data about edits made from the JSON export, contains only current state of data for each symbol in an optimized format)
 * Deploy task
   * https://github.com/liquidz/clojuredocs-export-edn/blob/master/.circleci/config.yml
 
