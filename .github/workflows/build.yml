@@ -1,0 +1,28 @@
+name: build
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 1 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: v1-dependencies-${{ hashFiles('project.clj') }}
+      - name: Build exports
+        run: |
+          lein run
+          ls -ltr exports
+      - name: Commit and push if changed
+        run: |
+          git diff
+          git config --global user.email "exports-bot@example.com"
+          git config --global user.name "EXPORTS-bot"
+          git add -A
+          git commit -m "Updated exports" || exit 0
+          git push
