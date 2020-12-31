@@ -1,43 +1,35 @@
 # clojuredocs-export-edn
-[![CircleCI](https://img.shields.io/circleci/project/github/clojure-emacs/clojuredocs-export-edn/master.svg)](https://circleci.com/gh/clojure-emacs/clojuredocs-export-edn)
+
 [![Dependencies Status](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn/status.svg)](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn)
 
+Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and publish them to this repository daily.
 
-Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and deploy to [Netlify](https://www.netlify.com) daily.
+## Why?
 
-* Deployed EDN file
-  * https://clojuredocs-edn.netlify.com/export.edn (all the data in the JSON export, retaining its format)
-  * https://clojuredocs-edn.netlify.com/export.compact.edn (drops all data about edits made from the JSON export, contains only current state of data for each symbol in an optimized format)
-* Deploy task
-  * https://github.com/liquidz/clojuredocs-export-edn/blob/master/.circleci/config.yml
+Because ClojureDocs doens't have an official API and provides only a JSON export of its data currently. This makes
+it harder for tools to leverage ClojureDocs and the EDN exports aim to bridge that gap.
 
-## How to deploy to netlify
+This data is used by libraries like [Orchard](https://github.com/clojure-emacs/orchard) to fuse ClojureDocs and the standard Clojure documentation.
 
-* EDN files are deployed by CircleCI automatically.
-  * All steps are in [.circleci/config.yml](.circleci/config.yml).
-    * The job is triggered by cron [every day](https://github.com/liquidz/clojuredocs-export-edn/blob/b9edb899e0a5402fc82f43afa72cb61e047545bf/.circleci/config.yml#L48-L55).
-* All you need is to add these environment variables to CircleCI.
-  * `NETLIFY_PERSONAL_ACCESS_TOKEN` which can be created [here](https://app.netlify.com/user/applications#personal-access-tokens)
-  * `NETLIFY_SITE_ID` which is your site's API ID
-* Steps to deploy manually is below.
-```console
-# EDN files are generated in ./target/out/
-bash generate.sh
+## Exported Data
 
-# Install netlify-cli
-sudo npm install -g --silent netlify-cli
+The EDN data is made available in several variants:
 
-# Deploy EDN files via netlify-cli
-netlify deploy \
-    --auth=${NETLIFY_PERSONAL_ACCESS_TOKEN} \
-    --site=${NETLIFY_SITE_ID} \
-    --dir=target/out \
-    --prod
-```
+* The EDN file containing all the data from the JSON export is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.edn).
+* The compact EDN file (it doesn't include data about edits that were made to the data, only its current state) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.edn).
+* The compact minified EDN file (it strips all the optional whitespace) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.min.edn).
+
+## Running the Exporter
+
+You can also run the export procedure manually like this:
+
+    $ lein run
+
+The fresh exports will be placed under `exports/`.
 
 ## License
 
-Copyright © 2019 [Masashi Iizuka](https://twitter.com/uochan)
+Copyright © 2019-2020 [Masashi Iizuka](https://twitter.com/uochan), Bozhidar Batsov
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

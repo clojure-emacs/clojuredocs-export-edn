@@ -1,5 +1,8 @@
 (ns clojuredocs-export-edn.core
-  (:require [clojure.data.json :as json]))
+  (:require
+   [clojure.data.json :as json]
+   [clojure.java.io :as io]
+   [clojure.pprint :as p]))
 
 (def json-url
   (or (System/getenv "CLOJUREDOCS_JSON_URL")
@@ -32,3 +35,8 @@
   (->> (:vars raw-data)
        (map compact-values)
        (reduce (fn [res x] (assoc res (keyword (:ns x) (:name x)) x)) {})))
+
+(defn -main []
+  (spit "exports/export.edn" (pr-str raw-data))
+  (p/pprint compact-data (io/writer "exports/export.compact.edn"))
+  (spit "exports/export.compact.min.edn" (pr-str compact-data)))
