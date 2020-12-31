@@ -2,22 +2,26 @@
 
 [![Dependencies Status](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn/status.svg)](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn)
 
-Convert [ClojureDocs](https://clojuredocs.org)'s [clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json) to EDN format, and publish them to this repository daily.
+A simple tool that converts [ClojureDocs](https://clojuredocs.org)'s
+[clojuredocs-export.json](https://clojuredocs.org/clojuredocs-export.json)
+to EDN format, and publishes the EDN export (in several variants) to this repository daily.
 
 ## Why?
 
-Because ClojureDocs doens't have an official API and provides only a JSON export of its data currently. This makes
+Because ClojureDocs doesn't have an official API and provides only a JSON export of its data currently. This makes
 it harder for tools to leverage ClojureDocs and the EDN exports aim to bridge that gap.
 
-This data is used by libraries like [Orchard](https://github.com/clojure-emacs/orchard) to fuse ClojureDocs and the standard Clojure documentation.
+This EDN data is used by libraries like [Orchard](https://github.com/clojure-emacs/orchard) to fuse ClojureDocs and the standard Clojure documentation.
 
 ## Exported Data
 
 The EDN data is made available in several variants:
 
-* The EDN file containing all the data from the JSON export is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.edn).
-* The compact EDN file (it doesn't include data about edits that were made to the data, only its current state) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.edn).
-* The compact minified EDN file (it strips all the optional whitespace) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.min.edn).
+* A EDN file containing all the data from the JSON export is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.edn).
+* A compact EDN file (it doesn't include data about edits that were made to the data, only its current state) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.edn).
+* A compact minified EDN file (it strips all the optional whitespace) is [here](https://github.com/clojure-emacs/clojuredocs-export-edn/blob/master/exports/export.compact.min.edn).
+
+Probably most people will be best served by the final variant (`export.compact.min.edn`).
 
 ## Running the Exporter
 
