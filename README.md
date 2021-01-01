@@ -1,5 +1,6 @@
 # clojuredocs-export-edn
 
+![build](https://github.com/clojure-emacs/clojuredocs-export-edn/workflows/build/badge.svg)
 [![Dependencies Status](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn/status.svg)](https://versions.deps.co/clojure-emacs/clojuredocs-export-edn)
 
 A simple tool that converts [ClojureDocs](https://clojuredocs.org)'s
