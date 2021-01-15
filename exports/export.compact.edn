@@ -1304,7 +1304,8 @@
   :see-alsos nil,
   :line 7725,
   :examples nil,
-  :notes nil,
+  :notes
+  ["`tagged-literal` is useful as a value fo `clojure.core/*default-data-reader-fn*`"],
   :arglists ["tag form"],
   :doc
   "Construct a data representation of a tagged literal from a\n  tag symbol and a form.",
