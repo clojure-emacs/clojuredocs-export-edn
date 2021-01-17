@@ -17490,7 +17490,8 @@
   :line 94,
   :examples
   ["(require 'clojure.walk)\n(clojure.walk/keywordize-keys {\"a\" 1 \"b\" 2})\n;;=> {:a 1 :b 2}"
-   "(use 'clojure.walk)\n\n(keywordize-keys {\"a\" 1, \"b\" {\"c\" {\"d\" 2}}})\n;;=> {:a 1, :b {:c {:d 2}}}"],
+   "(use 'clojure.walk)\n\n(keywordize-keys {\"a\" 1, \"b\" {\"c\" {\"d\" 2}}})\n;;=> {:a 1, :b {:c {:d 2}}}"
+   ";; The input object also doesn't have to be a dictionary\n(require 'clojure.walk)\n(clojure.walk/keywordize-keys [{\"hello\" \"goodbye\"}])\n;;=>[{:hello \"goodbye\"}]"],
   :notes nil,
   :arglists ["m"],
   :doc "Recursively transforms all map keys from strings to keywords.",
@@ -23683,10 +23684,11 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/await :clojure.core/await-for],
   :line 3291,
   :examples nil,
-  :notes nil,
+  :notes
+  ["Looking at the source, it seems to take an agent, wait until it's queue is empty, then return the agent. When the agent has a positive queue count, it implements the standard `(await a)` and then returns `a`, the agent.\n\nUse: `(await1 a)`"],
   :arglists ["a"],
   :library-url "https://github.com/clojure/clojure",
   :href "/clojure.core/await1"},
