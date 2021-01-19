@@ -24670,7 +24670,8 @@
   :examples
   [";; a map is a collection\n(coll? {})\n;;=> true\n\n;; a set is a collection\n(coll? #{})\n;;=> true\n\n;; a vector is a collection\n(coll? [])\n;;=> true\n\n;; a list is a collection \n(coll? '())\n;;=> true\n\n;; a number (long) is not a collection\n(coll? 4)\n;;=> false\n\n;; a string is not a collection\n(coll? \"fred\")\n;;=> false\n\n;; ...but a string sequence is a collection\n(coll? (seq \"fred\"))\n;;=> true\n\n;; a boolean is not a collection\n(coll? true)\n;;=> false\n\n;; nil is not a collection\n(coll? nil)\n;;=> false\n"
    "user=> (coll? {:a 10 :b 20}) ; map is a collection of map-entries\ntrue"
-   ";; contrast to example code for sequential?\n;;\nuser> (coll? '(1 2 3))\ntrue\nuser> (coll? [1 2 3])\ntrue\nuser> (coll? (range 1 5))\ntrue\nuser> (coll? 1)\nfalse\nuser> (coll? {:a 2 :b 1})   \ntrue\nuser> (coll? {:a 2 :b 1})  ; in contrast to sequential?, coll? returns true for\n                           ; a hash map\ntrue\nuser> (sequential? {:a 2 :b 1})\nfalse"],
+   ";; contrast to example code for sequential?\n;;\nuser> (coll? '(1 2 3))\ntrue\nuser> (coll? [1 2 3])\ntrue\nuser> (coll? (range 1 5))\ntrue\nuser> (coll? 1)\nfalse\nuser> (coll? {:a 2 :b 1})   \ntrue\nuser> (coll? {:a 2 :b 1})  ; in contrast to sequential?, coll? returns true for\n                           ; a hash map\ntrue\nuser> (sequential? {:a 2 :b 1})\nfalse"
+   ";; I had major bugs before I realized `seq?` doesn't like vectors.\n\nuser=> (seq? [1 2 3])\nfalse\nuser=> (coll? [1 2 3])\ntrue\n"],
   :notes nil,
   :arglists ["x"],
   :doc "Returns true if x implements IPersistentCollection",
