@@ -22888,7 +22888,8 @@
   :line 73,
   :examples
   ["user=> (def c (chan))\n#'user/c\nuser=> (def c (chan 1))\n#'user/c\nuser=> (def c (chan (buffer 2)))\n#'user/c\n;; Clojure 1.7\nuser=> (def c (chan 1 (filter string?)))\n#'user/c\n\n"
-   "(let [c (chan 3 (map inc))] ;; providing transducer which increments values by one\n  (>!! c 1)\n  (>!! c 2)\n  (>!! c 3)\n  (println (<!! c))\n  (println (<!! c))\n  (println (<!! c)))\n\n;; 2\n;; 3\n;; 4\n;;=> nil"],
+   "(let [c (chan 3 (map inc))] ;; providing transducer which increments values by one\n  (>!! c 1)\n  (>!! c 2)\n  (>!! c 3)\n  (println (<!! c))\n  (println (<!! c))\n  (println (<!! c)))\n\n;; 2\n;; 3\n;; 4\n;;=> nil"
+   "(def c (chan (buffer 1)\n             (fn [xf] (fn [_ data]\n                        (throw (Exception. (when (= data \"hehe\")\n                                             \"xform error\")))))\n             (fn [e] (.getMessage e))))\n\n(>!! c \"hehe\")\n;;=> true\n\n;; any non-nil return value from transducer will be placed in the channel\n(<!! c)\n;;=> \"xform error\"\n\n(>!! c \"haha\")\n;;=> true\n\n;; nil return value from transducer will NOT be placed in the channel\n(<!! c) ;; will stuck here\n"],
   :notes nil,
   :arglists
   ["" "buf-or-n" "buf-or-n xform" "buf-or-n xform ex-handler"],
