@@ -14976,7 +14976,8 @@
   :column 1,
   :see-alsos nil,
   :line 6274,
-  :examples nil,
+  :examples
+  ["(indexed? '(1 2 3)) ;;=> false\n\n(indexed? [1 2 3]) ;;=> true\n\n(indexed? {:a \"Hi\" :hello \"Why\"}) ;;=> false\n\n(indexed? (sorted-set 1 2 3)) ;;=> false\n\n(indexed? #{1 2 3}) ;;=> false"],
   :notes nil,
   :arglists ["coll"],
   :doc
