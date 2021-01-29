@@ -447,7 +447,8 @@
    ";; define a couple of shape types\n(deftype Circle [radius])\n(deftype Square [length width])\n\n;; multimethod to calculate the area of a shape\n(defmulti area class)\n(defmethod area Circle [c]\n    (* Math/PI (* (.radius c) (.radius c))))\n(defmethod area Square [s]\n    (* (.length s) (.width s)))\n\n;; create a couple shapes and get their area\n(def myCircle (Circle. 10))\n(def mySquare (Square. 5 11))\n\n(area myCircle)\n(area mySquare)"
    "(deftype Person [first-name last-name])\n\n;; use the factory function instead of the constructor, \"Person.\",\n;; to create a Person\n(->Person \"John\" \"Smith\")"
    ";; How :load-ns works.\n;; deftype can be used for AOT generation of classes (with gen-class that would be\n;; the only option). For example:\n\n(spit \"foo.clj\"\n  \"(ns foo)\n   (defn bar [] :bar)\n   (defprotocol P (foo [p]))\n   (deftype Foo [] :load-ns true P\n     (foo [this] (bar)))\")\n\n(binding [*compile-path* \".\"] (compile 'foo))\n\n;; Now close and re-open the REPL to import the newly created class. Note that the\n;; call to (.foo p) doesn't throw exception here because we used \":load-ns true\"\n;; option in deftype. This makes sure that the namespace 'foo is also loaded \n;; forcing the evaluation of the \"bar\" function. This makes especially sense\n;; if Foo is used from a Java application:\n\n(import 'foo.Foo)\n(def p (Foo.))\n(.foo p)\n;; \"bar\""
-   ";; To refer to a deftype in another namespace, the deftype needs to be imported \n;; because deftype generate a class.\n;; Using the Foo type defined above:\n(ns bar \n  (:import [foo Foo]))\n\n(defn foo? [x]\n  (instance? Foo x))"],
+   ";; To refer to a deftype in another namespace, the deftype needs to be imported \n;; because deftype generate a class.\n;; Using the Foo type defined above:\n(ns bar \n  (:import [foo Foo]))\n\n(defn foo? [x]\n  (instance? Foo x))"
+   ";; deftype allow mutable fields, and their values can be changed with set!.\n;; This works:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this o] (set! x o)))\n\n;; Note that these mutable fields are private, so they are not accessible outside,\n;; and they are not even accessible inside nested functions within the type.\n;; This does not compile, throws error about assigning to non-mutable field x:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this] (fn [o] (set! x o))))\n\n;; Need to define a set function in a protocol and implement it in the type \n(defprotocol ISetX (set-x [this o]))\n\n(deftype Test [^:unsynchronized-mutable x]\n    ISetX\n    (set-x [this o] (set! x o))\n    \n    ITestProtocol\n    (act [this] (fn [o] (set-x o))))\n"],
   :macro true,
   :notes
   ["There's also some undocumented support for annotations:\r\n\r\n<https://groups.google.com/group/clojure/browse_thread/thread/d2128e1505c0c117?pli=1>"],
@@ -1052,7 +1053,7 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/resolve],
   :line 6082,
   :examples
   [";; Resolve a qualified symbol\n(requiring-resolve 'clojure.java.shell/sh)\n\n;; Resolve and evaluate\n((requiring-resolve 'some-ns/some-fn))\n\n;; In deps.edn, replace all spaces with the \"Corfield\" comma, ;)\n((requiring-resolve,'clojure.java.shell/sh))"],
