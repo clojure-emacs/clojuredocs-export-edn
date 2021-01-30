@@ -13891,7 +13891,8 @@
   [:clojure.repl/source :clojure.repl/doc :clojure.repl/dir],
   :line 182,
   :examples
-  ["user=> (apropos \"temp\")\n()\n\nuser=> (require 'clojure.template)\nnil\n\nuser=> (apropos \"temp\")\n(apply-template do-template)\n"],
+  ["user=> (apropos \"temp\")\n()\n\nuser=> (require 'clojure.template)\nnil\n\nuser=> (apropos \"temp\")\n(apply-template do-template)\n"
+   ";; apropos can accept regex patterns. E.g. find only definitions\n;; ending with \"reduce\"\nuser=> (apropos #\".+?reduce\")\n(clojure.core/areduce clojure.core/ensure-reduced clojure.core/unreduced ...)\n\n;; get all public definitions from all currently-loaded namespaces\nuser=> (apropos #\"^+?\")\n(clojure.core/* clojure.core/*' clojure.core/*1 ...)"],
   :notes nil,
   :arglists ["str-or-pattern"],
   :doc
@@ -14477,7 +14478,7 @@
    "(concat {:a \"A\" :b \"B\" :c \"C\"} {:d \"D\" :e \"E\"})\n;; ([:a \"A\"] [:b \"B\"] [:c \"C\"] [:d \"D\"] [:e \"E\"])"
    "(defn padding-right [s width pad] \n  (apply str (take width (concat s (repeat pad)))))\n\n(padding-right \"Clojure\" 10 \" \")\n;; \"Clojure   \""
    ";; beware! concat returns a lazy 'sequence'. \n\n(conj (concat [1 2] [3 4]) 5) ; doesn't return (1 2 3 4 5)\n;;=>(5 1 2 3 4)"
-   ";; Here is a good article by Stuart Sierra in his \"Clojure Dont's\" series\n;; on concat, and how using it in certain ways can lead to surprisingly large\n;; stack usage:\n;; https://stuartsierra.com/2015/04/26/clojure-donts-concat"
+   ";; Here is a good article by Stuart Sierra in his \"Clojure Dont's\" series\n;; on concat, and how using it in certain ways can lead to surprisingly large\n;; stack usage:\n;; https://stuartsierra.com/2015/04/26/clojure-donts-concat\n\n(first (reduce concat (map next-results (range 1 4000))))\n;; StackOverflowError   clojure.core/seq (core.clj:133)\n\n(nth (iterate #(concat % [1 2 3]) [1 2 3]) 4000)\n;; StackOverflowError   clojure.core/seq (core.clj:133)"
    ";; list 1\n(def list1 (list 'let ['x 10]))\n;; => #'user/list1\nlist1\n;; => (let [x 10])\n\n;; list 2\n(def list2 (list '(println \"x:\" x) '(println \"Bye!\")))\n;; => #'user/list2\nlist2\n;; => ((println \"x:\" x) (println \"Bye!\"))\n\n;; ***\n;; concat all the elements of list1 & list2, and return a new list \n;; In this case -  let + [x 10] + (println \"x:\" x) + (println \"Bye!\")\n\n(concat list1 list2)\n;; => (let [x 10] (println \"x:\" x) (println \"Bye!\"))\n\n(eval (concat list1 list2))\n;; => x: 10\n;;    Bye!\n;;    nil\n\n\n;; see also - quote"],
   :notes nil,
   :arglists ["" "x" "x y" "x y & zs"],
