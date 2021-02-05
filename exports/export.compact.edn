@@ -24272,7 +24272,8 @@
    :clojure.string/replace
    :clojure.core/re-seq
    :clojure.string/split-lines
-   :clojure.string/trim],
+   :clojure.string/trim
+   :clojure.string/join],
   :line 219,
   :examples
   ["user=> (require '[clojure.string :as str])\n\nuser=> (str/split \"Clojure is awesome!\" #\" \")\n[\"Clojure\" \"is\" \"awesome!\"]\n\nuser=> (str/split \"q1w2e3r4t5y6u7i8o9p0\" #\"\\d+\")\n[\"q\" \"w\" \"e\" \"r\" \"t\" \"y\" \"u\" \"i\" \"o\" \"p\"]\n\n;; Note that the 'limit' arg is the maximum number of strings to\n;; return (not the number of splits)\nuser=> (str/split \"q1w2e3r4t5y6u7i8o9p0\" #\"\\d+\" 5)\n[\"q\" \"w\" \"e\" \"r\" \"t5y6u7i8o9p0\"]\n\n;; to get back all the characters of a string, as a vector of strings:\nuser=> (str/split \" q1w2 \" #\"\")\n[\" \" \"q\" \"1\" \"w\" \"2\" \" \"]\n;; Note: sequence, in contrast, would return characters.\n\n;; Using lookarounds (lookahead, lookbehind) one can keep the matching characters:\nuser=> (str/split \" something and ACamelName \" #\"(?=[A-Z])\")\n[\" something and \" \"A\" \"Camel\" \"Name \"]\n\n;; If the pattern is not found, we get back the original string untouched:\nuser=> (str/split \"a\" #\"b\")\n[\"a\"]\n\nuser=> (str/split \" \" #\"b\")\n[\" \"]\n\nuser=> (str/split \"\" #\"b\")\n[\"\"]\n\n;; If everything matches, an empty vector is returned!\nuser=> (str/split \"a\" #\"a\")\n[]\n\nuser=> (str/split \"aaa\" #\"a\")\n[]\n\n;; but:\nuser=> (str/split \"\" #\"\")\n[\"\"]"
