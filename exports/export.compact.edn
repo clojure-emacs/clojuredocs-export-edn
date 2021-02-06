@@ -6005,7 +6005,7 @@
   :file "clojure/core/logic.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core.logic/conde],
   :line 1705,
   :examples
   [";; Taken from: https://github.com/frenchy64/Logic-Starter/wiki#matche\n;; These are equivalent:\n(run* [q]\n      (conde\n        ((== 'extra q) succeed)\n        ((== 'virgin q) succeed)\n        ((== 'olive q) succeed)\n        ((== 'oil q) succeed)))\n;=> (extra virgin olive oil)\n\n(run* [q]\n      (matche [q]\n              (['extra]  succeed)\n              (['virgin] succeed)\n              (['olive]  succeed)\n              (['oil]    succeed)))\n;=> (extra virgin olive oil)\n\n;; Wild Cards and destructuring: https://github.com/frenchy64/Logic-Starter/wiki#matche-sugar-combining-wildcards-and-destructuring\n(run* [q]\n  (fresh [a o]\n    (== a [1 2 3 4 5])\n    (matche [a]\n            ([ [1 . _] ]\n             (== q \"first\"))\n            ([ [_ . o] ]\n             (== q [\"second\" o])))))\n;=> (\"first\" \n;    [\"second\" (2 3 4 5)])\n\n;; Implicit Variables: https://github.com/frenchy64/Logic-Starter/wiki#matche-sugar-implicit-variables\n(run* [q]\n  (fresh [a o]\n    (== a [1 2 3 4 5])\n    (matche [a]\n            ([ [1 . o] ]\n             (== q [\"one\" o]))\n            ([ [1 2 . ?o] ]\n             (== q [\"two\" ?o]))\n            ([ [o . ?o] ]\n             (== q [\"third\" o ?o])))))\n;=> ([\"one\" (2 3 4 5)] \n;    [\"two\" (3 4 5)] \n;    [\"third\" 1 (2 3 4 5)] "],
@@ -14479,7 +14479,8 @@
    "(defn padding-right [s width pad] \n  (apply str (take width (concat s (repeat pad)))))\n\n(padding-right \"Clojure\" 10 \" \")\n;; \"Clojure   \""
    ";; beware! concat returns a lazy 'sequence'. \n\n(conj (concat [1 2] [3 4]) 5) ; doesn't return (1 2 3 4 5)\n;;=>(5 1 2 3 4)"
    ";; Here is a good article by Stuart Sierra in his \"Clojure Dont's\" series\n;; on concat, and how using it in certain ways can lead to surprisingly large\n;; stack usage:\n;; https://stuartsierra.com/2015/04/26/clojure-donts-concat\n\n(first (reduce concat (map next-results (range 1 4000))))\n;; StackOverflowError   clojure.core/seq (core.clj:133)\n\n(nth (iterate #(concat % [1 2 3]) [1 2 3]) 4000)\n;; StackOverflowError   clojure.core/seq (core.clj:133)"
-   ";; list 1\n(def list1 (list 'let ['x 10]))\n;; => #'user/list1\nlist1\n;; => (let [x 10])\n\n;; list 2\n(def list2 (list '(println \"x:\" x) '(println \"Bye!\")))\n;; => #'user/list2\nlist2\n;; => ((println \"x:\" x) (println \"Bye!\"))\n\n;; ***\n;; concat all the elements of list1 & list2, and return a new list \n;; In this case -  let + [x 10] + (println \"x:\" x) + (println \"Bye!\")\n\n(concat list1 list2)\n;; => (let [x 10] (println \"x:\" x) (println \"Bye!\"))\n\n(eval (concat list1 list2))\n;; => x: 10\n;;    Bye!\n;;    nil\n\n\n;; see also - quote"],
+   ";; list 1\n(def list1 (list 'let ['x 10]))\n;; => #'user/list1\nlist1\n;; => (let [x 10])\n\n;; list 2\n(def list2 (list '(println \"x:\" x) '(println \"Bye!\")))\n;; => #'user/list2\nlist2\n;; => ((println \"x:\" x) (println \"Bye!\"))\n\n;; ***\n;; concat all the elements of list1 & list2, and return a new list \n;; In this case -  let + [x 10] + (println \"x:\" x) + (println \"Bye!\")\n\n(concat list1 list2)\n;; => (let [x 10] (println \"x:\" x) (println \"Bye!\"))\n\n(eval (concat list1 list2))\n;; => x: 10\n;;    Bye!\n;;    nil\n\n\n;; see also - quote"
+   "(concat [1 2 3] nil)\n;; => (1 2 3)\n\n(concat [1 2 3] [nil])\n;; => (1 2 3 nil)"],
   :notes nil,
   :arglists ["" "x" "x y" "x y & zs"],
   :doc
