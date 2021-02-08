@@ -7481,7 +7481,7 @@
   :file "clojure/core.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/defmacro],
   :line 5229,
   :examples nil,
   :macro true,
