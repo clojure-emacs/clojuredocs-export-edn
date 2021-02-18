@@ -10782,7 +10782,8 @@
   :see-alsos [:clojure.core/bound-fn],
   :line 1994,
   :examples
-  ["(def ^:dynamic *some-var* nil)\n\n(defn f [] (println *some-var*))\n\n;; run f without a new binding\nuser=> (f)\nnil\nnil\n\n;; run f with a new binding\nuser=> (binding [*some-var* \"hello\"]\n         (f))\nhello\nnil\n\n;; run f in a thread with a new binding\nuser=> (binding [*some-var* \"goodbye\"]\n         (.start (Thread. f)))\nnil\nnil\n\n;; run a bound f in a thread with a new binding\nuser=> (binding [*some-var* \"goodbye\"]\n         (.start (Thread. (bound-fn* f))))\ngoodbye\nnil\n"],
+  ["(def ^:dynamic *some-var* nil)\n\n(defn f [] (println *some-var*))\n\n;; run f without a new binding\nuser=> (f)\nnil\nnil\n\n;; run f with a new binding\nuser=> (binding [*some-var* \"hello\"]\n         (f))\nhello\nnil\n\n;; run f in a thread with a new binding\nuser=> (binding [*some-var* \"goodbye\"]\n         (.start (Thread. f)))\nnil\nnil\n\n;; run a bound f in a thread with a new binding\nuser=> (binding [*some-var* \"goodbye\"]\n         (.start (Thread. (bound-fn* f))))\ngoodbye\nnil\n"
+   ";; Capture thread local bindings so the lazy sequence can realize outside\n;; the binding block\n\n(def ^:dynamic *a* nil)\n\n(binding [*a* 1] (map #(+ % *a*) (range 10)))\n;; NullPointerException   clojure.lang.Numbers.ops (Numbers.java:1013)\n\n(binding [*a* 1] (map (bound-fn* #(+ % *a*)) (range 10)))\n;; (1 2 3 4 5 6 7 8 9 10)\n"],
   :notes nil,
   :arglists ["f"],
   :doc
