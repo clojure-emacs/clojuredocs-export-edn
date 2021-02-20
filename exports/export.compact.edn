@@ -561,7 +561,8 @@
   :line 1581,
   :examples
   ["user=> (vec (range 10))\n[0 1 2 3 4 5 6 7 8 9]\n\nuser=> (rseq (vec (range 10)))\n(9 8 7 6 5 4 3 2 1 0)\n"
-   "(rseq (into (sorted-map) {:a 1 :b 2}))\n;; => ([:b 2] [:a 1])"],
+   "(rseq (into (sorted-map) {:a 1 :b 2}))\n;; => ([:b 2] [:a 1])"
+   ";; Huge performance boost for vectors and sorted maps over `reverse`.\n\n(def nums (vec (range 1000000)))\n(time (reverse nums))\n;; \"Elapsed time: 30.1222 msecs\"\n(time (rseq nums))\n;; \"Elapsed time: 0.0664 msecs\""],
   :notes nil,
   :arglists ["rev"],
   :doc
@@ -4455,9 +4456,11 @@
   :line 947,
   :examples
   ["user=> (reverse '(1 2 3))\n(3 2 1)\n"
-   "(reverse \"clojure\")\n; (\\e \\r \\u \\j \\o \\l \\c)\n\n(apply str (reverse \"clojure\"))\n; \"erujolc\""],
+   "(reverse \"clojure\")\n; (\\e \\r \\u \\j \\o \\l \\c)\n\n(apply str (reverse \"clojure\"))\n; \"erujolc\""
+   ";; Comparison between `reverse` and `rseq` for a vector.\n\n(def nums (vec (range 1000000)))\n(time (reverse nums))\n;; \"Elapsed time: 30.1222 msecs\"\n(time (rseq nums))\n;; \"Elapsed time: 0.0664 msecs\""],
   :notes
-  ["If you've got a vector rseq is a good option instead of reverse."],
+  ["If you've got a vector rseq is a good option instead of reverse."
+   "For vectors, `rseq` is to `reverse` what `peek` is to `last`. `rseq` reverses in constant time (!) where `reverse` is in linear time, as it appears to pull everything into a new seq, one at a time instead of ... reversing the keys? I don't know the implementation details, but I do know that `rseq` is magnitudes faster than `reverse` for vectors and sorted maps. "],
   :arglists ["coll"],
   :doc
   "Returns a seq of the items in coll in reverse order. Not lazy.",
@@ -17591,7 +17594,8 @@
    ";; Simple Condition Example \n\n(defn test-x [x]\n\t(cond\n\t\t(< x 10) \"less than\"\n\t\t(> x 20) \"greater than\"\n\t)\n)\n\n============test============\n(test-x 9)\n\n=> \"less than\""
    "(defn print-cond [xx] \n  (cond \n    (< xx 6) \"less than 6\"\n    (< xx 8) \"less than 8\"\n    :else \"Greater than 8\"))\n=> #'aurora.system/print-cond\n(print-cond 5)\n=> \"less than 6\"\n(print-cond 7)\n=> \"less than 8\"\n(print-cond 8)\n=> \"Greater than 8\"\n(print-cond 10)\n=> \"Greater than 8\"\n"
    ";; If a condition is not matched `nil` will be returned\n(cond\n  false \"sumfin\")\n;;=> nil"
-   ";; Instead of use the :else keyword as the default path you can use \n;; whatever that gives meaning to the code\n\nuser=> (cond \n          :whatever \"You can use any default keyword\")\n;; You can use any default keyword"],
+   ";; Instead of use the :else keyword as the default path you can use \n;; whatever that gives meaning to the code\n\nuser=> (cond \n          :whatever \"You can use any default keyword\")\n;; You can use any default keyword"
+   ";; cond is a macro the easiest way to understand how it works is to macroexpand it\nuser=> (clojure.walk/macroexpand-all\n       '(let [n 3] \n          (cond\n            (odd? n) \"odd\"\n            (even? n) \"even\"\n            (< n 0) \"negitive\"\n            (< 0 n) \"positive\"\n            :else \"zero\")))\n\n(let [n 3]\n (if (odd? n)\n  \"odd\"\n  (if (even? n)\n   \"even\"\n   (if (< n 0)\n    \"negitive\"\n    (if (< 0 n)\n     \"positive\"\n     (if :else\n      \"zero\"\n      nil))))))"],
   :macro true,
   :notes
   ["We should add a comment in the docstring for the final usage of :else."
