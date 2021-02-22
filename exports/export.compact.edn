@@ -4086,7 +4086,8 @@
   :name "*compile-path*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; Assuming \"mypath\" exists on disk, the following AOT compiles any form\n;; into the specified folder.\n\n(binding [*compile-files* true     \n          *compile-path* \"mypath\"]\n  (eval '(+ 1 1)))\n;; 2"],
   :notes nil,
   :arglists [],
   :doc
@@ -17339,7 +17340,8 @@
    "lazy version is much slower than this one:\r\n\r\n<pre>(defn my-flatten [l] \r\n  \"free of StackOverflow problem, not lazy and much faster version of flatten.\"\r\n(loop [l1 l, l2 `()]\r\n  (cond\r\n    (sequential? (first l1)) (recur (concat (first l1) (rest l1)) l2)\r\n    (empty? l1) (reverse l2)\r\n    :else (recur (rest l1) (cons (first l1) l2)))))\r\n</pre>\r\n\r\nfor complicated construction genereted by:\r\n<pre>(defn gen-list-wird [c] (reduce (fn [a b] (list a b)) (map vector (range c) (map str (range c (* 2 c))))))</pre>\r\ntimes are:\r\ncore/flatten (260 msec)\r\nsteveminer/flatten (135 msec)\r\nmy-flatten (2 msec). This version is slower than steveminder`s version for flat and very nested structures with small number of items."
    "For a much faster implementation, use `clojure.core.reducers/flatten` (introduced in Clojure 1.5)."
    "To only flatten one level, you can use (mapcat identity coll)\n\nWith flatten:\n<pre>\nuser=> (flatten [[[1]] [[2 3]]])\n(1 2 3)\n</pre>\n\nWith mapcat identity:\n<pre>\nuser=> (mapcat identity [[[1]] [[2 3]]])\n([1] [2 3])\n</pre>\n"
-   "afhammad, i think to flatten one level it may be useful <pre>(apply concat coll)</pre>"],
+   "afhammad, i think to flatten one level it may be useful <pre>(apply concat coll)</pre>"
+   "does not flatten sets:\n\n    user=> (flatten [#{1}])\n    (#{1})"],
   :arglists ["x"],
   :doc
   "Takes any nested combination of sequential things (lists, vectors,\n  etc.) and returns their contents as a single, flat lazy sequence.\n  (flatten nil) returns an empty sequence.",
