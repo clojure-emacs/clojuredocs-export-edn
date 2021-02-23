@@ -324,7 +324,7 @@
   :see-alsos nil,
   :examples
   [";; Ensure that the `require` doesn't result in AOT'd class files\n(binding [*compile-files* false]\n  (require 'foo.bar))"
-   ";; Prevent initialization of a definition during AOT compilation\n;; but allow (once only) at runtime.\n\n(defmacro defruntime [sym & body]\n  `(defonce ~sym\n    (when-not *compile-files* ~@body)))\n\n(defruntime config\n    (println \"This won't happen during AOT compile\"))\n"],
+   ";; The \"defruntime\" macro below prevents initialization of a definition \n;; during AOT compilation but allows it (once only) at runtime. Can be used to\n;; load configuration files or other runtime only data.\n\n(defmacro defruntime [sym & body]\n  `(defonce ~sym\n    (when-not *compile-files* ~@body)))\n\n(defruntime config\n    (println \"This won't happen during AOT compile\"))\n"],
   :notes nil,
   :arglists [],
   :doc "Set to true when compiling files, false otherwise.",
