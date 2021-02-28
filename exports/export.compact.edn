@@ -13950,7 +13950,7 @@
    ";; From string to boolean\n\n(def answer {:answer \"France\" :correct \"true\"  :age 11})\n(update answer :correct #(if (= % \"true\") true false))\n\n;; {:answer \"France\", :correct true, :age 11}"
    ";; Applying a function to the same key in a sequence of arrays\n\n(def dates [{:date \"20200430\",:time \"08:35\"}\n            {:date \"20200430\",:time \"09:15\"}]\n\n;; Takes the current time value in the array, and reduces it to the hour by \n;; calling the reduce-to-hour function (not included here)\n\n(map #(update % :time (constantly (reduce-to-hour (:time %)))) dates)\n=> ({:date \"20200430\", :time \"08\"} {:date \"20200430\", :time \"09\"})"
    ";; Very common, update a vector inside a map\n(def little-schemer {:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n                               {:name \"Matthias Felleisen\"}]\n                     :title \"The Little Schemer\"})\n\n(update little-schemer :authors conj {:name \"Gerald J. Sussman\"})\n;;=> \n{:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n           {:name \"Matthias Felleisen\"}\n           {:name \"Gerald J. Sussman\"}]\n :title \"The Little Schemer\"}"
-   ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}"],
+   ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}\n\n;; Which is equivalent to using \"assoc\"\n(assoc hm :banana 6)\n;;=> {:banana 6 :apple 2 :orange 3}"],
   :notes
   ["But how do you do a pure update idiomatically? So update one value for another?"],
   :arglists
