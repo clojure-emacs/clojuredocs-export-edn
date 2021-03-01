@@ -8236,7 +8236,8 @@
   :see-alsos
   [:clojure.core/send
    :clojure.core/agent
-   :clojure.core/shutdown-agents],
+   :clojure.core/shutdown-agents
+   :clojure.core/send-via],
   :line 2122,
   :examples
   ["user=> (def my-agent (agent \"\"))\n#'user/my-agent\nuser=> @my-agent\n\"\"\n\n;; Note the following happens asynchronously in a thread\n;; pool\nuser=> (send-off my-agent #(slurp %2) \"file.txt\")\n#<Agent@13c6641: \"\">\n\n;; while the slurp is in-progress, @my-agent will return \"\".\n\n;; Once the request has completed, the value will\n;; be updated when we look at it.\nuser=> @my-agent\n\"file contents\"\n"
