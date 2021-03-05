@@ -16863,7 +16863,7 @@
    :clojure.core/nth],
   :line 3013,
   :examples
-  [";; iterate Ad Infinitum starting at 5 using the inc (increment) function\nuser=> (iterate inc 5)\n(5 6 7 8 9 10 11 12 13 14 15 ... n\n\n;; limit results\nuser=> (take 5 (iterate inc 5))\n(5 6 7 8 9)\n\nuser=> (take 10 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18)\n\nuser=> (take 20 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38)\n\n"
+  [";; iterate Ad Infinitum starting at 5 using the inc (increment) function\nuser=> (iterate inc 5)\n(5 6 7 8 9 10 11 12 13 14 15 ... n\n\n;; limit results\nuser=> (take 3 (iterate inc 5))\n(5 6 7)\n\nuser=> (take 10 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18)\n\nuser=> (take 20 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38)\n\n"
    "user=> (def powers-of-two (iterate (partial * 2) 1))\n#'user/powers-of-two\n\nuser=> (nth powers-of-two 10)\n1024\nuser=> (take 10 powers-of-two)\n(1 2 4 8 16 32 64 128 256 512)\n"
    ";; demonstrating the power of iterate\n;; to generate the Fibonacci sequence\n;; uses +' to promote to BigInt\nuser=> (def fib (map first (iterate (fn [[a b]] [b (+' a b)]) [0 1])))\n#'user/fib\n\nuser=> (take 10 fib)\n(0 1 1 2 3 5 8 13 21 34)"
    ";; iterate (also range, repeat and cycle) have a reduce\n;; fast path. Use with reduce, transduce, eduction etc.\n\n(defn pi\n  \"Approximate Pi to the 1/n decimal with Leibniz formula\"\n  [n]\n  (transduce\n    (comp (map #(/ 4 %)) (take n))\n    +\n    (iterate #(* ((if (pos? %) + -) % 2) -1) 1.0)))\n\n(time (pi 1e8))\n\"Elapsed time: 9776.924934 msecs\"\n;; 3.141592643589326"],
