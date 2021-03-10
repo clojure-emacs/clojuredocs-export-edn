@@ -3266,7 +3266,7 @@
   ["user=> (butlast [1 2 3])\n(1 2)\nuser=> (butlast (butlast [1 2 3]))\n(1)\nuser=> (butlast (butlast (butlast [1 2 3])))\nnil"
    ";really slow reverse\n;put the last item of the list at the start of a new list, and recur over all but the last item of the list.\n;butlast acts similar to next in that it returns null for a 1-item list.\n\n(defn my-reverse [xs]\n  (when xs\n    (cons (last xs) (my-reverse (butlast xs)))))"
    ";; A version of (into) that doesn't require (comp)\n;; for transducers arguments.\n\n(defn into* [to & args]\n  (into to\n    (apply comp (butlast args))\n    (last args)))\n\n(into* [] (range 10))\n;; [0 1 2 3 4 5 6 7 8 9]\n\n(into* [] (map inc) (range 10))\n;; [1 2 3 4 5 6 7 8 9 10]\n\n(into* [] (map inc) (filter odd?) (range 10))\n;; [1 3 5 7 9]"
-   ";; butlast (linear time) vs. drop-last (lazy, efficient, more flexible, constant time(?))\n\n(def r (range 10000))\n\n(time (butlast r))       ;;=> \"Elapsed time: 6.379 msecs\"\n(time (drop-last r))     ;;=> \"Elapsed time: 0.0475 msecs\"\n(time (drop-last 2 r))   ;;=> \"Elapsed time: 0.0569 msecs\"\n(time (drop-last 0 r))   ;;=> \"Elapsed time: 0.098 msecs\"\n(time (drop-last -1 r))  ;;=> \"Elapsed time: 0.0615 msecs\""],
+   ";; `butlast` (linear time) vs. `drop-last` (lazy, efficient, more flexible, \n;; constant time(?)) vs. `pop` (fast but requires a vector).\n\n(def r (range 10000))\n\n(time (butlast r))       ;;=> \"Elapsed time: 6.379 msecs\"\n(time (drop-last r))     ;;=> \"Elapsed time: 0.0475 msecs\"\n(time (drop-last 2 r))   ;;=> \"Elapsed time: 0.0569 msecs\"\n(time (drop-last 0 r))   ;;=> \"Elapsed time: 0.098 msecs\"\n(time (drop-last -1 r))  ;;=> \"Elapsed time: 0.0615 msecs\"\n\n(def r-vec (vec r))      ;; to work like `butlast` pop needs a vector \n(time (pop r-vec))       ;;=> \"Elapsed time: 0.062 msecs\""],
   :notes
   ["When using a vector, `pop` is faster than `butlast`."
    "`pop` will throw exception if the vector is empty, whereas `butlast` will return `nil`"
@@ -22515,7 +22515,8 @@
   :see-alsos [:clojure.core/distinct],
   :line 5685,
   :examples
-  ["user=> (distinct? 1 2 3)\ntrue\nuser=> (distinct? 1 2 3 3)\nfalse\nuser=> (distinct? 1 2 3 1)\nfalse"],
+  ["user=> (distinct? 1 2 3)\ntrue\nuser=> (distinct? 1 2 3 3)\nfalse\nuser=> (distinct? 1 2 3 1)\nfalse"
+   "(distinct? ['A 'A 'c]) ;;=> true\n(distinct? 'A 'A 'c)   ;;=> false\n(distinct? [1 1 'c])   ;;=> true\n(distinct? 1 1 'c)     ;;=> false\n\n;; Like `min` or `max` and unlike `distinct` the \n;; parameters are taken separately, i.e. not in a \n;; collection. "],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x" "x y" "x y & more"],
