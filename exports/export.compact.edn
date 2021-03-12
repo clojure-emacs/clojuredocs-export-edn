@@ -20092,7 +20092,8 @@
   :column 1,
   :see-alsos [:clojure.core/bound-fn :clojure.core/bound-fn*],
   :line 1939,
-  :examples nil,
+  :examples
+  ["(get-thread-bindings) \n;;=> {#'cider.nrepl.middleware.debug/*skip-breaks* #atom[nil 0x6683434], \n;;     #'clojure.core/*unchecked-math* false, \n;;     #<Var: --unnamed--> nil, #<Var: --unnamed--> 1, \n... \n;;     #'clojure.test/*test-out* #object[java.io.PrintWriter 0x7aa21648 \n;;       \"java.io.PrintWriter@7aa21648\"], #<Var: --unnamed--> true}\n;;     #<Var: --unnamed--> true}"],
   :notes nil,
   :arglists [""],
   :doc
