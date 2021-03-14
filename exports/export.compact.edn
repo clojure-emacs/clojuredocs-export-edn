@@ -25617,7 +25617,7 @@
   :see-alsos nil,
   :examples
   [";; Toggle locals clearing (set it to true to aid with debugging)\n(alter-var-root #'clojure.core/*compiler-options* \n                update :disable-locals-clearing not)"
-   ";; If example.clj is on the classpath and contains something like:\n;;   (ns example)\n;;   (def ^{:t1 \"secret metadata\"\n;;          :doc \"here's some useful info\"}\n;;     foo 1))\n\n(binding [*compiler-options* {:elide-meta [:doc :t1]}]\n  (compile 'example))\n\n;; The Above AOT-compile example removing \":doc\" and \":t1\" values from\n;; the constant pool of the generated classe.\n"],
+   ";; If example.clj is on the classpath and contains something like:\n;;   (ns example)\n;;   (def ^{:t1 \"secret metadata\"\n;;          :doc \"here's some useful info\"}\n;;     foo 1))\n\n(binding [*compiler-options* {:elide-meta [:doc :t1]}]\n  (compile 'example))\n\n;; AOT-compiles \"example.clj\" removing \":doc\" and \":t1\" values from\n;; the constant pool of the generated class.\n"],
   :notes nil,
   :arglists [],
   :doc
