@@ -5200,7 +5200,8 @@
   :name "*source-path*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; Contains the name (not the full path, for that see \n;; https://clojuredocs.org/clojure.core/*file*) \n;; of the compilation unit that is currently being compiled.\n;; Given a file named \"examples/example.clj\" is available in the \"examples\" \n;; folder starting at \".\":\n\n(ns examples.example)\n(when *compile-files* \n  (println \"Compiling:\" *source-path*))\n\n;; If we start a REPL adding \".\" as part of the classpath,\n;; we can see the following:\n\n(binding [*compile-path* \".\"]\n  (compile 'examples.example))\n;; Compiling: example.clj\n;; examples.example\n"],
   :notes nil,
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
@@ -8910,7 +8911,8 @@
    ";;trim will remove the white spaces and return a new string which will be passed ;;to the second function capitalize which will return a new string\n\n((comp clojure.string/capitalize clojure.string/trim) \" london   \")\n;;\"London\"\n"
    "(def my-car\n  {:name \"audi\"\n   :data {:cc 2990\n          :bhp 350}})\n\n((comp :bhp :data) my-car)\n;;350\n\n;;which is the equivalent of\n\n(:bhp (:data my-car))\n;;350"
    "(require '[reagent.core :as r])\n\n(def float-parsable? (comp not js/isNaN js/parseFloat))\n(def find-parsable-or-nil \n  (comp first \n        (partial re-find \n                 #\"(\\-?\\d+\\.)?\\d+([eE][-+]?\\d+)?\")))\n\n(defn number-input\n \"HTML input element for number only input\"\n [value]\n [:input\n  {:value @value\n   :type \"text\"\n   :on-change (comp\n               #(when-let [new-value %]\n                 (reset! value new-value))\n               (fn [new-value]\n                (cond\n                 (empty? new-value) \"\"\n                 (float-parsable? new-value) new-value\n                 :otherwise (find-parsable-or-nil new-value)))\n               (fn [target]\n                (.-value target))\n               (fn [event]\n                (.-target event)))}])\n\n(def value (r/atom \"\"))\n\n(defn demo []\n [:div\n  ; Displays NaN when value is \"\", displays a number otherwise.\n  (-> @value js/parseFloat str) [:br]\n  [number-input value]])"
-   "; Demonstrating the order of parameters vs. normal function application.\n\n(def x {:bar {:foo 42}})\n\n(:foo (:bar x))\n;;=> 42\n\n((comp :foo :bar) x)\n;;=> 42"],
+   "; Demonstrating the order of parameters vs. normal function application.\n\n(def x {:bar {:foo 42}})\n\n(:foo (:bar x))\n;;=> 42\n\n((comp :foo :bar) x)\n;;=> 42"
+   "; Without arguments returns identity function\n\n(identical? (comp) identity)\n;;=> true\n\n((comp) :arg)\n;;=> :arg"],
   :notes nil,
   :arglists ["" "f" "f g" "f g & fs"],
   :doc
@@ -12977,7 +12979,8 @@
   [";; The distinction is that re-find tries to find _any part_ of the string\n;; that matches the pattern, but re-matches only matches if the _entire_\n;; string matches the pattern.\nuser=> (re-matches #\"hello\" \"hello, world\")\nnil\n\nuser=> (re-matches #\"hello.*\" \"hello, world\")\n\"hello, world\"\n\nuser=> (re-matches #\"hello, (.*)\" \"hello, world\")\n[\"hello, world\" \"world\"]\n"
    ";; Note: See clojure.core/subs for discussion of behavior of substrings\n;; holding onto references of the original strings, which can\n;; significantly affect your memory usage in some cases."
    "; Regex match flags can be embedded in the regex string.  So, we can convert the normal case-sensitive matching into case-insensitive matching.\n\nuser=> (re-matches #\"hello\" \"HELLO\")       ; case-sensitive\nnil\n\nuser=> (re-matches #\"(?i)hello\" \"hello\")   ; case-insensitive\n\"hello\"\nuser=> (re-matches #\"(?i)hello\" \"HELLO\")   ; case-insensitive\n\"HELLO\"\nuser=> (re-matches #\"(?i)HELLO\" \"heLLo\")   ; case-insensitive\n\"heLLo\"\n"],
-  :notes nil,
+  :notes
+  ["Here is the [java official documentation](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/regex/Pattern.html) for pattern specifications"],
   :arglists ["re s"],
   :doc
   "Returns the match, if any, of string to pattern, using\n  java.util.regex.Matcher.matches().  Uses re-groups to return the\n  groups.",
@@ -16866,7 +16869,7 @@
    :clojure.core/nth],
   :line 3013,
   :examples
-  [";; iterate Ad Infinitum starting at 5 using the inc (increment) function\nuser=> (iterate inc 5)\n(5 6 7 8 9 10 11 12 13 14 15 ... n\n\n;; limit results\nuser=> (take 3 (iterate inc 5))\n(5 6 7)\n\nuser=> (take 10 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18)\n\nuser=> (take 20 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38)\n\n"
+  [";; iterate Ad Infinitum starting at 5 using the inc (increment) function\nuser=> (iterate inc 5)\n(5 6 7 8 9 10 11 12 13 14 15 ... n ...\n\n;; limit results\nuser=> (take 3 (iterate inc 5))\n(5 6 7)\n\nuser=> (take 10 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18)\n\nuser=> (take 20 (iterate (partial + 2) 0))\n(0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38)\n\n"
    "user=> (def powers-of-two (iterate (partial * 2) 1))\n#'user/powers-of-two\n\nuser=> (nth powers-of-two 10)\n1024\nuser=> (take 10 powers-of-two)\n(1 2 4 8 16 32 64 128 256 512)\n"
    ";; demonstrating the power of iterate\n;; to generate the Fibonacci sequence\n;; uses +' to promote to BigInt\nuser=> (def fib (map first (iterate (fn [[a b]] [b (+' a b)]) [0 1])))\n#'user/fib\n\nuser=> (take 10 fib)\n(0 1 1 2 3 5 8 13 21 34)"
    ";; iterate (also range, repeat and cycle) have a reduce\n;; fast path. Use with reduce, transduce, eduction etc.\n\n(defn pi\n  \"Approximate Pi to the 1/n decimal with Leibniz formula\"\n  [n]\n  (transduce\n    (comp (map #(/ 4 %)) (take n))\n    +\n    (iterate #(* ((if (pos? %) + -) % 2) -1) 1.0)))\n\n(time (pi 1e8))\n\"Elapsed time: 9776.924934 msecs\"\n;; 3.141592643589326"],
@@ -25217,7 +25220,8 @@
   :name "*file*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; Given a file named \"example.clj\" is available in the current folder\n;; with content:\n\n(ns example)\n(when *compile-files* (println \"Compiling:\" *file*))\n\n;; If we start a REPL adding \".\" as part of the classpath,\n;; then we can see the following:\n\n(binding [*compile-path* \".\"]\n  (compile 'example))\n;; Compiling: example.clj\n;; example\n"],
   :notes
   ["Does this actually work? I couldn't get it to print anything but NO_SOURCE_PATH. (And no, this wasn't in the REPL.)"
    "If you're having trouble getting this feature to work as advertised, check out [this StackOverflow Question](http://stackoverflow.com/questions/12692698/file-variable-not-working/12693068)."],
