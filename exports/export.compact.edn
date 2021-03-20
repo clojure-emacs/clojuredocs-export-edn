@@ -2013,7 +2013,8 @@
   :column 1,
   :see-alsos [:clojure.core/await],
   :line 3296,
-  :examples nil,
+  :examples
+  [";; construct simple agent\n(def agnt (agent 5))\n\n;; increment agent\n(send agnt inc) \n\n;; system does not wait for the value change\n(println @agnt) \n;; => 5 \n\n;; increment agent\n(send agnt inc)\n\n;; wait for maximum 1000 ms\n(await-for 1000 agnt) \n\n;; print out the value of the agent \n(println @agnt) \n;; => 7"],
   :notes nil,
   :arglists ["timeout-ms & agents"],
   :doc
@@ -2189,9 +2190,9 @@
   :examples
   ["(seq '(1))  ;;=> (1)\n(seq [1 2]) ;;=> (1 2)\n(seq \"abc\") ;;=> (\\a \\b \\c)\n\n;; Corner cases\n(seq nil)   ;;=> nil\n(seq '())   ;;=> nil\n(seq [])    ;;=> nil\n(seq \"\")    ;;=> nil"
    ";; (seq x) is the recommended idiom for testing if a collection is not empty\n(every? seq [\"1\" [1] '(1) {:1 1} #{1}])\n;;=> true"
-   ";; 'seq' can be used to turn a map into a list of vectors.\n;; Notice how the list is built adding elements to the beginning \n;; of the seq (list) not to the end, as with vectors.\n;; (Of course, the order that items are \n;;  taken from a map should not be relied upon\n;;  unless a deterministic 'sorted-map' is used.)\n(seq {:key1 \"value1\" :key2 \"value2\"})\n;;=> ([:key2 \"value 2\"] [:key1 \"value 1\"])"
+   ";; 'seq' can be used to turn a map into a list of vectors.\n;; Notice how the list is built adding elements to the beginning \n;; of the seq (list) not to the end, as with vectors.\n;; (Of course, the order that items are \n;;  taken from a map should not be relied upon\n;;  unless a deterministic 'sorted-map' is used.)\n(seq {:key1 \"value1\" :key2 \"value2\"})\n;;=> ([:key2 \"value2\"] [:key1 \"value1\"])"
    ";; Here is the difference between seq and sequence\n\n(seq nil)\n;;=> nil\n\n(seq ())\n;;=> nil\n\n(sequence ())\n;;=> ()\n\n(sequence nil)\n;;=> ()"
-   ";; seq is very similar to not-empty:\n\n(every? seq [\"1\" [1] '(1) {:1 1} #{1}])\n;;=> true\n(every? not-empty [\"1\" [1] '(1) {:1 1} #{1}])\n;;=> true\n\n(seq '(1))       ;;=> (1)\n(not-empty '(1)) ;;=> (1)\n\n(seq [1 2]) ;;=> (1 2)\n(seq [1 2]) ;;=> [1 2]\n\n\n(seq \"abc\")       ;;=> (\\a \\b \\c)\n(not-empty \"abc\") ;;=> \"abc\"\n\n(map seq [nil '() [] \"\" {}])\n;;=> (nil nil nil nil nil)\n\n(map not-empty [nil '() [] \"\" {}])\n;;=> (nil nil nil nil nil)"],
+   ";; seq is very similar to not-empty:\n\n(every? seq [\"1\" [1] '(1) {:1 1} #{1}])\n;;=> true\n(every? not-empty [\"1\" [1] '(1) {:1 1} #{1}])\n;;=> true\n\n(seq '(1))       ;;=> (1)\n(not-empty '(1)) ;;=> (1)\n\n(seq [1 2])       ;;=> (1 2)\n(not-empty [1 2]) ;;=> [1 2]\n\n\n(seq \"abc\")       ;;=> (\\a \\b \\c)\n(not-empty \"abc\") ;;=> \"abc\"\n\n(map seq [nil '() [] \"\" {}])\n;;=> (nil nil nil nil nil)\n\n(map not-empty [nil '() [] \"\" {}])\n;;=> (nil nil nil nil nil)"],
   :notes nil,
   :tag "clojure.lang.ISeq",
   :arglists ["coll"],
