@@ -2610,7 +2610,8 @@
   :column 1,
   :see-alsos nil,
   :line 48,
-  :examples nil,
+  :examples
+  [";; To defined an indexed argument for a relation.\n\n(db-rel direction ^:index d p)\n"],
   :macro true,
   :notes nil,
   :arglists ["name & args"],
