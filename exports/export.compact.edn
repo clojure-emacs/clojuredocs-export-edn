@@ -4745,7 +4745,8 @@
    ";; or simply\nuser=> (map-indexed vector \"foobar\")\n([0 \\f] [1 \\o] [2 \\o] [3 \\b] [4 \\a] [5 \\r])"
    "(map-indexed hash-map \"foobar\")\n;;=> ({0 \\f} {1 \\o} {2 \\o} {3 \\b} {4 \\a} {5 \\r})"
    ";; a simple example\n(map-indexed #(when (< % 2) (str % %2)) [:a :b :c])\n;;=> (\"0:a\" \"1:b\" nil)\n\n(keep-indexed #(when (< % 2) (str % %2)) [:a :b :c])\n;;=> (\"0:a\" \"1:b\")"
-   ";; Join the index and elements with list\n(map-indexed list [:a :b :c])\n;;=> ((0 :a) (1 :b) (2 :c))"],
+   ";; Join the index and elements with list\n(map-indexed list [:a :b :c])\n;;=> ((0 :a) (1 :b) (2 :c))"
+   "(= (map-indexed #(when (= 2 %2) [%1 \"Hi\"]) [1 1 2 2])  \n   '(nil nil [2 \"Hi\"] [3 \"Hi\"])) ;;=>true"],
   :notes nil,
   :arglists ["f" "f coll"],
   :doc
