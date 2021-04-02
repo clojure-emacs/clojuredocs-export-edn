@@ -18244,7 +18244,8 @@
   :examples
   ["user=> (max-key count \"asd\" \"bsd\" \"dsd\" \"long word\")\n\"long word\""
    "; find the key that has the highest value in a map\nuser=> (key (apply max-key val {:a 3 :b 7 :c 9}))\n:c"
-   ";; find the index of the highest value. Equivalent to an 'argmax' function\nuser=> (first (apply max-key second (map-indexed vector '(2 1 6 5 4))))\n2"],
+   ";; find the index of the highest value. Equivalent to an 'argmax' function\nuser=> (first (apply max-key second (map-indexed vector '(2 1 6 5 4))))\n2"
+   ";; find the max :timestamp in a collection of maps.\nuser=> (def mmm [\n  {:timestamp 1 :name \"v\"} \n  {:timestamp 2 :name \"q\"} \n  {:timestamp 3 :name \"r\"}])\n\nuser=> (apply max-key :timestamp mmm)\n{:timestamp 3, :name \"r\"}\n\nuser=> (:timestamp (apply max-key :timestamp mmm))\n3"],
   :notes nil,
   :arglists ["k x" "k x y" "k x y & more"],
   :doc
