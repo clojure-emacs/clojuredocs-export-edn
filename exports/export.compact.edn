@@ -13787,7 +13787,8 @@
   :see-alsos nil,
   :examples
   [";; Symbols are resolved during analysis phase, throws error\n;; because a is not defined anywhere reachable\nuser=> (clojure.lang.Compiler/analyze clojure.lang.Compiler$C/EXPRESSION '(+ 1 a))\n\nSyntax error compiling at (REPL:1:68).\nUnable to resolve symbol: a in this context\n\n;; Don't throw an exception on unresolvable symbol, assumption that\n;; there's somewhere else vars are defined not visible to analyzer\n;; (Ex. some external javascript library)\nuser=> (binding [*allow-unresolved-vars* true]\n  #_=>   (clojure.lang.Compiler/analyze clojure.lang.Compiler$C/EXPRESSION '(+ 1 a)))\n\n#object[clojure.lang.Compiler$StaticMethodExpr 0x1441fb4f \"clojure.lang.Compiler$StaticMethodExpr@1441fb4f\"]\n"],
-  :notes nil,
+  :notes
+  ["Originally added to support specific ClojureScript use of the analyzer in the preliminary version of ClojureScript by C.Houser, see https://github.com/richhickey/clojure-contrib/blob/master/clojurescript/src/clojure/contrib/clojurescript.clj#L307-L310."],
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
   :href "/clojure.core/*allow-unresolved-vars*"},
@@ -25375,7 +25376,8 @@
   :name "*use-context-classloader*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; *use-context-classloader* is always bound to true regarldess of any \n;; outer binding setting and thus ignored.\n;; The initial idea was to have a way to tell Clojure to ignore\n;; the context classloader (supposedly set by external libs or frameworks)\n;; in some pretty specific OSGi scenarios. Original context can be found at:\n;; https://groups.google.com/g/clojure/c/aXsFBdowdsA/m/1Ez894XuT30J and\n;; additional use cases https://clojure.atlassian.net/browse/CLJ-2593\n\n(import '[clojure.lang DynamicClassLoader])\n(def custom-classloader (DynamicClassLoader.))\n(.setContextClassLoader (Thread/currentThread) custom-classloader)\n\n(identical?\n  (.. (fn []) getClass getClassLoader getParent)\n  custom-classloader)\n;; true\n\n;; This should return false and use some other class loader\n(binding [*use-context-classloader* false]\n  (identical?\n    (.. (fn []) getClass getClassLoader getParent)\n    custom-classloader))\n;; true"],
   :notes nil,
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
