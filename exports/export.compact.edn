@@ -1424,7 +1424,7 @@
   :file "clojure/instant.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.instant/read-instant-date],
   :line 288,
   :examples
   ["(clojure.instant/read-instant-date \"2020-03-23T01:17Z\")\n;=> #inst \"2020-03-23T01:17:00.000-00:00\""],
@@ -5421,8 +5421,8 @@
    ";; the first logical true value is returned, i.e. anything but nil and false\n;; when return nil if its predicate is logical false.\n(some #(when (even? %) %) '(1 2 3 4))\n;;=> 2"
    ";; a hash acts as a function returning nil when the\n;; key is not present and the key value otherwise.\n(some {2 \"two\" 3 \"three\"} [nil 3 2])\n;;=> \"three\"\n\n;; there is nothing special about the 'nil' in the collection,\n;; it is still being used as a key to find its corresponding value in the hash.\n(some {nil \"nothing\" 2 \"two\" 3 \"three\"} [nil 3 2])\n;;=> \"nothing\"\n\n;; the hash (as function) returns a nil for the key of '3',\n;; therefore 'some' keeps inspecting the collection,\n;; returning the next logical true value.\n(some {2 \"two\" 3 nil} [nil 3 2])\n;;=> \"two\""
    ";; some can be used as a substitute for (first (filter ...\n;; in most cases.\n\n(first (filter even? [1 2 3 4]))\n;;=> 2\n\n;; 'some' returns exactly one item (nil if nothing is found)\n(some #(if (even? %) %) [1 2 3 4])\n;;=> 2\n"
-   ";; find a whether a word is in a list of words.\n(def word \"foo\")\n(def words [\"bar\" \"baz\" \"foo\" \"\"])\n(some (partial = word) words)\n;;=> true"
-   ";; here we see sets being used as a predicates\n;; the first member of the collection that appears in the set is returned\n\n(some #{2} (range 0 10))      ;;=> 2\n(some #{6 2 4} (range 0 10))  ;;=> 2\n(some #{2 4 6} (range 3 10))  ;;=> 4\n(some #{200} (range 0 10))    ;;=> nil\n\n"
+   ";; find whether a word is in a list of words.\n(def word \"foo\")\n(def words [\"bar\" \"baz\" \"foo\" \"\"])\n(some (partial = word) words)\n;;=> true"
+   ";; here we see sets being used as a predicate\n;; the first member of the collection that appears in the set is returned\n\n(some #{2} (range 0 10))      ;;=> 2\n(some #{6 2 4} (range 0 10))  ;;=> 2\n(some #{2 4 6} (range 3 10))  ;;=> 4\n(some #{200} (range 0 10))    ;;=> nil\n\n"
    ";; be careful, 'nil' can occasionally be returned on success.\n(#{nil} nil)\n;;=> nil \n\n;; almost as troublesome is returning a false\n(#{false} false)\n;;=> false"
    ";; if you have a case where the predicate arguments are fixed/known, \n;; but the predicate function isn't:\n;; coll can supply the predicate function instead of the predicate arguments\n\n;; define the function 'not equal' (ne)\n(defn ne [n1 n2] (not= n1 n2))\n;;=> #'user/ne\n\n(some #(% 3 7) (list ne))\n;;=>true\n\n(some #(% 3 3) (list ne))\n;;=>nil\n\n\n"
    ";; extending the previous example: supplying multiple functions.\n(defn ne [n1 n2] (not= n1 n2)) \n;;=> #'user/ne\n\n;; function to check if the sum is less than 'limit'\n(defn sumlt [limit n1 n2] (> limit (+ n1 n2))) \n;;=>'user/sumlt\n\n(some #(% 3 7) (list ne #(sumlt 10 %1 %2)))   \n;;=>true\n\n(some #(% 3 3) (list ne #(sumlt 10 %1 %2)))   \n;;=>true\n\n(some #(% 7 7) (list ne #(sumlt 10 %1 %2)))   \n;;=>nil\n\n;; same, but one of the functions returns a value instead a boolean.\n(some #(% 3 7) (list ne (fn [n1 n2] (+ n1 n2))))                 \n;;=>true\n\n(some #(% 7 7) (list ne (fn [n1 n2] (+ n1 n2))))                 \n;;=>14\n\n;; the importance of order of the function list.\n(some #(% 7 7) (list ne #(sumlt 10 %1 %2) (fn [n1 n2] (+ n1 n2)))) \n;;=>14\n\n(some #(% 7 7) (list ne (fn [n1 n2] (+ n1 n2)) #(sumlt 10 %1 %2))) \n;;=>14\n\n(some #(% 3 3) (list ne #(sumlt 10 %1 %2) (fn [n1 n2] (+ n1 n2)))) \n;;=>true\n\n(some #(% 3 3) (list ne (fn [n1 n2] (+ n1 n2)) #(sumlt 10 %1 %2))) \n;;=>6\n"
@@ -9595,7 +9595,7 @@
   :file "clojure/test/tap.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.test.tap/print-tap-pass],
   :line 65,
   :examples nil,
   :notes nil,
@@ -11687,7 +11687,9 @@
   :file "clojure/instant.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.instant/parse-timestamp],
+  :see-alsos
+  [:clojure.instant/parse-timestamp
+   :clojure.instant/read-instant-timestamp],
   :line 274,
   :examples
   [";; Parse a string with RFC3339-like timestamp to get a java.util.Date object\n\n(use 'clojure.instant)\n(read-instant-date \"2017-08-23T10:22:22\")\n;; #inst \"2017-08-23T10:22:22.000-00:00\"\n\n;; If no timezone info is included in the input string, GMT is assumed.\n;; See clojure.instant/parse-timestamp for the timestamp pattern supported."],
@@ -19467,7 +19469,7 @@
   :file "clojure/test/tap.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.test.tap/print-tap-fail],
   :line 59,
   :examples nil,
   :notes nil,
@@ -22754,7 +22756,8 @@
   :line 7203,
   :examples
   ["user=> (frequencies ['a 'b 'a 'a])\n{a 3, b 1}"
-   ";; Turn a frequency map back into a coll.\n\n(mapcat (fn [[x n]] (repeat n x)) {:a 2 :b 1 :c 3})\n;;=> (:a :a :b :c :c :c)\n"],
+   ";; Turn a frequency map back into a coll.\n\n(mapcat (fn [[x n]] (repeat n x)) {:a 2 :b 1 :c 3})\n;;=> (:a :a :b :c :c :c)\n"
+   ";; combine it with map to apply a function\n\n(def students\n  [{:name \"Alice\" :age 23 :gender :female}\n   {:name \"Bob\" :age 21 :gender :male}\n   {:name \"John\" :age 23 :gender :male}\n   {:name \"Maria\" :age 22 :gender :female}\n   {:name \"Julie\" :age 22 :gender :female}])\n\n(frequencies (map :gender students))\n;; => {:female 3, :male 2}\n\n(frequencies (map :age students))\n;;=> {23 2, 21 1, 22 2}\n"],
   :notes
   ["<pre>(fn [coll]\r\n   (let [gp (group-by identity coll)] \r\n      (zipmap (keys gp) (map #(count (second %)) gp))))</pre>"
    "    (into {} (for [[k v] (group-by identity \"abbbc\")] [k (count v)]))\r\n"
