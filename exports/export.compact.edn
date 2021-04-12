@@ -1921,7 +1921,8 @@
   :see-alsos [:clojure.core/print-dup],
   :line 3663,
   :examples
-  ["(deftype XYZ [])\n\n; without custom print-method defined:\nuser=> (prn (XYZ.))\n#<XYZ user.XYZ@2670d85b> \n\n(defmethod print-method XYZ [v ^java.io.Writer w]\n  (.write w \"<<-XYZ->>\"))\n\n; with print-method\nuser=> (prn (XYZ.))\n<<-XYZ->>\n"],
+  ["(deftype XYZ [])\n\n; without custom print-method defined:\nuser=> (prn (XYZ.))\n#<XYZ user.XYZ@2670d85b> \n\n(defmethod print-method XYZ [v ^java.io.Writer w]\n  (.write w \"<<-XYZ->>\"))\n\n; with print-method\nuser=> (prn (XYZ.))\n<<-XYZ->>\n"
+   "(import '[java.net URL] [java.io File])\n\n;; Extends pr-str to URL objects with a form suitable for \n;; read-string to read back into an URL with the related\n;; https://clojuredocs.org/clojure.core/*data-readers* binding:\n\n(defmethod print-method URL [url writer]\n  (doto writer\n    (.write \"#url \")\n    (.write \"\\\"\")\n    (.write (.toString url))\n    (.write \"\\\"\")))\n\n(-> \"/etc/hosts\" File. .toURL pr-str)\n;; \"#url \\\"file:/etc/hosts\\\"\"\n"],
   :notes
   ["Take care when writing things that look like a reader macro, like `#mything<42 42 42>`.\nIt may break your AOT compilations with a `java.lang.RuntimeException: No reader function for tag mything`.\n\nA quick workaround is not to emit a `#` character.\nThe thorough solution starts by reading https://clojuredocs.org/clojure.core/*data-readers* and is beyond the scope of this note."],
   :arglists [],
@@ -16294,10 +16295,11 @@
   :file "clojure/core.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/print-method],
   :dynamic true,
   :line 7758,
-  :examples nil,
+  :examples
+  ["(import '[java.net URL])\n\n;; Teaching Clojure how to read URL objects from a string\n\n(binding [*data-readers* {'url #(URL. %)}] \n  (read-string \"#url \\\"file:/etc/hosts\\\"\"))\n\n;; #object[java.net.URL 0x64a8c844 \"file:/etc/hosts\"]"],
   :notes
   ["`clojure.edn/read` and `clojure.edn/read-string` don't look into\n`*data-readers*` in order to find the reader functions for a reader tag.\nThat's why they won't get the mappings from `data_readers.clj` either.\nSee the [note on `clojure.edn/read`](https://clojuredocs.org/clojure.edn/read)\nfor more information and a warning."
    "Note that if you're using `clojure.reader/read` instead of `clojure.core/read`, you have to bind `clojure.reader/*data-readers*` rather than `clojure.core/*data-readers*`."],
