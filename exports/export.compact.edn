@@ -674,7 +674,10 @@
   :file "clojure/java/javadoc.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.repl/doc],
+  :see-alsos
+  [:clojure.repl/doc
+   :clojure.java.javadoc/*local-javadocs*
+   :clojure.java.javadoc/*remote-javadocs*],
   :line 77,
   :examples
   ["user=> (use 'clojure.java.javadoc)\nnil\n\nuser=> (javadoc String)\n\"http://java.sun.com/javase/6/docs/api/java/lang/String.html\"\n\nuser=> (javadoc (java.util.Date.))\n\"http://java.sun.com/javase/6/docs/api/java/util/Date.html\"\n"
@@ -4534,10 +4537,11 @@
   :file "clojure/java/javadoc.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.java.javadoc/add-remote-javadoc],
   :dynamic true,
   :line 29,
-  :examples nil,
+  :examples
+  ["(require '[clojure.java.javadoc :as javadoc])\n\n(def clojure-javadoc\n  \"https://javadoc.io/doc/org.clojure/clojure/latest/\")\n\n;; Altering the Javadoc remote locations for the current thread.\n;; Use javadoc/add-remote-javadoc to alter permanently.\n\n(binding [javadoc/*remote-javadocs*\n         (ref {\"clojure.\" clojure-javadoc})]\n  (javadoc/javadoc []))"],
   :notes nil,
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
@@ -8689,9 +8693,12 @@
   :file "clojure/java/javadoc.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos
+  [:clojure.java.javadoc/javadoc
+   :clojure.java.javadoc/*local-javadocs*],
   :line 43,
-  :examples nil,
+  :examples
+  ["(require '[clojure.java.javadoc :as javadoc])\n\n;; After extracting JDK 11 Javadocs into ~/javadocs/jdk11\n(javadoc/add-local-javadoc \n  (str (System/getProperty \"user.home\")\n  \"/javadocs/jdk11/api/java.base\"))\n\n;; Open default browser showing java.io.PrintStream\n(javadoc/javadoc System/out)\n"],
   :notes nil,
   :arglists ["path"],
   :doc "Adds to the list of local Javadoc paths.",
@@ -10020,10 +10027,11 @@
   :file "clojure/java/javadoc.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.java.javadoc/add-local-javadoc],
   :dynamic true,
   :line 19,
-  :examples nil,
+  :examples
+  ["(require '[clojure.java.javadoc :as javadoc])\n\n;; Assuming \"~/javadocs/jdk11/api/java.base\" exists:\n\n(def jdk11-javadoc\n  (str (System/getProperty \"user.home\")\n       \"/javadocs/jdk11/api/java.base\"))\n\n;; Alter the local Javadoc folders for the current thread.\n;; Use javadoc/add-local-javadoc to alter permanently.\n;; Opens java.lang.Object.html for Java 11 instead of 7 (default).\n\n(binding [javadoc/*local-javadocs* (ref [jdk11-javadoc])]\n  (javadoc/javadoc (Object.)))\n"],
   :notes nil,
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
@@ -22010,7 +22018,8 @@
   :dynamic true,
   :line 21,
   :examples nil,
-  :notes nil,
+  :notes
+  ["Effectively read-only. `*core-java.api*` returns the JDK 7 version of Javadoc by default (unless you run Clojure with the JDK 6). This is the version of the documentation that the rest of `clojure.java.javadoc` uses for the Java core API."],
   :arglists [],
   :library-url "https://github.com/clojure/clojure",
   :href "/clojure.java.javadoc/*core-java-api*"},
