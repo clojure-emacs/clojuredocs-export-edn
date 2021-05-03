@@ -12265,7 +12265,8 @@
   :column 1,
   :see-alsos nil,
   :line 274,
-  :examples nil,
+  :examples
+  ["(require '[clojure.pprint :as pprint])\n\n(def condp-statement\n  '(condp = x\n      1 \"one\" 2 \"two\" 3 \"three\"\n      4 \"four\" 5 \"five\" 6 \"six\" :else :none))\n\n(pprint/with-pprint-dispatch \n  pprint/code-dispatch\n  (pprint/pprint condp-statement))\n;; (condp = x\n;;   1 \"one\"\n;;   2 \"two\"\n;;   3 \"three\"\n;;   4 \"four\"\n;;   5 \"five\"\n;;   6 \"six\"\n;;   :else :none)"],
   :macro true,
   :notes nil,
   :arglists ["function & body"],
@@ -18559,10 +18560,11 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.pprint/with-pprint-dispatch],
   :dynamic true,
   :line 34,
-  :examples nil,
+  :examples
+  ["(require '[clojure.pprint :as pprint])\n\n(def condp-statement\n  '(condp = x\n      1 \"one\" 2 \"two\" 3 \"three\"\n      4 \"four\" 5 \"five\" 6 \"six\" :else :none))\n\n(binding [pprint/*print-pprint-dispatch* pprint/code-dispatch]\n  (pprint/pprint condp-statement))\n;; (condp = x\n;;   1 \"one\"\n;;   2 \"two\"\n;;   3 \"three\"\n;;   4 \"four\"\n;;   5 \"five\"\n;;   6 \"six\"\n;;   :else :none)\n"],
   :notes nil,
   :arglists [],
   :doc
@@ -24098,7 +24100,7 @@
    :clojure.java.io/make-output-stream],
   :line 138,
   :examples
-  ["(:use [clojure.java.io :only [output-stream]])\n\n(defn use-output-stream []\n  (with-open [o (output-stream \"test.txt\")]\n    (.write o 65))) ; Writes 'A'"],
+  ["(:use [clojure.java.io :as io])\n\n(defn use-output-stream []\n  (with-open [o (io/output-stream \"test.txt\")]\n    (.write o 65))) ; Writes 'A'"],
   :notes nil,
   :tag "java.io.OutputStream",
   :arglists ["x & opts"],
