@@ -14649,10 +14649,11 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.pprint/write],
   :dynamic true,
   :line 47,
-  :examples nil,
+  :examples
+  ["(require '[clojure.pprint :as pprint])\n\n;; Simple example to keep it readable, but this could\n;; be much more nested code coming from some large Clojure file\n(def nested-statement\n  '(condp = x\n   1 \"one\" 2 \"two\" 3 \"three\"\n   4 \"four\" 5 \"five\" 6 \"six\"\n   :else (condp = x\n   1 \"one\" 2 \"two\" 3 \"three\"\n   4 \"four\" 5 \"five\" 6 \"six\"\n   :else :none)))\n\n;; Forcing a narrow right margin at 30 to illustrate the point.\n;; In reality the nesting would accumulate close to a larger margin\n;; with similar effects, leaving a lot of white space on the left.\n(binding [pprint/*print-pprint-dispatch* pprint/code-dispatch\n          pprint/*print-right-margin* 30]\n     (pprint/pprint nested-statement))\n\n;; (condp\n;;   =\n;;   x\n;;   1 \"one\"\n;;   2 \"two\"\n;;   3 \"three\"\n;;   4 \"four\"\n;;   5 \"five\"\n;;   6 \"six\"\n;;   :else\n;;   (condp\n;;     =\n;;     x\n;;     1 \"one\"\n;;     2 \"two\"\n;;     3 \"three\"\n;;     4 \"four\"\n;;     5 \"five\"\n;;     6 \"six\"\n;;     :else :none))\n\n;; changing the miser width relax the pretty printer allowing to \n;; use the space better.\n(binding [pprint/*print-pprint-dispatch* pprint/code-dispatch\n          pprint/*print-right-margin* 30\n          pprint/*print-miser-width* 20]\n     (pprint/pprint nested-statement))\n\n;; (condp = x\n;;   1 \"one\"\n;;   2 \"two\"\n;;   3 \"three\"\n;;   4 \"four\"\n;;   5 \"five\"\n;;   6 \"six\"\n;;   :else (condp = x\n;;           1 \"one\"\n;;           2 \"two\"\n;;           3 \"three\"\n;;           4 \"four\"\n;;           5 \"five\"\n;;           6 \"six\"\n;;           :else :none))"],
   :notes nil,
   :arglists [],
   :doc
@@ -16806,7 +16807,8 @@
   :see-alsos nil,
   :dynamic true,
   :line 80,
-  :examples nil,
+  :examples
+  ["(binding [pprint/*print-base* 16\n          pprint/*print-radix* true]\n  (pprint/pprint 3405691582))\n;; #xcafebabe\n"],
   :notes nil,
   :arglists [],
   :doc
