@@ -542,7 +542,7 @@
   :see-alsos [:clojure.core/transduce],
   :line 6858,
   :examples
-  [";; Fix apparently inconsistent behaviour of - with transduce:\n(transduce (map inc) - 0 (range 10))\n;; 55\n(transduce (map inc) (completing -) 0 (range 10))\n;; -55"
+  [";; Fix apparently inconsistent behaviour of \"-\" (minus) with transduce:\n(transduce (map inc) - 0 (range 10))\n;; 55\n(transduce (map inc) (completing -) 0 (range 10))\n;; -55"
    ";; the reducing fn arity-1 executes the last transformation in transduce.\n;; completing defaults to \"identity\" but you can change it.\n;; Use this fact for example with transients and go back to persistent once done.\n(require '[clojure.string :refer [lower-case]])\n(transduce\n (comp\n  (remove nil?)\n  (map lower-case))\n (completing #(assoc! %1 %2 (inc (get %1 %2 0))) persistent!)\n (transient {})\n [\"hi\" \"ho\" \"Hello\" \"hoi\" \"Hi\" \"Ha\" \"ha\" \"hello\"])\n;; {\"hi\" 2, \"ho\" 1, \"hello\" 2, \"hoi\" 1, \"ha\" 2}"],
   :notes nil,
   :arglists ["f" "f cf"],
@@ -20660,7 +20660,8 @@
   :name "*print-readably*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; Showing how *print-readably* is used internally to escape/unescape control\n;; characters:\n\n(binding [*print-readably* false]\n  (pr \"a\\nb\\nc\"))\n;; a\n;; b\n;; cnil\n\n;; Only use to change behaviour of code you don't control.\n;; Otherwise, it's equivalent to `print`:\n(print \"a\\nb\\nc\")\n;; a\n;; b\n;; cnil\n"],
   :notes nil,
   :arglists [],
   :doc
