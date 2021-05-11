@@ -7092,7 +7092,7 @@
   :line 1518,
   :examples
   ["user=> (disj #{1 2 3}) ; disjoin nothing \n#{1 2 3} \n\nuser=> (disj #{1 2 3} 2) ; disjoin 2\n#{1 3} \n\nuser=> (disj #{1 2 3} 4) ; disjoin non-existent item\n#{1 2 3} \n\nuser=> (disj #{1 2 3} 1 3) ; disjoin several items at once\n#{2}"
-   "user=> (apply (partial disj #{1 2 3}) [1 3]) ; disjoin keys in a coll\n#{2}"],
+   "user=> (apply disj #{1 2 3} [1 3]) ; disjoin keys in a coll\n#{2}"],
   :notes nil,
   :arglists ["set" "set key" "set key & ks"],
   :doc
