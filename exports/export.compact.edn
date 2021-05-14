@@ -1562,7 +1562,8 @@
   [";; Count lines of a file (loses head):\nuser=> (with-open [rdr (clojure.java.io/reader \"/etc/passwd\")]\n         (count (line-seq rdr)))\n\n"
    "(import '(java.io BufferedReader StringReader))\n\n;; line terminators are stripped\nuser=> (line-seq (BufferedReader. (StringReader. \"1\\n2\\n\\n3\")))\n(\"1\" \"2\" \"\" \"3\")\n\n;; empty string gives nil\nuser=> (line-seq (BufferedReader. (StringReader. \"\")))\nnil\n"
    ";; read from standard input\nuser=> (nth (line-seq (java.io.BufferedReader. *in*)) 2)\n  #_=> 0\n  #_=> 1\n  #_=> 2\n\"2\"\n"],
-  :notes nil,
+  :notes
+  ["Documentation says that `line-seq` returns a lazy sequence, however <br>\nthe actual return value is a `Cons` cell of the first line to a `LazySeq` of <br>\nthe second line. Calling `realized?` on the `Cons` cell will fail with an exception.\n\n`(cons (.readLine rdr) (lazy-seq (line-seq rdr)))`<br>\n\nExample:<br>\n`(def rdr (BufferedReader. (StringReader. \" 1\\n 2\\n 3\")))`<br>\n`(def x (line-seq rdr))`<br>\n`(class x)`<br>\n`=> clojure.lang.Cons`\n\n`(realized? x)`<br>\n`=> Execution error (ClassCastException) class clojure.lang.Cons cannot be cast to class clojure.lang.IPending`\n\nThe first line was eagerly realized by the initial call to the `line-seq`.<br>\n`(.readLine rdr)`<br>\n`=> \" 2\"`"],
   :arglists ["rdr"],
   :doc
   "Returns the lines of text from rdr as a lazy sequence of strings.\n  rdr must implement java.io.BufferedReader.",
