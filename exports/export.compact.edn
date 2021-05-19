@@ -7397,7 +7397,8 @@
   ["user=> (rename-keys {:a 1, :b 2} {:a :new-a, :b :new-b})\n{:new-a 1, :new-b 2}\n\n\n;; The behavior when the second map contains a key not in the first is interesting.\n;; I suspect you shouldn't depend on it. (Clojure 1.1 - no longer happens in 1.2.1)\n\nuser=> (rename-keys {:a 1} {:b :new-b})\n{ :a 1, :new-b nil}\n"
    ";; You need to be careful about key collisions.  You probably shouldn't \n;; depend on the exact behavior.\nuser=> (rename-keys {:a 1 :b 2} {:a :b})\n{:b 1}\n"
    ";; Key collisions no longer reproducible in Clojure 1.10.0\nuser=> (rename-keys {:a 1 :b 2}  {:a :b :b :a})\n{:b 1, :a 2}"
-   ";; Note that rename-keys in the clojure.set namespace. In order to use it, you\n;; must require the namespace\n\nuser=> (require '[clojure.set :as set])\nuser=> (set/rename-keys {:a 1 :b 2} {:a :new-a})\n=> {:new-a 1 :b 2}\n\n;; Alternatively, you can use rename-keys by simply doing clojure.set/rename-keys"],
+   ";; Note that rename-keys in the clojure.set namespace. In order to use it, you\n;; must require the namespace\n\nuser=> (require '[clojure.set :as set])\nuser=> (set/rename-keys {:a 1 :b 2} {:a :new-a})\n=> {:new-a 1 :b 2}\n\n;; Alternatively, you can use rename-keys by simply doing clojure.set/rename-keys"
+   "doesn't works on nested (as one might expect)\nuser=> \n(rename-keys\n {:user {:name \"john\"}}\n {:user {:name :nickname}}) =>  {{:name :nickname} {:name \"john\"}}"],
   :notes nil,
   :arglists ["map kmap"],
   :doc
@@ -22841,7 +22842,8 @@
   :examples
   ["(letfn [(twice [x]\n           (* x 2))\n        (six-times [y]\n           (* (twice y) 3))]\n  (println \"Twice 15 =\" (twice 15))\n  (println \"Six times 15 =\" (six-times 15)))\n;; Twice 15 = 30\n;; Six times 15 = 90\n;;=> nil\n\n;; Unable to resolve symbol: twice in this context\n(twice 4)\n;; Evaluation aborted.\n\n;; Unable to resolve symbol: six-times in this context\n(six-times 100)\n;; Evaluation aborted.\n"
    ";; A contrived example of mutual recursion\n(defn even2? [n]\n  (letfn [(neven? [n] (if (zero? n) true (nodd? (dec n))))\n          (nodd? [n] (if (zero? n) false (neven? (dec n))))]\n    (neven? n)))\n"
-   ";;using to create comparator\n\n(defn compartr [s1 s2]\n  (letfn [ (inner-author [author] ((juxt :lname :fname) author))] \n    (compare (inner-author s1) (inner-author s2))))\n=> #'user/compartr\n\n(sorted-set-by compartr\n               {:fname \"Steve\" :lname \"Smith\"}\n               {:fname \"David\" :lname \"Smith\"})\n\n=> #{{:fname \"David\", :lname \"Smith\"} {:fname \"Steve\", :lname \"Smith\"}}"],
+   ";;using to create comparator\n\n(defn compartr [s1 s2]\n  (letfn [ (inner-author [author] ((juxt :lname :fname) author))] \n    (compare (inner-author s1) (inner-author s2))))\n=> #'user/compartr\n\n(sorted-set-by compartr\n               {:fname \"Steve\" :lname \"Smith\"}\n               {:fname \"David\" :lname \"Smith\"})\n\n=> #{{:fname \"David\", :lname \"Smith\"} {:fname \"Steve\", :lname \"Smith\"}}"
+   ";; letfn can be replaced with let for recursive functions\n;; which are not mutually recursive.\n\n(letfn [(mul-2 [n]\n          (if (zero? n)\n            0\n            (+ 2 (mul-2 (dec n)))))]\n  (mul-2 5))\n=> 10\n\n(let [mul-2 (fn mul-2 [n]\n              (if (zero? n)\n                0\n                (+ 2 (mul-2 (dec n)))))]\n  (mul-2 5))\n=> 10"],
   :macro true,
   :notes
   ["Using `letfn` allows you to create local functions that reference each other whereas `(let myfunc #(...)]...)` wouldn't because it executes its bindings serially."
