@@ -6112,7 +6112,8 @@
   :column 1,
   :see-alsos nil,
   :line 215,
-  :examples nil,
+  :examples
+  ["Clojure 1.10.3\nuser=> (def coll (range 10))\n#'user/coll\nuser=> coll\n(0 1 2 3 4 5 6 7 8 9)\nuser=> (drop 4 coll)\n(4 5 6 7 8 9)"],
   :notes nil,
   :arglists ["n" "n coll"],
   :doc "Elides the first n values from the reduction of coll.",
