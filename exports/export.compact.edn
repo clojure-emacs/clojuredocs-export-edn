@@ -13991,7 +13991,8 @@
    ";; From string to boolean\n\n(def answer {:answer \"France\" :correct \"true\"  :age 11})\n(update answer :correct #(if (= % \"true\") true false))\n\n;; {:answer \"France\", :correct true, :age 11}"
    ";; Applying a function to the same key in a sequence of arrays\n\n(def dates [{:date \"20200430\",:time \"08:35\"}\n            {:date \"20200430\",:time \"09:15\"}]\n\n;; Takes the current time value in the array, and reduces it to the hour by \n;; calling the reduce-to-hour function (not included here)\n\n(map #(update % :time (constantly (reduce-to-hour (:time %)))) dates)\n=> ({:date \"20200430\", :time \"08\"} {:date \"20200430\", :time \"09\"})"
    ";; Very common, update a vector inside a map\n(def little-schemer {:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n                               {:name \"Matthias Felleisen\"}]\n                     :title \"The Little Schemer\"})\n\n(update little-schemer :authors conj {:name \"Gerald J. Sussman\"})\n;;=> \n{:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n           {:name \"Matthias Felleisen\"}\n           {:name \"Gerald J. Sussman\"}]\n :title \"The Little Schemer\"}"
-   ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}\n\n;; Which is equivalent to using \"assoc\"\n(assoc hm :banana 6)\n;;=> {:banana 6 :apple 2 :orange 3}"],
+   ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}\n\n;; Which is equivalent to using \"assoc\"\n(assoc hm :banana 6)\n;;=> {:banana 6 :apple 2 :orange 3}"
+   ";; A quirk in use with vectors (tested with 1.10.3)\n;; If you throw away the argument to the function, you can add a value to\n;; the end of the vector: \n\n;; Normal, expected behavior:\n(update [1 2 3] 2 (fn [_] 42))\n;;=> [1 2 42]\n\n;; If the index is just past the end, you can append to the vector:\n(update [1 2 3] 3 (fn [_] 42))\n;;=> [1 2 3 42]\n\n;; More than one past end won't work\n(update [1 2 3] 4 (fn [_] 42))\n;;=> Execution error (IndexOutOfBoundsException) at user/eval2049 (form-init3979469036338260438.clj:1).\n\n;; If you don't throw away the argument, and your index is one past\n;; the end of the vector, you'll still get an error:\n\n;; Normal, expected behavior:\n(update [1 2 3] 2 inc)\n;;=> [1 2 4]\n\n;; Here the trick fails:\n(update [1 2 3] 3 inc)\n;;=> Execution error (NullPointerException) at user/eval1985 (form-init8618353961027343980.clj:1)."],
   :notes
   ["But how do you do a pure update idiomatically? So update one value for another?"],
   :arglists
@@ -25061,11 +25062,13 @@
   :ns "clojure.core",
   :name "*print-meta*",
   :type "var",
-  :see-alsos [:clojure.core/pr],
+  :see-alsos [:clojure.core/pr :clojure.pprint/pprint],
   :examples
-  ["user=> (binding [*print-meta* true] \n         (pr (var defmacro)) )\n;;^{:macro true, :ns #<Namespace clojure.core>, :name defmacro, :arglists ^{:line 424, :column 15} ([name doc-string? attr-map? [params*] body] [name doc-string? attr-map? ^{:line 425, :column 46} ([params*] body) + attr-map?]), :column 1, :added \"1.0\", :doc \"Like defn, but the resulting function name is declared as a\\n  macro and will be used as a macro by the compiler when it is\\n  called.\", :line 419, :file \"clojure/core.clj\"} #'clojure.core/defmacro\nnil\n"],
+  ["user=> (binding [*print-meta* true] \n         (pr (var defmacro)) )\n;;^{:macro true, :ns #<Namespace clojure.core>, :name defmacro, :arglists ^{:line 424, :column 15} ([name doc-string? attr-map? [params*] body] [name doc-string? attr-map? ^{:line 425, :column 46} ([params*] body) + attr-map?]), :column 1, :added \"1.0\", :doc \"Like defn, but the resulting function name is declared as a\\n  macro and will be used as a macro by the compiler when it is\\n  called.\", :line 419, :file \"clojure/core.clj\"} #'clojure.core/defmacro\nnil\n"
+   "user=> (binding [*print-meta* true]\n         (-> \"{:a ^{:b :c} {}}\"\n            clojure.edn/read-string\n            clojure.pprint/pprint))\n{:a ^{:b :c} {}}\nnil"],
   :notes
-  ["\"printing an object\" means via **pr** not print or println"],
+  ["\"printing an object\" means via **pr** not print or println"
+   "The `*print-meta*` works for `print` and `pprint` after Clojure 1.10.2. Source: https://clojure.atlassian.net/browse/CLJ-1445"],
   :arglists [],
   :doc
   "If set to logical true, when printing an object, its metadata will also\n  be printed in a form that can be read back by the reader.\n\n  Defaults to false.",
