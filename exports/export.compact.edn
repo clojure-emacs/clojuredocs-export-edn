@@ -9348,7 +9348,8 @@
   :line 102,
   :examples
   ["(use 'clojure.walk)\n\n(stringify-keys {:a 1 :b 2})\n;=> {\"a\" 1, \"b\" 2}"
-   "(use 'clojure.walk)\n\n(stringify-keys {:a 1 :b {:c {:d 2}}})\n;=> {\"a\" 1, \"b\" {\"c\" {\"d\" 2}}}"],
+   "(use 'clojure.walk)\n\n(stringify-keys {:a 1 :b {:c {:d 2}}})\n;=> {\"a\" 1, \"b\" {\"c\" {\"d\" 2}}}"
+   "(use 'clojure.walk)\n\n(stringify-keys {:hello/world 1})\n;=> {\"world\" 1}"],
   :notes
   ["Recursively transforms all map keys and values from strings to keywords.\n\n<pre>\n(use 'clojure.walk)\n(defn stringify-keys-and-vals\n  \"Recursively transforms all map keys and values from keywords to strings.\"\n  [m]\n  (let [kf (fn [[k v]] (if (keyword? k) [(name k) v] [k v]))\n        vf (fn [[k v]] (if (keyword? v) [k (name v)] [k v]))]\n    ;; only apply to maps\n    (postwalk (fn [x] (if (map? x) (into {} (map #(-> % kf vf) x)) x)) m))) \n</pre>\n\nExample:\n\n<pre>\n(stringify-keys-and-vals {:a :hello :b :world})\n;=> {\"a\" \"hello\", \"b\" \"world\"}\n(stringify-keys-and-vals {:a {:hello :world} :b [{:love :clojure} {:hate :other}]})\n;=> {\"a\" {\"hello\" \"world\"}, \"b\" [{\"love\" \"clojure\"} {\"hate\" \"other\"}]}\n</pre>\n\n"],
   :arglists ["m"],
