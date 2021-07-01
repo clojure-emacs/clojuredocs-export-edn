@@ -6738,7 +6738,8 @@
   [";; create an array of bytes\n;; and demonstrate that you can use it in the standard Java fill function\n;; note the needed byte coercion in the fill function call\n\nuser=> (def bees (byte-array 10))\n#'user/bees\n\nuser=> (for [i (range 10)](aset-byte bees i (* i i)))\n(0 1 4 9 16 25 36 49 64 81)\n\nuser=> (vec bees)\n[0 1 4 9 16 25 36 49 64 81]\n\nuser=> (java.util.Arrays/fill bees (byte 122))\nnil\nuser=> (vec bees)\n[122 122 122 122 122 122 122 122 122 122]\nuser=>"
    ";; copied from the example in clojure.core/byte\nuser=> (def x (byte-array [(byte 0x43) \n                           (byte 0x6c)\n                           (byte 0x6f)\n                           (byte 0x6a)\n                           (byte 0x75)\n                           (byte 0x72)\n                           (byte 0x65)\n                           (byte 0x21)]))\n#'user/x\n\nuser=> (String. x)\n\"Clojure!\""
    ";; NOTE: equality uses identity, not value semantics.\nuser=> (= (byte-array 10) (byte-array 10))\nfalse\nuser=> (java.util.Arrays/equals (byte-array 10) (byte-array 10))\ntrue\n\nuser=> (def a (byte-array [(byte 0x43)]))\n#'user/a\nuser=> (def b (byte-array [(byte 0x43)]))\n#'user/b\nuser=> (= a b)\nfalse\nuser=> (java.util.Arrays/equals a b)\ntrue"],
-  :notes nil,
+  :notes
+  ["The maximum size of a byte-array is Integer/MAX_VALUE, as arrays are int-indexed in Java. However, it is possible to pass a value that is larger than this, resulting in a cast that will wrap around. This incorrect usage will not give any indication of error."],
   :arglists ["size-or-seq" "size init-val-or-seq"],
   :doc "Creates an array of bytes",
   :library-url "https://github.com/clojure/clojure",
