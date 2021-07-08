@@ -7226,7 +7226,7 @@
   :file "clojure/core/async.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core.async/chan],
   :line 90,
   :examples nil,
   :notes nil,
