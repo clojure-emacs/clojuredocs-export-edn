@@ -21534,7 +21534,7 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/aget],
   :line 3961,
   :examples
   [";; create an array of 10 floats and set one of the values to 3.1415\n\nuser=> (def fs (float-array 10))\n#'user/fs\nuser=> (vec fs)\n[0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0]\nuser=> (aset-float fs 3 3.1415)\n3.1415\nuser=> (vec fs)\n[0.0 0.0 0.0 3.1415 0.0 0.0 0.0 0.0 0.0 0.0]\nuser=>"],
