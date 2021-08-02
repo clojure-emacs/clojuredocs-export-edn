@@ -24906,10 +24906,11 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/instance?],
   :line 7845,
   :examples
-  ["(uri? (new java.net.URI \"http://clojuredocs.org/\"))\n;;=> true\n\n(uri? (new java.net.URL \"http://clojuredocs.org/\"))\n;;=> false\n(uri? \"http://clojuredocs.org/\")\n;;=> false\n"],
+  ["(uri? (new java.net.URI \"http://clojuredocs.org/\"))\n;;=> true\n\n(uri? (new java.net.URL \"http://clojuredocs.org/\"))\n;;=> false\n(uri? \"http://clojuredocs.org/\")\n;;=> false\n"
+   ";; When fetching URI db.type\n\n;;(uri? #object[com.cognitect.transit.impl.URIImpl 0x3ec31528 \"https://www.datomic.com/details.html\")\n(uri? (com.cognitect.transit.impl.URIImpl. \"https://www.datomic.com/details.html\"))\n;;=> false\n\n(instance? com.cognitect.transit.impl.URIImpl \n          (com.cognitect.transit.impl.URIImpl. \"https://www.datomic.com/details.html\")) \n;;=> true\n"],
   :notes nil,
   :arglists ["x"],
   :doc "Return true if x is a java.net.URI",
