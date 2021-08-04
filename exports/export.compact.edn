@@ -11370,7 +11370,7 @@
    ";; Use apply to map a function over a collection of pairs of arguments\n\n(map (partial apply +) [[1 2] [3 4]]) ; => (3 7)\n\n;; this is equivalent to '((+ 1 2) (+ 3 4))"
    "; Remove elements from a set with disj\n\n(disj #{1 2 3} 2 3) \n=> #{1}\n\n; Relative complement of two sets (difference)\n\n(apply disj #{2 3 4} #{1 2 3})\n=> #{4}\n\n; the above is same as calling\n(disj #{2 3 4} 1 2 3)"
    ";;practical example\n\n(def entries [{:month 1 :val 12}\n              {:month 2 :val 3}\n              {:month 3 :val 32}\n              {:month 4 :val 18}\n              {:month 5 :val 32}\n              {:month 6 :val 62}\n              {:month 7 :val 12}\n              {:month 8 :val 142}\n              {:month 9 :val 52}\n              {:month 10 :val 18}\n              {:month 11 :val 23}\n              {:month 12 :val 56}])\n\n(apply max (map\n            #(:val %)\n            entries))\n;;return 142\n;;this translates into (max 12 3 32 18 32 62 12 142 52 18 23 56)"
-   "(apply + [2 3 4])\n;;9\n\n(apply + 1 [2 3 4])\n;;10\n\n(apply max [1 3 2])\n;;3\n\n(apply max 4 [1 3 2])\n;;4\n\n(apply str [\"a\" \"b\" \"c\"])\n;;\"abc\"\n\n(apply str \"d\" [\"a\" \"b\" \"c\"])\n;;\"dabc\""
+   "(apply + [2 3 4])\n;;9\n\n(apply + 1 [2 3 4])\n;;10\n\n(apply max [1 3 2])\n;;3\n\n(apply max 4 [1 3 2])\n;;4\n\n(apply str [\"a\" \"b\" \"c\"])\n;;\"abc\"\n\n(apply str \"d\" [\"a\" \"b\" \"c\"])\n;;\"dabc\"\n\n(str \"Hi, here: \" (apply str (for [i (range 5)] i)) \" Cheers!\")\n;; \"Hi, here: 01234 Cheers!\""
    "(reduce #(apply assoc %1 %2) {} [[:a 1] [:b 2]])\n\n;;{:a 1, :b 2}"
    "(defn chunks\n  \"Lazily break up map of colls into maps of chunks of n records (default 100 000).\n  Truncates at shortest coll (chunk-wise).\"\n  ([m] (chunks 100000 m))\n  ([n m] (apply map merge (repeatedly sorted-map)\n           (for [[k v] m]\n             (for [part (partition-all n v)]\n               {k part})))))\n\n(chunks 2 {:b [1 2 3] :a [1 2 3 4] :c [1 2 3 4 5]})\n=> ({:a (1 2), :b (1 2), :c (1 2)}\n    {:a (3 4), :b (3), :c (3 4)})\n\n(defn non-truncating-chunks\n  ([m] (chunks 100000 m))\n  ([n m] (let [partitioned-lists\n               ;; '(({k0 part0} {k0 part1} ... nil nil ...)\n               ;;   ({k1 part0} {k1 part1} ... nil nil ...)\n               ;;   ...)\n               (for [[k v] m]\n                 ;; '({k part0} {k part1} ... nil nil ... )\n                 (concat ; append nils to prevent map truncating at shortest\n                   (for [part (partition-all n v)]\n                     {k part})\n                   (repeat nil)))]\n           ;; '(({k0 part0} {k1 part0} ...)\n           ;;   ({k0 part1} {k1 part1} ...)\n           ;;   ...)\n           (for [ls (apply map list partitioned-lists)\n                 :while (not-every? nil? ls)]\n             (apply merge (sorted-map) ls)))))\n\n(non-truncating-chunks 2 {:b [1 2 3] :a [1 2 3 4] :c [1 2 3 4 5]})\n=> ({:a (1 2), :b (1 2), :c (1 2)}\n    {:a (3 4), :b (3), :c (3 4)}\n    {:c (5)})"
    ";; Based in the example from the great book CLOJURE for the BRAVE and TRUE\n;; https://www.braveclojure.com/core-functions-in-depth/\n\n(def countries [:peru :mexico])\n\n(defn add-first\n   [target addition]\n   (apply conj [addition] target))\n\n(add-first countries :brazil)\n\n;; [:brazil :peru :mexico]"
@@ -20810,7 +20810,8 @@
   :see-alsos
   [:clojure.core/split-at
    :clojure.core/split-with
-   :clojure.core/interpose],
+   :clojure.core/interpose
+   :clojure.core/apply],
   :line 180,
   :examples
   ["user=> (clojure.string/join \", \" [1 2 3])\n\"1, 2, 3\""
