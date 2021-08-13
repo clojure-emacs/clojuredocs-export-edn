@@ -5430,7 +5430,7 @@
   :examples
   [";; 2 is even, so `some` stops there, 3 and 4 are never tested\n(some even? '(1 2 3 4))\n;;=> true\n\n;; they are all odd, so not true, i.e. nil\n(some even? '(1 3 5 7))\n;;=> nil"
    "(some true? [false false false])\n;;=> nil\n\n(some true? [false true false])\n;;=> true\n\n(some true? [true true true])\n;;=> true\n"
-   "(some #(= 5 %) [1 2 3 4 5])\n;;=> true\n\n(some #(= 5 %) [6 7 8 9 10])\n;;=> nil"
+   "(some #(= 5 %) [1 2 3 4 5])\n;;=> true\n\n(some #(= 5 %) [6 7 8 9 10])\n;;=> nil\n\n(some #(not= 5 %) [1 2 3 4 5])\n;;=> true\n\n(some #(not= 5 %) [6 7 8 9 10])\n;;=> true"
    ";; the first logical true value is returned, i.e. anything but nil and false\n;; when return nil if its predicate is logical false.\n(some #(when (even? %) %) '(1 2 3 4))\n;;=> 2"
    ";; a hash acts as a function returning nil when the\n;; key is not present and the key value otherwise.\n(some {2 \"two\" 3 \"three\"} [nil 3 2])\n;;=> \"three\"\n\n;; there is nothing special about the 'nil' in the collection,\n;; it is still being used as a key to find its corresponding value in the hash.\n(some {nil \"nothing\" 2 \"two\" 3 \"three\"} [nil 3 2])\n;;=> \"nothing\"\n\n;; the hash (as function) returns a nil for the key of '3',\n;; therefore 'some' keeps inspecting the collection,\n;; returning the next logical true value.\n(some {2 \"two\" 3 nil} [nil 3 2])\n;;=> \"two\""
    ";; some can be used as a substitute for (first (filter ...\n;; in most cases.\n\n(first (filter even? [1 2 3 4]))\n;;=> 2\n\n;; 'some' returns exactly one item (nil if nothing is found)\n(some #(if (even? %) %) [1 2 3 4])\n;;=> 2\n"
