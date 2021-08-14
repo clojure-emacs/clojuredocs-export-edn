@@ -19362,7 +19362,7 @@
   :file "clojure/spec/alpha.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.spec.alpha/explain-data],
   :line 260,
   :examples
   ["(require '[clojure.spec.alpha :as s])\n\n(s/def ::oop-languages #{\"java\" \"python\" \"ruby\" \"c++\" \"smalltalk\" \"simula\"})\n\n(s/explain ::oop-languages \"clojure\")\n;; val: \"clojure\" fails spec: :user/oop-languages predicate:\n;; #{\"simula\" \"java\" \"c++\" \"smalltalk\" \"ruby\" \"python\"}\n;; => nil\n\n(s/explain ::oop-languages \"python\")]\n;; Success!\n;; => nil\n\n;; read more at https://clojure.org/guides/spec#_explain"],
