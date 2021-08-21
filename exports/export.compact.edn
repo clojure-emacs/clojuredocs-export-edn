@@ -17037,7 +17037,7 @@
    ";; When applied to a record and one of its base fields, \n;; dissoc produces a plain map instead of a record\n\n(defrecord Widget [id])\n(def w (->Widget \"id\"))\n\n(class w)\n;; user.Widget\n\n(class (dissoc w :id))\n;; clojure.lang.PersistentArrayMap"
    ";; Removing multiple from nested map\n(update-in {:a {:b {:x 3 :y 5} :c 1}} [:a :b] \n       (fn [nested] (apply dissoc nested [:x :y] )) )\n=> {:a {:b {}, :c 1}} "
    ";; dissoc keys in a coll\nuser=> (apply (partial dissoc {:a 1 :b 2 :c 3}) #{:b :c})\n{:a 1}"],
-  :notes nil,
+  :notes ["`(update {} :a dissoc :b) => {:a nil}`"],
   :arglists ["map" "map key" "map key & ks"],
   :doc
   "dissoc[iate]. Returns a new map of the same (hashed/sorted) type,\n  that does not contain a mapping for key(s).",
