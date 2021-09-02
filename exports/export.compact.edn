@@ -19150,7 +19150,8 @@
   :see-alsos [:clojure.core/add-tap :clojure.core/remove-tap],
   :line 7886,
   :examples
-  [";; For a bit more documentation, see Clojure 1.10.0 release notes regarding\n;; tap> here:\n\n;; https://github.com/clojure/clojure/blob/master/changes.md#23-tap"],
+  [";; For a bit more documentation, see Clojure 1.10.0 release notes regarding\n;; tap> here:\n\n;; https://github.com/clojure/clojure/blob/master/changes.md#23-tap"
+   ";; Register a tap handler\n\n(add-tap (bound-fn* clojure.pprint/pprint))\n\n;; Log using the above handler\n\n(tap> \"Hellow world\")"],
   :notes nil,
   :arglists ["x"],
   :doc
@@ -24574,7 +24575,8 @@
    ";; For large threads you can use commas (interpreted as whitespaces) \n;; to visualize where the items are going to be inserted.\n\n;; Takes the first 5 even numbers\nuser=> (->> (range)\n            (filter even?)\n            (take 5))\n=> (0 2 4 6 8)\n\n;; with two commas (you can use one if you prefer)\nuser=> (->> (range)\n            (filter even? ,,)\n            (take 5 ,,))\n=> (0 2 4 6 8)\n\n;; For instance:\n;; (filter even? ,,)\n;; means\n;; (filter even? (range))"
    ";;practical example\n\n(def entries [{:month 1 :val 12}\n              {:month 2 :val 3}\n              {:month 3 :val 32}\n              {:month 4 :val 18}\n              {:month 5 :val 32}\n              {:month 6 :val 62}\n              {:month 7 :val 12}\n              {:month 8 :val 142}\n              {:month 9 :val 52}\n              {:month 10 :val 18}\n              {:month 11 :val 23}\n              {:month 12 :val 56}])\n(defn get-result\n  [coll m]\n  (->> coll\n       (take-while\n        #(<= (:month %) m))))\n\n(defn get-total\n  [coll m]\n  (->>\n   (get-result coll m)\n   (map #(:val %))\n   (reduce +)))\n\n(get-total entries 3)\n"
    "(defn new-map\n  [coll]\n  (->>\n   coll\n   (map\n    (fn [[k v]]\n      [k (inc v)]))\n   (into {})))\n\n(new-map {:a 1 :b 2 :c 3})\n"
-   "(defn f [front a1 a2 end] (str front \"-\" a1 \"-\" a2  \"-\" end))\n(println (f 1 2 3 4))\n;; => 1-2-3-4\n(println (-> 1 (f 2 3 4)))\n;; => 1-2-3-4\n(println (->> 1 (f 2 3 4)))\n;; => 2-3-4-1"],
+   "(defn f [front a1 a2 end] (str front \"-\" a1 \"-\" a2  \"-\" end))\n(println (f 1 2 3 4))\n;; => 1-2-3-4\n(println (-> 1 (f 2 3 4)))\n;; => 1-2-3-4\n(println (->> 1 (f 2 3 4)))\n;; => 2-3-4-1"
+   "(->> (str \"A\") (str \"B\") (str   \"C\"))\n;; => \"CBA\"\n(-> (str \"A\") (str \"B\") (str   \"C\"))\n;; => \"ABC\"\n"],
   :macro true,
   :notes
   ["I'm getting: `Exception in thread \"main\" java.lang.Exception: Unable to resolve symbol: -&gt;&gt; in this context (11.clj:25)`\r\n\r\nIt's also extremely hard to Google this method. It'd be nice if there was a non-symbol name for this that one could search for.\r\n\r\n**Update**\r\n\r\nThe name of this operator is called a thrush."
