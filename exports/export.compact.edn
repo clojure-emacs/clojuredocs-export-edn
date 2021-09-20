@@ -7231,8 +7231,10 @@
   :column 1,
   :see-alsos [:clojure.core.async/chan],
   :line 90,
-  :examples nil,
-  :notes nil,
+  :examples
+  [";; You can use promise-chan to program in an async style very similar\n;; to promise programming\n\n(defn inc-async\n  \"Increment num asynchronously, will pretend like it can take\n   between 0 and 2 seconds to do so for demo purpose, as if this\n   was a remote call. Returns a promise-chan which will have the\n   result delivered to it when completed.\"\n  [num]\n  (let [ret (promise-chan)]\n    (go\n      (<! (timeout (rand-int 2000))) ;; Randomly sleep up to 2 seconds\n      (put! ret (inc num)))\n    ret))\n\n;; Block until promise value is delivered and return it\n\n(<!! (inc-async 10))\n;> 11\n\n;; Similar to `promise` and `future`, after a value has been delivered to the\n;; promise-chan, taking from it will continue to return that value immediately\n;; over and over\n\n(def inc-promise (inc-async 10))\n\n(<!! inc-promise)\n;> 11\n(<!! inc-promise)\n;> 11\n(<!! inc-promise)\n;> 11\n\n;; That means unlike other channels, only one value can be put into a promise-chan, and \n;; taking from it afterwards will always return that value which is cached by the \n;; promise-chan, similar to what a promise or a future would.\n\n;; This makes using `promise-chan` very similar to async/await style of programming.\n;; You can create an async function by having a function return a promise-chan\n;; where it will `put!` (deliver) the value to it asynchronously as I showed with\n;; inc-async.\n\n;; You can then use `go` blocks like you'd mark `async` functions, and inside them\n;; use `<!` to await the result of a promise-chan to perform an async action when\n;; the value is delivered:\n\n(go ; Think of this as marking something as async\n  (let [res (<! (inc-async 100))] ; think of this as awaiting the result\n    (println res)))\n\n;; You can also chain things using `<!` inside `go` similar to how you'd use await\n\n(go\n  (let [a (<! (inc-async 1))\n        b (<! (inc-async a))\n        c (<! (inc-async b))]\n    (println [a b c])))\n\n;; To await all, use a/map:\n\n(go\n  (let [a (inc-async 1)\n        b (inc-async 10)\n        c (inc-async 100)]\n    (a/map (comp nil? println) [a b c])))\n\n;; One small annoyance is the function passed to a/map can't return nil, or it will \n;; error, since it will try to put nil into the channel returned by a/map which is not \n;; allowed. That's why I combine it with nil? so it returns true instead.\n\n;; To await any use alts!\n\n(go\n  (let [a (inc-async 1)\n        b (inc-async 10)\n        c (inc-async 100)]\n    (println (first (alts! [a b c])))))\n\n;; One small annoyance is alts! returns a vector of [result result-chan] so you need to \n;; call first on it.\n\n;; One can off course use all those with the `!!` and `thread` equivalents, if in Clojure,\n;; in which case you don't need to be inside a `go` block."],
+  :notes
+  ["You can't put nil inside a promise-chan, just like with other channels, but since a promise-chan will only ever contain a single value, you can close! it if you want the consumer to get nil back when taking on it.\n\n```\n(let [ret (promise-chan)\n      res (something-that-may-return-nil ...)]\n  (if (nil? res)\n    (close! ret)\n    (put! ret res))\n  ret)\n```"],
   :arglists ["" "xform" "xform ex-handler"],
   :doc
   "Creates a promise channel with an optional transducer, and an optional\n  exception-handler. A promise channel can take exactly one value that consumers\n  will receive. Once full, puts complete but val is dropped (no transfer).\n  Consumers will block until either a value is placed in the channel or the\n  channel is closed. See chan for the semantics of xform and ex-handler.",
@@ -22977,7 +22979,8 @@
   :see-alsos
   [:clojure.core.async/buffer
    :clojure.core.async/dropping-buffer
-   :clojure.core.async/sliding-buffer],
+   :clojure.core.async/sliding-buffer
+   :clojure.core.async/promise-chan],
   :line 73,
   :examples
   ["user=> (def c (chan))\n#'user/c\nuser=> (def c (chan 1))\n#'user/c\nuser=> (def c (chan (buffer 2)))\n#'user/c\n;; Clojure 1.7\nuser=> (def c (chan 1 (filter string?)))\n#'user/c\n\n"
