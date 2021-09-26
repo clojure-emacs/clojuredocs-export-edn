@@ -10364,7 +10364,8 @@
   :column 1,
   :see-alsos nil,
   :line 357,
-  :examples nil,
+  :examples
+  ["(cl/run* [x]\n  (fd/in x (fd/interval 1 3)))\n;; => (1 2 3)"],
   :notes nil,
   :arglists ["ub" "lb ub"],
   :doc
@@ -16605,7 +16606,8 @@
   :column 1,
   :see-alsos nil,
   :line 646,
-  :examples nil,
+  :examples
+  ["(logic/run* [x y]\n  (fd/in x y (fd/interval 0 10))\n  (fd/+ x y 10))\n;; => ([0 5] [1 4] [2 3] [3 2] [4 1] [5 0])"],
   :macro true,
   :notes nil,
   :arglists ["& xs-and-dom"],
@@ -21165,7 +21167,8 @@
   :column 1,
   :see-alsos nil,
   :line 1156,
-  :examples nil,
+  :examples
+  [";; from https://github.com/clojure/core.logic/wiki/Features#clpfd\n\n;; fd/eq is a macro that allows you to write arithmetic expressions \n;; in normal Lisp syntax which will be expanded into the appropriate\n;; series of CLP(FD) operators. It will create the transient intermediate\n;; vars for you and domain inference will be applied.\n\n(logic/run* [q]\n  (logic/fresh [x y]\n    (fd/in x y (fd/interval 0 9))\n    (fd/eq\n      (= (+ x y) 9)\n      (= (+ (* x 2) (* y 4)) 24))\n    (== q [x y]))) ; => ([6 3])"],
   :macro true,
   :notes nil,
   :arglists ["& forms"],
