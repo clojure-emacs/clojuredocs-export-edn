@@ -12115,7 +12115,8 @@
   :notes
   ["As of 1.9.0, postwalk passes the k/v pairs of a map to `f` not, as one might expect, as type `clojure.lang.MapEntry` but as `clojure.lang.PersistentVector` ([JIRA](https://dev.clojure.org/jira/browse/CLJ-2031)). As a result, `f` cannot distinguish k/v pairs from other two-element vectors."
    "Alex Miller's article [\"Tree visitors in Clojure\"](https://www.ibm.com/developerworks/library/j-treevisit/index.html) might be helpful in understanding general tree traversal and the usage of `clojure.walk/postwalk`.\n"
-   "> As of 1.9.0, postwalk passes the k/v pairs of a map to f not, as one might expect, as type clojure.lang.MapEntry but as clojure.lang.PersistentVector (JIRA). As a result, f cannot distinguish k/v pairs from other two-element vectors.\n\nThis was [fixed in 1.10.0](https://github.com/clojure/clojure/blob/master/changes.md#42-api), and one can use `(map-entry? v)` to distinguish a k/v pair from a vector when `walk`ing. "],
+   "> As of 1.9.0, postwalk passes the k/v pairs of a map to f not, as one might expect, as type clojure.lang.MapEntry but as clojure.lang.PersistentVector (JIRA). As a result, f cannot distinguish k/v pairs from other two-element vectors.\n\nThis was [fixed in 1.10.0](https://github.com/clojure/clojure/blob/master/changes.md#42-api), and one can use `(map-entry? v)` to distinguish a k/v pair from a vector when `walk`ing. "
+   "Updated link to \"Tree visitors in Clojure\", mentioned above (PDF):\n\nhttps://insideclojure.org/images/j-treevisit-pdf.pdf"],
   :arglists ["f form"],
   :doc
   "Performs a depth-first, post-order traversal of form.  Calls f on\n  each sub-form, uses f's return value in place of the original.\n  Recognizes all Clojure data structures. Consumes seqs as with doall.",
