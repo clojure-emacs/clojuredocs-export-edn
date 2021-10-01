@@ -13716,7 +13716,7 @@
    :clojure.core//],
   :line 1261,
   :examples
-  [";; (quot m n) is the value of m/n, rounded towards 0 to the nearest integer.\n;; m, n need not be integers.\n\nuser=> (quot 10 3)\n3\n\nuser=> (quot 11 3)\n3\n\nuser=> (quot 12 3)\n4\n\nuser=> (quot -5.9 3)\n-1.0\n\nuser=> (quot 10 -3)\n-3\n\nuser=> (quot 15 0)\nArithmeticException / by zero  clojure.lang.Numbers.quotient (Numbers.java:1764)\n"
+  [";; (quot m n) is the value of m/n, rounded towards 0 to the nearest integer.\n;; m, n need not be integers.\n\nuser=> (quot 10 3)\n3\n\nuser=> (quot 11 3)\n3\n\nuser=> (quot 12 3)\n4\n\nuser=> (quot -5.9 3)\n-1.0\n\nuser=> (quot 10 -3)\n-3\n\nuser=> (quot 15 0)\nArithmeticException / by zero  clojure.lang.Numbers.quotient (Numbers.java:1764)\n\n\n;; For ClojureScript (at least v1.10.597), `num`, `div` should be integer.\n;; Otherwise, it does not work correctly due to its implementation:\nhttp://cljs.github.io/api/cljs.core/quot\n\n;; in clojure,\nuser=> (quot 286.3 21.2)\n13.0\n\n;; in clojurescript\ncljs.user=> (quot 286.3 21.2)\n12"
    ";; note that the \"/\" function and the quot function are not equivalent\n\nuser=> (= (/ 4 2) (quot 4 2))\ntrue\n\nuser=> (= (/ 3 2) (quot 3 2))\nfalse\n"],
   :notes nil,
   :arglists ["num div"],
@@ -21468,7 +21468,8 @@
   :line 35,
   :examples
   ["(use 'clojure.walk)\n\n(walk #(* 2 %) #(apply + %) [1 2 3 4 5])\n;=> 30\n\n(walk second #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 6\n\n(walk first #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 5\n\n(walk first reverse [ [1 2] [3 4] [5 6] ])\n;=> (5 3 1)"
-   "(require '[clojure.walk :as w])\n\n(w/walk (fn [[k v]] [k (* 10 v)]) identity {:a 1 :b 2 :c 3})\n;=> {:a 10, :c 30, :b 20}\n\n(w/postwalk #(if (number? %) (* 2 %) %) [[1 2 3] [4 7 2] [2 5 2]])\n;=> [[2 4 6] [8 14 4] [4 10 4]]\n\n(let [s [1 '(2 3 [1])]] \n  (w/postwalk #(if (seq? %) (vec %) %) s))\n;=> [1 [2 3 [1]]]\n\n(w/walk (comp vec reverse) identity {0 :start 1 :inprogress 2 :end})\n;=> {:start 0, :inprogress 1, :end 2}"],
+   "(require '[clojure.walk :as w])\n\n(w/walk (fn [[k v]] [k (* 10 v)]) identity {:a 1 :b 2 :c 3})\n;=> {:a 10, :c 30, :b 20}\n\n(w/postwalk #(if (number? %) (* 2 %) %) [[1 2 3] [4 7 2] [2 5 2]])\n;=> [[2 4 6] [8 14 4] [4 10 4]]\n\n(let [s [1 '(2 3 [1])]] \n  (w/postwalk #(if (seq? %) (vec %) %) s))\n;=> [1 [2 3 [1]]]\n\n(w/walk (comp vec reverse) identity {0 :start 1 :inprogress 2 :end})\n;=> {:start 0, :inprogress 1, :end 2}"
+   ";; Recursively sort nested map\n(require '[clojure.walk :as w])\n\n(def m {:b 2, :c 3, :a 1, :d {:x 10, :c 3, :a 11, :b 22}})\n\n(w/postwalk (fn [x] (if (map? x) (into (sorted-map) x) x)) m)\n;;=> {:a 1, :b 2, :c 3, :d {:a 11, :b 22, :c 3, :x 10}}\n"],
   :notes nil,
   :arglists ["inner outer form"],
   :doc
