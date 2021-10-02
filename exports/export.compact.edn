@@ -14006,7 +14006,8 @@
    ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}\n\n;; Which is equivalent to using \"assoc\"\n(assoc hm :banana 6)\n;;=> {:banana 6 :apple 2 :orange 3}"
    ";; A quirk in use with vectors (tested with 1.10.3)\n;; If you throw away the argument to the function, you can add a value to\n;; the end of the vector: \n\n;; Normal, expected behavior:\n(update [1 2 3] 2 (fn [_] 42))\n;;=> [1 2 42]\n\n;; If the index is just past the end, you can append to the vector:\n(update [1 2 3] 3 (fn [_] 42))\n;;=> [1 2 3 42]\n\n;; More than one past end won't work\n(update [1 2 3] 4 (fn [_] 42))\n;;=> Execution error (IndexOutOfBoundsException) at user/eval2049 (form-init3979469036338260438.clj:1).\n\n;; If you don't throw away the argument, and your index is one past\n;; the end of the vector, you'll still get an error:\n\n;; Normal, expected behavior:\n(update [1 2 3] 2 inc)\n;;=> [1 2 4]\n\n;; Here the trick fails:\n(update [1 2 3] 3 inc)\n;;=> Execution error (NullPointerException) at user/eval1985 (form-init8618353961027343980.clj:1)."],
   :notes
-  ["But how do you do a pure update idiomatically? So update one value for another?"],
+  ["But how do you do a pure update idiomatically? So update one value for another?"
+   "To the previous note (alper), you are looking for `assoc`. "],
   :arglists
   ["m k f" "m k f x" "m k f x y" "m k f x y z" "m k f x y z & more"],
   :doc
@@ -20242,7 +20243,8 @@
   :examples
   ["user=> (inc 1)\n2\n\nuser=> (inc 1.0)\n2.0\n\nuser=> (inc 1/2)\n3/2\n\nuser=> (inc -1)\n0"
    ";;increment all the element in a collection\n\n(map inc [1 2 3 4 5])\n;;(2 3 4 5 6)  return type list\n\n(into [] (map inc [1 2 3 4 5]))\n;;[2 3 4 5 6]  return type vector"
-   ";; Careful when using ClojureScript\n;; Make sure you're passing a number\n;; because JavaScript + also does string concatenation\ncljs.user=> (inc \"1\")\n\"11\"\ncljs.user=> (inc 1)\n2\n\n;; Although it's not the case with dec\n;; In JavaScript \"1\" - 1 = 0\ncljs.user=> (dec \"1\")\n0\ncljs.user=> (dec 1)\n0\n\n"],
+   ";; Careful when using ClojureScript\n;; Make sure you're passing a number\n;; because JavaScript + also does string concatenation\ncljs.user=> (inc \"1\")\n\"11\"\ncljs.user=> (inc 1)\n2\n\n;; Although it's not the case with dec\n;; In JavaScript \"1\" - 1 = 0\ncljs.user=> (dec \"1\")\n0\ncljs.user=> (dec 1)\n0\n\n"
+   ";; You cannot `inc` a `nil` in Clojure, but you\n;; can in ClojureScript\n\n;; Clojure\n(inc nil) ;;=> NullPointerException\n\n;; ClojureScript\n(inc nil) ;;=> 1"],
   :notes
   ["Is the documentation suppose to be: \"Returns a number one greater than x.\" ?  If not what is num?"
    "is code \"(def i (inc i))\" is conflict with the notion of immutable of data in Clojure. "
