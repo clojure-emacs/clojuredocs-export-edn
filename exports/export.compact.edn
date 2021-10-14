@@ -7804,7 +7804,8 @@
   ["(if-some [a 10]    :true :false)   ; => :true\n(if-some [a true]  :true :false)   ; => :true\n(if-some [a false] :true :false)   ; => :true\n(if-some [a nil]   :true :false)   ; => :false\n\n;; for comparison\n(if-let [a 10]     :true :false)   ; => :true\n(if-let [a true]   :true :false)   ; => :true \n(if-let [a false]  :true :false)   ; => :false\n(if-let [a nil]    :true :false)   ; => :false\n"],
   :macro true,
   :notes
-  ["See [this Jira ticket](http://dev.clojure.org/jira/browse/CLJ-1343) for some background on this.\n\n    (if-some [var test] then else)\n\nis essentially equivalent to:\n\n    (if-let [var (not (nil? test))] then else)\n"],
+  ["See [this Jira ticket](http://dev.clojure.org/jira/browse/CLJ-1343) for some background on this.\n\n    (if-some [var test] then else)\n\nis essentially equivalent to:\n\n    (if-let [var (not (nil? test))] then else)\n"
+   "> `(if-some [var test] then else)`\n>\n> is essentially equivalent to:\n>\n> `(if-let [var (not (nil? test))] then else)`\n\nThis is incorrect. Notice that `nil?` will return a boolean. This equivalency would only be true if `test` is a boolean value."],
   :arglists ["bindings then" "bindings then else & oldform"],
   :doc
   "bindings => binding-form test\n\n   If test is not nil, evaluates then with binding-form bound to the\n   value of test, if not, yields else",
