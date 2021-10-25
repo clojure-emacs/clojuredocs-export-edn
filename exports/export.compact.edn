@@ -10444,7 +10444,7 @@
   :see-alsos nil,
   :line 6128,
   :examples
-  ["user=> (compile (symbol \"clojure.java.io\")\nclojure.java.io\n\nuser=> (compile (symbol \"nonexistent.namespace\")\nFileNotFoundException Could not locate unexistent/namespace__init.class or unexistent/namespace.clj on classpath:   clojure.lang.RT.load (RT.java:432)"
+  ["user=> (compile (symbol \"clojure.java.io\"))\nclojure.java.io\n\nuser=> (compile (symbol \"nonexistent.namespace\"))\nFileNotFoundException Could not locate unexistent/namespace__init.class or unexistent/namespace.clj on classpath:   clojure.lang.RT.load (RT.java:432)"
    ";; Using compile with deps.edn:\n{,,,\n :aliases {:aot      {:main-opts [\"-e\" \"(compile,(symbol,:demo-app.main)\"]}\n           :demo-app {:extra-paths [\"classes\"]\n                      :main-opts   [\"-m\" \"demo-app.main\"]}}}\n;; :aot profile use commas and `(symbol :kw)` to avoid spliting\n\n;; Then in your build process (Dockerfile for example):\n;RUN mkdir -p classes && clojure -A:aot\n;CMD [\"clojure\", \"-A:demo-app\"]\n"],
   :notes nil,
   :arglists ["lib"],
