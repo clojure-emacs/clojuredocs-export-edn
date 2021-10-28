@@ -9106,7 +9106,7 @@
   :file "clojure/core.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/*math-context*],
   :line 5086,
   :examples
   [";; The \"M\" suffix denotes a BigDecimal instance\n;; http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html\n\nuser=> (with-precision 10 (/ 1M 6))\n0.1666666667M\n\nuser=> (.floatValue 0.1666666667M)\n0.16666667\n"
@@ -12372,7 +12372,7 @@
  {:ns "clojure.core",
   :name "*math-context*",
   :type "var",
-  :see-alsos nil,
+  :see-alsos [:clojure.core/with-precision],
   :examples nil,
   :notes nil,
   :tag "java.math.MathContext",
