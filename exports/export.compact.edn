@@ -1585,7 +1585,8 @@
    ";; any? never returns false\n\nuser=> (any? {})\n;; true\nuser=> (any? [])\n;; true\nuser=> (any? nil)\n;; true\nuser=> (any? true)\n;; true\nuser=> (any? false)\n;; true"],
   :notes
   ["The current implementation of [any?](https://github.com/clojure/clojure/blob/clojure-1.9.0/src/clj/clojure/core.clj#L538-L542) is incorrect and must be fixed IMO.\nThere was a [PR](https://github.com/clojure/clojure/pull/49) (copied below) submitted in 2014 to add a correct implementation which is consistent with behaviour in other languages. \n\n```\n(def\n ^{:tag Boolean\n   :doc \"Returns true if (pred x) is logical true for any x in coll,\n  else false.\"\n   :arglists '([pred coll])\n   :added \"1.7\"}\n any? (comp boolean some))\n```"
-   "any? never returns false. Is this a bug?"],
+   "any? never returns false. Is this a bug?"
+   "You can think of this function as a non-variadic `(constantly true)`."],
   :tag "java.lang.Boolean",
   :arglists ["x"],
   :doc "Returns true given any argument.",
@@ -6629,7 +6630,8 @@
    ";; Note that for namespaced keywords, `name` only returns the name part.\n(name :my-ns/my-name)\n;;=> \"my-name\"\n\n(name :ns/deep/key)\n;;=> \"deep/key\"\n;; For more info see: `keyword` and `keyword?`...\n(name :'//-,)\n;;=> \"/-\"\n(name :/)\n;;=> \"/\"\n(name ://)\n;;=> RuntimeException Invalid token: ://  clojure.lang.Util.runtimeException (Util.java:221)\n;;=> RuntimeException Unmatched delimiter: )  clojure.lang.Util.runtimeException (Util.java:221)\n(name :///)\n;;=> \"//\"\n(namespace :///)\n;;=> \"\"\n\n;; If you want the namespace part, you can use (namespace):\n(namespace :my-ns/my-key)\n;;=> \"my-ns\"\n\n;; Using (str) will give you both parts, but also includes the leading colon.\n(str :my-ns/my-key)\n;;=> \":my-ns/my-key\""
    ";; To get full key\n(defn keyname [key] (str (namespace key) \"/\" (name key)))\n\n(keyname :ns/key)\n=> \"ns/key\"\n\n(keyname :ns/deep/key)\n=> \"ns/deep/key\"\n\n;; Just for fun\n(string/replace :key/val #\"^:\" \"\")\n=> \"key/val\""
    ";; `name` (and `namespace`) \"knows\" how a keyword was built:\n\n(name (keyword \"a/b\" \"c\"))\n;;=> \"c\"\n\n(name (keyword \"a\" \"b/c\"))\n;;=> \"b/c\"\n"
-   ";; To get the fully qualified name of the keyword, we can use symbol.\n\n(str (symbol :a/b))\n;;=> \"a/b\"\n"],
+   ";; To get the fully qualified name of the keyword, we can use symbol.\n\n(str (symbol :a/b))\n;;=> \"a/b\"\n"
+   "; Preserves capitals\n\n(name :pageQuery)\n; => \"pageQuery\""],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["x"],
@@ -22994,7 +22996,7 @@
   ["user=> (def c (chan))\n#'user/c\nuser=> (def c (chan 1))\n#'user/c\nuser=> (def c (chan (buffer 2)))\n#'user/c\n;; Clojure 1.7\nuser=> (def c (chan 1 (filter string?)))\n#'user/c\n\n"
    "(let [c (chan 3 (map inc))] ;; providing transducer which increments values by one\n  (>!! c 1)\n  (>!! c 2)\n  (>!! c 3)\n  (println (<!! c))\n  (println (<!! c))\n  (println (<!! c)))\n\n;; 2\n;; 3\n;; 4\n;;=> nil"
    "(def c (chan (buffer 1)\n             (fn [xf] (fn [_ data]\n                        (throw (Exception. (when (= data \"hehe\")\n                                             \"xform error\")))))\n             (fn [e] (.getMessage e))))\n\n(>!! c \"hehe\")\n;;=> true\n\n;; any non-nil return value from transducer will be placed in the channel\n(<!! c)\n;;=> \"xform error\"\n\n(>!! c \"haha\")\n;;=> true\n\n;; nil return value from transducer will NOT be placed in the channel\n(<!! c) ;; will stuck here\n"
-   ";; You can use mapcat to quickly dispatch a seq\n(def c (chan 10 (mapcat identity)))\n;;=> #'user/c\n(>!! c (range 3))\n;;=> true\n\n(loop [x (<!! c)]\n      (prn x)\n      (recur (<!! c))\n;;0\n;;1\n;;2\n;; (stuck, because it's a vampire 🧛 sucking on an unclosed channel)"],
+   ";; You can use mapcat to quickly dispatch a seq\n(def c (chan 3 (mapcat identity)))\n;;=> #'user/c\n(>!! c (range 3))\n;;=> true\n\n(loop [x (<!! c)]\n      (prn x)\n      (recur (<!! c))\n;;0\n;;1\n;;2\n;; (stuck, because it's a vampire 🧛 sucking on an unclosed channel)\n\n;; Use a go-loop to start a concurrent parking consumer instead. \n(go-loop [x (<! c)]\n         (when x            ;; abort when channel is closed (nil? (<! c))\n           (prn x)\n           (recur (<! c))))\n;;=> #object[clojure.core.async.impl.channels.ManyToManyChannel...\n\n;; When provisioning more items than the channel buffer allows,\n;; mapcat will still put all items\n\n(>!! c (range 5))\n;;=> true\n;;0\n;;1\n;;2\n;;3\n;;4\n\n;; Avoid that with a dropping/sliding buffer:\n(def c (chan (sliding-buffer 3) (mapcat identity)))\n;;=> #'user/c\n(go-loop ...)\n;;=> #object[clojure.core.async.impl.channels.ManyToManyChannel...\n(>!! c (range 5))\n;;=> true\n;;2\n;;3\n;;4"],
   :notes nil,
   :arglists
   ["" "buf-or-n" "buf-or-n xform" "buf-or-n xform ex-handler"],
