@@ -22625,7 +22625,7 @@
   :see-alsos nil,
   :line 360,
   :examples
-  ["(ns tst.xyz.core\n  (:use clojure.test )\n  (:require [clojure.string :as str] ))\n\n(deftest t-starts-with?\n  (is (str/starts-with? \"abcde\" \"a\"))\n  (is (str/starts-with? \"abcde\" \"ab\"))\n  (is (str/starts-with? \"abcde\" \"abc\"))\n\n  (is (not (str/starts-with? \"abcde\" \"b\")))\n  (is (not (str/starts-with? \"abcde\" \"bc\")))\n\n  (is (not (str/starts-with? \"a\" \"ab\")))\n  (is (not (str/starts-with? \"ab\" \"abc\"))))"],
+  ["(ns tst.xyz.core\n  (:use clojure.test )\n  (:require [clojure.string :as string] ))\n\n(deftest t-starts-with?\n  (is (string/starts-with? \"abcde\" \"a\"))\n  (is (string/starts-with? \"abcde\" \"ab\"))\n  (is (string/starts-with? \"abcde\" \"abc\"))\n\n  (is (not (string/starts-with? \"abcde\" \"b\")))\n  (is (not (string/starts-with? \"abcde\" \"bc\")))\n\n  (is (not (string/starts-with? \"a\" \"ab\")))\n  (is (not (string/starts-with? \"ab\" \"abc\"))))"],
   :notes nil,
   :arglists ["s substr"],
   :doc "True if s starts with substr.",
