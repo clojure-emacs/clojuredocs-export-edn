@@ -25440,7 +25440,8 @@
    "; From the Clojure 1.9 source code.\n(defn qualified-keyword?\n  \"Return true if x is a keyword with a namespace\"\n  [x] (and (keyword? x) (namespace x) true))\n\n; Note how the return value of and is value of the last expression.\nuser=> (qualified-keyword? :hi/there)\ntrue\n\n; If we instead define the function as:\n(defn qualified-keyword?\n  [x] (and (keyword? x) (namespace x)))\n; we get the namespace as return value:\nuser=> (qualified-keyword? :hi/there)\n\"hi\""],
   :macro true,
   :notes
-  ["Note <b>add</b> is a macro, so you cannot <b>apply</b> it. For example, there is a vector of some Boolean values <b>[true true false true]</b>, which you want to test to see if they are all true. The code below will not work: <pre>(apply add [true true false true]) ;won't work</pre>\r\nInstead, use this: <pre>(every? identity [true  true false true])</pre> More discussion can be found at http://osdir.com/ml/clojure/2010-01/msg01242.html"],
+  ["Note <b>add</b> is a macro, so you cannot <b>apply</b> it. For example, there is a vector of some Boolean values <b>[true true false true]</b>, which you want to test to see if they are all true. The code below will not work: <pre>(apply add [true true false true]) ;won't work</pre>\r\nInstead, use this: <pre>(every? identity [true  true false true])</pre> More discussion can be found at http://osdir.com/ml/clojure/2010-01/msg01242.html"
+   "typo: 'and' instead of 'add'?"],
   :arglists ["" "x" "x & next"],
   :doc
   "Evaluates exprs one at a time, from left to right. If a form\n  returns logical false (nil or false), and returns that value and\n  doesn't evaluate any of the other expressions, otherwise it returns\n  the value of the last expr. (and) returns true.",
