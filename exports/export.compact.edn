@@ -5586,7 +5586,8 @@
    :clojure.core/throw
    :clojure.core/catch
    :clojure.core/finally
-   :clojure.core/ex-message],
+   :clojure.core/ex-message
+   :clojure.core/ex-cause],
   :line 4792,
   :examples
   ["(try\n  (let [response (http/post\n                   \"http://localhost:8080/v1/leads\"\n                   {:form-params {:foo \"somethingBad\"}})]\n    (prn \"This is the response\" response))\n  (catch Exception e\n    (prn \"This is the error\" (ex-data e))))\n\n-------\n\n> \"This is the error\" {:status 500, :headers {\"Content-Type\" \"application/json; \ncharset=utf-8\", \"Content-Length\" \"73\", \"Server\" \"http-kit\", \"Date\" \"Mon, 10 Oct 2016\n 16:53:12 GMT\"}, :body \"{\\\"type\\\":\\\"unknown-\nexception\\\",\\\"class\\\":\\\"java.lang.IllegalArgumentException\\\"}\", :request-time 7,\n :trace-redirects [\"http://localhost:8080/v1/leads\"], :orig-content-encoding nil}"
