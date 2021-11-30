@@ -18966,7 +18966,7 @@
   :see-alsos [:clojure.core/with-local-vars :clojure.core/var-get],
   :line 4333,
   :examples
-  ["(with-local-vars [x nil]\n  (println @x)\n  (var-set x 1)\n  (println @x))\n;;=> nil\n;;=> 1\n"],
+  ["(with-local-vars [x 1]\n  (println @x)\n  (var-set x 2)\n  (println @x))\n;;=> 1\n;;=> 2\n"],
   :notes nil,
   :arglists ["x val"],
   :doc
