@@ -19175,7 +19175,7 @@
   :line 7886,
   :examples
   [";; For a bit more documentation, see Clojure 1.10.0 release notes regarding\n;; tap> here:\n\n;; https://github.com/clojure/clojure/blob/master/changes.md#23-tap"
-   ";; Register a tap handler\n\n(add-tap (bound-fn* clojure.pprint/pprint))\n\n;; Log using the above handler\n\n(tap> \"Hellow world\")"],
+   ";; Register a tap handler\n\n(add-tap (bound-fn* clojure.pprint/pprint))\n\n;; Log using the above handler\n\n(tap> \"Hello world\")"],
   :notes nil,
   :arglists ["x"],
   :doc
