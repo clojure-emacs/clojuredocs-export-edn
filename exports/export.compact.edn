@@ -48,7 +48,8 @@
   :line 3559,
   :examples
   ["user=> (number? 1)\ntrue\nuser=> (number? 1.0)\ntrue\nuser=> (number? :a)\nfalse\nuser=> (number? nil)\nfalse\nuser=> (number? \"23\")\nfalse\n\n"
-   ";; map number? over the vector\n(map number? [1 0.44 3e6 0xFF])\n;;=> (true true true true)\n\n;; map number? over the vector created by converting a list into a vector \n;; with the function \"into\"\n(map number? (into [] '(1 0.44 3e6 0xFF)))\n;;=> (true true true true)\n\n"],
+   ";; map number? over the vector\n(map number? [1 0.44 3e6 0xFF])\n;;=> (true true true true)\n\n;; map number? over the vector created by converting a list into a vector \n;; with the function \"into\"\n(map number? (into [] '(1 0.44 3e6 0xFF)))\n;;=> (true true true true)\n\n"
+   ";; Works for rationals\nuser=> (number? (/ 2 3))\ntrue"],
   :notes nil,
   :arglists ["x"],
   :doc "Returns true if x is a Number",
