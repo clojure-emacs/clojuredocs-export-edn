@@ -21953,7 +21953,8 @@
   :line 1020,
   :examples
   ["user=> (/ 6 3)\n2\n\nuser=> (/ 6 3 2)\n1\n\nuser=> (/ 10)\n1/10\n\nuser=> (/ 1 3)\n1/3\n\nuser=> (/)\nArityException Wrong number of args (0) passed to: core$-SLASH-\n\nuser=> (/ 1 0)\njava.lang.ArithmeticException\n\nuser=> (/ 0)\njava.lang.ArithmeticException\n"
-   ";;; Automatically handles floating point:\n\nuser=> (/ 43.0 2)\n21.5"],
+   ";;; Automatically handles floating point:\n\nuser=> (/ 43.0 2)\n21.5"
+   "user=> (.numerator (/ 2 6)) \n1\nuser=> (.denominator (/ 2 6)) \n3"],
   :notes nil,
   :arglists ["x" "x y" "x y & more"],
   :doc
