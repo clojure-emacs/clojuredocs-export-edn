@@ -16378,7 +16378,8 @@
   :examples
   ["user=> (dedupe [1 2 3 3 3 1 1 6])\n(1 2 3 1 6)"
    ";; This is taken from a problem on 4Clojure (30. Compress a sequence).\nuser=> (dedupe \"Leeeeroy\")\n(\\L \\e \\r \\o \\y)\n\nuser=> (dedupe [[1 2] [1 2] [3 4] [1 2]])\n([1 2] [3 4] [1 2])\n\nuser=> (dedupe [[1 [1 2]] [1 [2 3]] [1 [1 2]] [1 [1 2]]])\n([1 [1 2]] [1 [2 3]] [1 [1 2]])\n\n;; This does not remove all duplicates from a collection, only consecutive ones.\nuser=> (dedupe [1 2 2 1 1 1 2 1 2 2])\n(1 2 1 2 1 2)\n\n;; To remove all duplicates, use distinct.\nuser=> (distinct [1 2 2 1 1 1 2 1 2 2])\n(1 2)"
-   "user=> (dedupe [1/2 2/4])\n(1/2)\n\nuser=>(dedupe [1/2 2/6])\n(1/2 1/3)\n\nuser=>(dedupe [1/2 0.5 2/4])\n(1/2 0.5 1/2)"],
+   "user=> (dedupe [1/2 2/4])\n(1/2)\n\nuser=>(dedupe [1/2 2/6])\n(1/2 1/3)\n\nuser=>(dedupe [1/2 0.5 2/4])\n(1/2 0.5 1/2)"
+   ";; parentheses can be omitted in thread macro \nuser> (->> [1 1 2 2] (map inc) dedupe)\n(2 3)\n;; transducer version that does not work, parentheses cannot be omitted\nuser> (sequence  (comp (map inc) dedupe) [1 1 2 2])\nExecution error (IllegalArgumentException) at user/eval15380 (form-init7517833771916228311.clj:104).\nDon't know how to create ISeq from: clojure.lang.TransformerIterator$1\n;; transducer that works\nuser> (sequence  (comp (map inc) (dedupe)) [1 1 2 2])\n(2 3)"],
   :notes nil,
   :arglists ["" "coll"],
   :doc
