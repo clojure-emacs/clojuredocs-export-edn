@@ -26028,7 +26028,8 @@
    "user=> (def my-function (fn [x] (* x x x)))\n#'user/my-function\nuser=> (my-function 4)\n64"
    ";; This is an example of setting a docstring during a def.\n;; (Note that the clojure.repl namespace which contains the\n;;  doc function is not loaded by default in Emacs' SLIME mode.)\n\nuser> (def ted-nugent \"The nuge rocks\" 123)\n#'user/ted-nugent\nuser> (doc ted-nugent)\n-------------------------\nuser/ted-nugent\n  The nuge rocks\nuser> ted-nugent\n123\n"
    ";; give function another name\nuser=> (def sys-map map)\n\n;; give macro another name\nuser=> (def #^{:macro true} sys-loop #'loop)"
-   ";;Assign a Function to a Variable\n\n(def say-hello\n (fn [name]\n   (str \"Hello \" name)))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;the same but using an anonymous function\n(def say-hello\n #(str \"Hello \" %))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;anonymous function using two arguments\n(def hello-doc #(str \"Hello \" %1 %2))\n\n(hello-doc \"Dr.\" \"House\")\n;;\"Hello Dr.House\"\n\n"],
+   ";;Assign a Function to a Variable\n\n(def say-hello\n (fn [name]\n   (str \"Hello \" name)))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;the same but using an anonymous function\n(def say-hello\n #(str \"Hello \" %))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;anonymous function using two arguments\n(def hello-doc #(str \"Hello \" %1 %2))\n\n(hello-doc \"Dr.\" \"House\")\n;;\"Hello Dr.House\"\n\n"
+   ";; Private var\n(def ^:private foobar\n  \"I am the docstring.\"\n  \"I am the value.\")\n"],
   :notes nil,
   :arglists [],
   :doc
