@@ -19658,7 +19658,10 @@
   :type "function",
   :see-alsos nil,
   :examples nil,
-  :notes nil,
+  :notes
+  ["Sean Corfiled gives an overview of the usage of `datafy` and `nav` in the blog post [Clojure 1.10's datafy and nav](https://corfield.org/blog/2018/12/03/datafy-nav/) (3 december 2018)."
+   "Stuart Halloway gives an example of `datafy` usage in the [Cognitect REBL](https://docs.datomic.com/cloud/other-tools/REBL.html)."
+   "A full example of a datafy application is [jedi-time](https://github.com/jimpil/jedi-time), which adds datafy- and navigation on the `java.time` objects."],
   :arglists ["o"],
   :doc "return a representation of o as data (default identity)",
   :library-url "https://github.com/clojure/clojure",
