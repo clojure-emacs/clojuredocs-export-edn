@@ -7273,7 +7273,10 @@
   :column 1,
   :see-alsos nil,
   :line 15,
-  :examples nil,
+  :examples
+  [";; default impl is the identity\n(datafy {:message \"Hello\"})\n=>\n{:message \"Hello\"}\n\n;; exceptions default datafy impl is `Throwable->map`\n(datafy (ex-info \"An Exception\" {:msg \"something went wrong\"}))\n{:cause \"An Exception\",\n :data {:msg \"something went wrong\"}\n :via\n [{:type clojure.lang.ExceptionInfo,\n   :message \"An Exception\",\n   :data {:msg \"something went wrong\"},\n   :at [user$eval16337 invokeStatic \"form-init3462716552974711523.clj\" 120]}],\n :trace\n [[user$eval16337 invokeStatic \"form-init3462716552974711523.clj\" 120]\n  [user$eval16337 invoke \"form-init3462716552974711523.clj\" 120]\n  [clojure.lang.Compiler eval \"Compiler.java\" 7181]\n  ,,,\n  [clojure.lang.AFn run \"AFn.java\" 22]\n  [java.lang.Thread run \"Thread.java\" 833]]}"
+   ";; add a (bogus) Datafy implementation for java.util.Date\n\n(require '[clojure.core.protocols :as p])\n(require '[clojure.datafy :as d])\n\n(extend-protocol p/Datafiable\n  java.util.Date\n  (datafy [d]\n    {:type 'Date\n     :timestamp (.getTime d)}))\n\n(d/datafy (java.util.Date.))\n;;=> {:type Date, :timestamp 1641145865991}\n"
+   ";; adding a data representation to a java.io.File\n\n(require '[clojure.core.protocols :as p])\n(require '[clojure.datafy :as d])\n\n(extend-protocol p/Datafiable\n  java.io.File\n  (datafy [f]\n    ;; keep the file-object as the metadata\n    (with-meta \n      {:exists (.exists f)\n       :length (.length f)\n       :last-modified (.lastModified f)\n       :path (.toString f)})\n      f)\n\n(d/datafy (java.io.File. \"/home/alfred/todo.txt\"))\n;;=> {:exists true,\n;;    :length 28850,\n;;    :last-modified 1641082627553,\n;;    :path \"/home/alfred/todo.txt\"}"],
   :notes nil,
   :arglists ["x"],
   :doc
