@@ -23666,7 +23666,8 @@
   :line 16,
   :examples
   [";; Oops! Don't do this!!!\nuser=> (iterate inc 0)\n;; Frantically doing C-c C-c :-P\n; Evaluation aborted.\n\nuser=> (set! *print-length* 10)\n10\n\n;; Now it's perfectly fine. Yay!\nuser=> (iterate inc 0)\n(0 1 2 3 4 5 6 7 8 9 ...)\n\n"],
-  :notes nil,
+  :notes
+  ["```(set! *print-length* nil)``` to revert as it also affects pr-sr which breaks the edn output"],
   :arglists [],
   :doc
   "*print-length* controls how many items of each collection the\n  printer will print. If it is bound to logical false, there is no\n  limit. Otherwise, it must be bound to an integer indicating the maximum\n  number of items of each collection to print. If a collection contains\n  more items, the printer will print items up to the limit followed by\n  '...' to represent the remaining items. The root binding is nil\n  indicating no limit.",
