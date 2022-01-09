@@ -10258,7 +10258,8 @@
    ";; let's make an illustrative namespace\n(create-ns  'my.arbitrary.long.namespace)\n(alias 'maln 'my.arbitrary.long.namespace)\n;; more typically loaded and aliased with require\n;; (require '[my.arbitrary.long.namespace :as maln])\n\n;; Qualified keywords may be specified with the namespace or the alias.\n;; But unlike with symbols where the bare alias is used \n;; you need to prefix the alias with '::' \n:my.arbitrary.long.namespace/foo\n;=> :my.arbitrary.long.namespace/foo\n::maln/bar\n;=> :my.arbitrary.long.namespace/bar"
    "\n;; You can use existing keywords (cljs only)\n\n(keyword :namespace :keyword)\n;;=> :namespace/keyword\n\n(keyword \"namespace\" :keyword)\n;;=> :namespace/keyword\n\n(keyword :namespace \"keyword\")\n;;=> :namespace/keyword\n\n(keyword :meta-namespace/namespace :meta-keyword/keyword)\n;;=> :namespace/keyword\n"
    ";; different (non-conformant) keywords can have the same printed representation:\n\n(= :a/b/c (keyword \"a\" \"b/c\"))\n;;=> true\n\n(keyword \"a/b\" \"c\")\n;;=> :a/b/c\n\n(= (str (keyword \"a/b\" \"c\")) (str (keyword \"a\" \"b/c\")))\n;;=> true\n\n(= (keyword \"a/b\" \"c\") (keyword \"a\" \"b/c\"))\n;;=> false\n"
-   "(defn creating-map\n  [key value]\n  {(keyword key) value})\n\n(:map-key (creating-map \"map-key\" \"map-value\"))\n;;=>\"map-value\""],
+   "(defn creating-map\n  [key value]\n  {(keyword key) value})\n\n(:map-key (creating-map \"map-key\" \"map-value\"))\n;;=>\"map-value\""
+   ";; Be careful because it is possible to create keywords that contain whitespace\n\n(keyword \"my-keyword\\t\")\n;;=> :my-keyword\n\n(name (keyword \"my-keyword\\t\"))\n;;=> \"my-keyword\\t\"\n\n\n(= (keyword \"my-keyword\") :my-keyword)\n;;=> true\n\n(= (keyword \"my-keyword\\t\") :my-keyword)\n;;=> false\n"],
   :notes nil,
   :tag "clojure.lang.Keyword",
   :arglists ["name" "ns name"],
