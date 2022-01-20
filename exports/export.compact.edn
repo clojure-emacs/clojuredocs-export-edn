@@ -15803,7 +15803,8 @@
   :line 1071,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
-  :notes nil,
+  :notes
+  ["For posterity's sake, below is an alternative implementation.\nSee https://stackoverflow.com/questions/31286167/how-to-create-a-channel-from-another-with-transducers\n<pre>\n(defn filter< [p ch]\n (let [co (chan 1 (filter p)]\n    (pipe ch co)\n    co))\n</pre>"],
   :arglists ["p ch" "p ch buf-or-n"],
   :doc
   "Deprecated - this function will be removed. Use transducer instead",
@@ -19105,7 +19106,8 @@
   :line 7631,
   :examples
   ["(def letters (set \"abcdefghijklmnopqrstuvwxyz\"))\n(def vowels (set \"aeiou\"))\n\n;; Remove the vowels from a string.\n(transduce (remove vowels) str \"hello\")\n;;=> \"hll\"\n\n;; Same, but halt when seeing a non-letter (and return that non-letter).\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello\")\n;;=> \"hll\"\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello world\")\n;;=> \\space\n"
-   ";; \"halt-when\" can only really be used with \"transduce\", but not with other\n;; functions that support transducers like \"into\" or \"sequence\".\n\n(def v (vec (concat (range 5) [:x])))\n(def xf (comp (take 10) (halt-when keyword?) (map inc)))\n\n(transduce xf conj [] v)\n;;=> :x\n\n(into [] xf v)\n;;=> ClassCastException!\n;; Clojure 1.11.0 Alpha 4 updates \"into\" so that this works and produces:\n;;=> :x\n\n(sequence xf v)\n;;=> (1 2 3 4 5), wrong result!\n"],
+   ";; \"halt-when\" can only really be used with \"transduce\", but not with other\n;; functions that support transducers like \"into\" or \"sequence\".\n\n(def v (vec (concat (range 5) [:x])))\n(def xf (comp (take 10) (halt-when keyword?) (map inc)))\n\n(transduce xf conj [] v)\n;;=> :x\n\n(into [] xf v)\n;;=> ClassCastException!\n;; Clojure 1.11.0 Alpha 4 updates \"into\" so that this works and produces:\n;;=> :x\n\n(sequence xf v)\n;;=> (1 2 3 4 5), wrong result!\n"
+   ";; Using the second argument in alt-when\n\n(transduce\n (comp (halt-when #{30}                ;; stop at 30th item\n                  (fn [acc itm] acc))) ;; return all items so far\n (completing conj #(reduce + %))       ;; sums items on exit\n (range))\n;; 435"],
   :notes
   ["`halt-when` is an odd transducer in that it is supposed to be used with `transduce`, but not in other transducible contexts like `sequence` or `into`.\n\nSays Alex Miller at https://dev.clojure.org/jira/browse/CLJ-1451: ‘Yeah, halt-when is a little tricky to use in transducible contexts other than transduce.’ Some more discussion at https://groups.google.com/d/msg/clojure/6HvmJIUsXKk/gLqUsfcnAwAJ.\n"],
   :arglists ["pred" "pred retf"],
