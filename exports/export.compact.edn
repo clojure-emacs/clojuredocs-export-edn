@@ -1068,7 +1068,8 @@
   :see-alsos [:clojure.core/resolve],
   :line 6082,
   :examples
-  [";; Resolve a qualified symbol\n(requiring-resolve 'clojure.java.shell/sh)\n\n;; Resolve and evaluate\n((requiring-resolve 'some-ns/some-fn))\n\n;; In deps.edn, replace all spaces with the \"Corfield\" comma, ;)\n((requiring-resolve,'clojure.java.shell/sh))"],
+  [";; Resolve a qualified symbol\n(requiring-resolve 'clojure.java.shell/sh)\n\n;; Resolve and evaluate\n((requiring-resolve 'some-ns/some-fn))\n\n;; In deps.edn, replace all spaces with the \"Corfield\" comma, ;)\n((requiring-resolve,'clojure.java.shell/sh))"
+   "(defn debug? [] (= (env :debug?) \"true\"))\n\n;; If you need to do conditional requires such as the one below:\n(if (debug?)\n  (do\n    (require '[nrepl.cmdline :refer [-main] :rename {-main -nrepl-main}])\n    (resolve 'nrepl.cmdline))\n  (declare -nrepl-main))\n\n(defn -main [& args]\n  (when (debug?)\n    (future (apply -nrepl-main args))))\n\n;; This is strictly better!\n(defn -main [& args]\n  (when (debug?)\n    ;; Swap to require and resolve in one step!\n    (future (apply (requiring-resolve 'nrepl.cmdline/-main) args))))"],
   :notes nil,
   :arglists ["sym"],
   :doc
