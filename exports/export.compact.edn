@@ -10532,7 +10532,8 @@
    "user=> (resolve 'x)\nnil\nuser=> (def x 1)\n#'user/x\nuser=> (resolve 'x)\n#'user/x\n\nuser=> (resolve 'join)\nnil\nuser=> (use '[clojure.string :only [join]])\nnil\nuser=> (resolve 'join)\n#'clojure.string/join\n\nuser=> (join \", \" [\"a\" \"b\"])\n\"a, b\"\nuser=> ((resolve 'join) \", \" [\"a\" \"b\"])\n\"a, b\""
    "user=> (resolve 'Exception)\njava.lang.Exception\n\nuser=> (type (resolve 'Exception))\njava.lang.Class\n"
    ";; Also resolve Array classes\n(resolve (symbol \"[I\"))\n;; [I"
-   ";; Also takes a set/map of symbols to ignore while resolving.\n\n(defn replace-var [name value]\n  (let [protected #{'+ '- '* '/}]\n    (when (resolve protected name)\n      (intern *ns* name value))))\n\n(replace-var 'first last)\n(first [1 2 3 4])\n;; 4\n\n;; plus is protected.\n(replace-var '+ -)\n(+ 1 1)\n;; 2"],
+   ";; Also takes a set/map of symbols to ignore while resolving.\n\n(defn replace-var [name value]\n  (let [protected #{'+ '- '* '/}]\n    (when (resolve protected name)\n      (intern *ns* name value))))\n\n(replace-var 'first last)\n(first [1 2 3 4])\n;; 4\n\n;; plus is protected.\n(replace-var '+ -)\n(+ 1 1)\n;; 2"
+   ";; Also works fine on namespaced symbols\n\n;; some-ns\n(def x 1)\n\n;; other-ns\n@(resolve 'some-ns/x)\n;; 1"],
   :notes nil,
   :arglists ["sym" "env sym"],
   :doc
