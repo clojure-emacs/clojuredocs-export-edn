@@ -4689,7 +4689,8 @@
   :see-alsos [:clojure.core.async/chan],
   :line 177,
   :examples
-  ["(let [c (chan 2) ]\n  (>!! c 1)\n  (>!! c 2)\n  (close! c)\n  (println (<!! c)) ; 1\n  (println (<!! c)) ; 2\n  ;; since we closed the channel this will return false(we can no longer add values)\n  (>!! c 1))"],
+  ["(let [c (chan 2) ]\n  (>!! c 1)\n  (>!! c 2)\n  (close! c)\n  (println (<!! c)) ; 1\n  (println (<!! c)) ; 2\n  ;; since we closed the channel this will return false(we can no longer add values)\n  (>!! c 1))"
+   ";; Below example demonstrates go processes can take values (which were already put)\n;; from the unbuffered channel even after closing it.\n\n  (let [c (chan)]\n    (go (>! c 1))\n    (go (>! c 2))\n    ;; channel is closed even before \"2\" value is taken out. \n    (go (<! (timeout 5))\n        (close! c)\n        (println \"Channel closed\"))\n\n    (go (println (<! c))) ; 1 \n\n    \n    ;; Intentionally delaying the take operation so that channel can be closed\n    ;; before. \n    (go (<! (timeout 20))\n        (println (<! c)) ; We get 2 even though we tried to take after the channel\n                         ; is closed\n        (println (<! c)))) ; nil since we we dried out the channel and it is closed \n                           ; as well."],
   :notes nil,
   :arglists ["chan"],
   :doc
@@ -13551,7 +13552,7 @@
   :see-alsos [:clojure.core/alias :clojure.core/ns-unalias],
   :line 4274,
   :examples
-  [";; clojure.core contains an alias\n(ns-aliases 'clojure.core)\n;;=> {jio #<Namespace clojure.java.io>}\n\n;; To start with there are no namespace aliases in the user namespace.\n(ns-aliases 'user)) \n;;=> {}\n\n;; ...but we can add an alias to the user namespace.\n(alias 'string 'clojure.string) \n(ns-aliases 'user)\n;;=> {string #{Namespace clojure.string>}\n\n"
+  [";; clojure.core contains an alias\n(ns-aliases 'clojure.core)\n;;=> {jio #<Namespace clojure.java.io>}\n\n;; To start with there are no namespace aliases in the user namespace.\n(ns-aliases 'user)\n;;=> {}\n\n;; ...but we can add an alias to the user namespace.\n(alias 'string 'clojure.string) \n(ns-aliases 'user)\n;;=> {string #{Namespace clojure.string>}\n\n"
    ";; Suppose you want to pass a namespace as an argument...\n(ns wip (:require [clojure.string :as string]\n                  [clojure.pprint :as pp]))\n(defn foo [nspace] nspace)\n\n;; ...pretty easy to do if you use the namespace symbol.\n(foo (the-ns 'clojure.string))\n;;=> #<Namespace clojure.string>\n\n;; but, a bit of a problem if you want to pass the alias.\n(foo (the-ns 'string))\n;; java.lang.Exception: No namespace: string found...\n\n;; We can make a function that will serve using ns-aliases.\n(defn the-alias [name] (get (ns-aliases *ns*) name))\n(the-alias 'string)\n;;=> #<Namespace clojure.string>\n\n(foo (the-alias 'string))\n;;=> #<Namespace clojure.string>\n\n;; A more direct function can be written.\n;; but this uses an undocumented function.\n(defn the-alias [alias-name] (.lookupAlias *ns* (symbol alias-name)))\n(the-alias \"pp\")\n;;=> #<Namespace clojure.pprint>\n\n\n\n\n"],
   :notes nil,
   :arglists ["ns"],
