@@ -9604,7 +9604,7 @@
   :see-alsos [:clojure.core/munge],
   :line 208,
   :examples
-  ["user=> (-> + class str demunge)\n\"class clojure.core/+\""],
+  ["user=> (require '[clojure.repl :as repl])\nnil\n\nuser=> (-> + class str)\n\"class clojure.core$_PLUS_\"\n\nuser=> (-> + class str repl/demunge)\n\"class clojure.core/+\""],
   :notes nil,
   :arglists ["fn-name"],
   :doc
@@ -18417,7 +18417,8 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/partial :clojure.core/comp],
+  :see-alsos
+  [:clojure.core/partial :clojure.core/comp :clojure.core/every-pred],
   :line 2576,
   :examples
   [";; Extract values from a map, treating keywords as functions.\n((juxt :a :b) {:a 1 :b 2 :c 3 :d 4})\n;;=> [1 2]\n"
