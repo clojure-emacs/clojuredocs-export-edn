@@ -17205,7 +17205,8 @@
   :see-alsos nil,
   :examples
   [";; If you save this program as showargs.clj on a Unix-like system, then the\n;; following command will produce the output shown.\n\n;; % java -classpath clojure-1.2.0.jar clojure.main showargs.clj arg1 2 \"whitespace in most command shells if you quote\"\n;; arg='arg1'\n;; arg='2'\n;; arg='whitespace in most command shells if you quote'\n;; \n;; \n;; Second arg is string 2, not number 2.\n\n(ns com.demo.showargs)\n\n(doseq [arg *command-line-args*]\n  (printf \"arg='%s'\\n\" arg))\n\n(if (= \"2\" (second *command-line-args*))\n  (println \"\\n\\nSecond arg is string 2, not number 2.\"))\n"],
-  :notes nil,
+  :notes
+  ["To see which JVM command line parameters were used to start Clojure, execute:\n```\n(into [] (.getInputArguments\n           (java.lang.management.ManagementFactory/getRuntimeMXBean)))\n```"],
   :arglists [],
   :doc
   "A sequence of the supplied command line arguments, or nil if\n  none were supplied",
