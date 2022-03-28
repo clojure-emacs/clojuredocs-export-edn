@@ -1302,7 +1302,8 @@
    ";; assoc-in can be used on vectors too\n\n(def row 0)\n(def col 0)\n\n(assoc-in [[1 1 1]\n           [1 1 1]\n           [1 1 1]] [row col] 0)\n; => [[0 1 1][1 1 1][1 1 1]]\n\n(get-in [[0 1 1]\n         [1 1 1]\n         [1 1 1]] [row col])\n; => 0"
    "; Playing around with assoc-in\n\n(assoc-in {:person {:name \"Mike\"}} [:person :name] \"Violet\")\n; => {:person {:name \"Violet\"}}\n\n(assoc-in {:person {:name \"Mike\"}} [:person] \"Violet\")\n; => {:person \"Violet\"}\n\n(assoc-in [{:person {:name \"Mike\"}}] [0 :person :name] \"Violet\")\n; => [{:person {:name \"Violet\"}}]\n\n(assoc-in [{:person {:name [\"Mike\"]}}] [0 :person :name 1] \"Smith\")\n; => [{:person {:name [\"Mike\" \"Smith\"]}}]\n\n(assoc-in [{:person {:name [\"Mike\"]}}] [0 :person :name 2] \"Smith\")\n; => IndexOutOfBoundsException"
    ";; Note that, unlike `assoc`, `assoc-in` cannot be used with multiple values.\n\n(def my-map {})\n\n;; This works\n(assoc my-map :a 1\n              :b 2\n              :c 3)\n; => {:a 1, :b 2, :c 3}\n\n;; This doesn’t\n(assoc-in my-map [:a :aa] 1\n                 [:b :bb] 2\n                 [:c :cc] 3)\n; ArityException Wrong number of args (7) passed to: core/assoc-in\n\n;; This works\n(-> my-map\n    (assoc-in [:a :aa] 1)\n    (assoc-in [:b :bb] 2)\n    (assoc-in [:c :cc] 3))"],
-  :notes nil,
+  :notes
+  ["Unlike `assoc`, you can only do one kv at a time:\n\n```\n;; Allowed\n(assoc {} :a \"a\" :b \"b\" :c \"c\")\n;; Not allowed:\n(assoc-in {} [:a :b] \"cya\" [:a :d :e] \"f\" [:b :g] \"wow\")\n```"],
   :arglists ["m [k & ks] v"],
   :doc
   "Associates a value in a nested associative structure, where ks is a\n  sequence of keys and v is the new value and returns a new nested structure.\n  If any levels do not exist, hash-maps will be created.",
@@ -22650,7 +22651,8 @@
   :column 1,
   :see-alsos nil,
   :line 1156,
-  :examples nil,
+  :examples
+  ["(require '[clojure.core.logic :as logic :refer [run* ==])\n\n(run* [q]\n  (== q 1))\n;; (1)\n\n(run* [q]\n  (== q [1 2 3]))\n;; ([1 2 3])\n\n(run* [q]\n  (== [1 q 3] [1 2 3]))\n;; (2)"],
   :notes nil,
   :arglists ["u v"],
   :doc "A goal that attempts to unify terms u and v.",
