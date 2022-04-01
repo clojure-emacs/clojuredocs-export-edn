@@ -1529,7 +1529,8 @@
   :line 4327,
   :examples
   ["user=> map\n#<core$map clojure.core$map@cce27f>\n\nuser=> #'map ;; The reader macro #'x expands to (var x).\n#'clojure.core/map\n\nuser=> (var-get #'map)\n#<core$map clojure.core$map@cce27f>"
-   "user=> ((var-get (var inc)) 1)\n2"],
+   "user=> ((var-get (var inc)) 1)\n2"
+   ";; var-get is the same as @\nuser> (def a-var 1)\n#'user/a-var\nuser> (var-get #'a-var)\n1\nuser> @#'a-var\n1\nuser> (var-get (resolve 'a-var))\n1\nuser> @(resolve 'a-var)\n1"],
   :notes nil,
   :arglists ["x"],
   :doc "Gets the value in the var object",
