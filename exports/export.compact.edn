@@ -19808,7 +19808,8 @@
    ";; how to: atomic counter \n(def counter (atom 0))\n;; #'user/counter\n\n(swap! counter inc)\n;;=> 1\n\n(swap! counter inc)\n;;=> 2"
    ";; swap map values\n(def m1 (atom {:a \"A\" :b \"B\"}))\n;; atom\n\n;; dereference the atom\n@m1\n;;=> {:a \"A\", :b \"B\"}\n\n;; notice that the value swapped in, is part of the returned value\n(swap! m1 assoc :a \"Aaay\")\n;;=> {:a \"Aaay\", :b \"B\"}"
    ";; increment a map value\n(def m1 (atom {:a \"A\" :b \"B\" :n 0}))\n;; atom\n\n;; dereference the atom\n@m1\n;;=> {:a \"A\", :b \"B\", :n 0}\n\n;; notice that the value swapped in, is part of the returned value\n(swap! m1 update-in [:n] inc)\n;;=> {:a \"A\", :b \"B\", :n 1}"
-   "(def car\n  (atom {:make \"Audi\"\n         :model \"Q3\"}))\n\n@car\n;;{:make \"Audi\", :model \"Q3\"}\n\n(swap!\n car\n assoc :model \"Q5\")\n;;{:make \"Audi\", :model \"Q5\"}\n\n(swap!\n car\n update-in [:model] str \" Sport\")\n;;{:make \"Audi\", :model \"Q5 Sport\"}"],
+   "(def car\n  (atom {:make \"Audi\"\n         :model \"Q3\"}))\n\n@car\n;;{:make \"Audi\", :model \"Q3\"}\n\n(swap!\n car\n assoc :model \"Q5\")\n;;{:make \"Audi\", :model \"Q5\"}\n\n(swap!\n car\n update-in [:model] str \" Sport\")\n;;{:make \"Audi\", :model \"Q5 Sport\"}"
+   ";; Update vector inside map\n(def data (atom {:name \"hello\" :nums []}))\n\n@data\n;; {:name \"hello\" :nums []}\n\n(swap! data update :nums conj {:first 1 :second 2})\n;; {:name \"hello\" :nums [{:first 1 :second 2}]}\n"],
   :notes ["If you want to swap the entire atom, user `reset!`."],
   :arglists ["atom f" "atom f x" "atom f x y" "atom f x y & args"],
   :doc
@@ -26126,7 +26127,8 @@
    ";; clojure doesn't have a `sorted-map?` function to distinguish a sorted-map\n;; from a regular map. use `instance?`:\n(def unremarkable-map {:k1 \"v1\" :k2 \"v2\"})\n(def very-remarkable-map (into (sorted-map) unremarkable-map))\n(instance? clojure.lang.PersistentTreeMap unremarkable-map)\n;;=> false\n(instance? clojure.lang.PersistentTreeMap very-remarkable-map)\n;;=> true\n\n;; This works because:\n(type unremarkable-map)\n;;=> clojure.lang.PersistentArrayMap (PersistentHashMap if many key-val-pairs)\n(type very-remarkable-map)\n;;=> clojure.lang.PersistentTreeMap\n\n;; Clojure does have a `sorted?` predicate so you could define `sorted-map?`\n(def sorted-map? (every-pred map? sorted?))\n"
    ";; Sort hash map by it's keys\n(def data {\"k\" 11 \"z\" 12 \"a\" 13 \"d\" 14 })\n\n(into (sorted-map) (sort-by first (seq data)))\n\n;;=> {\"a\" 13, \"d\" 14, \"k\" 11, \"z\" 12}"
    ";; (from previous comment) clojure doesn't have a `sorted-map?` function to distinguish a sorted-map\n;; from a regular map. use `instance?`:\n\n;;You can indeed check if the sorted-map is an instance of a clojure.lang.PersistentTreeMap but it won't work for cljs/cljc code.\n\n;; +1 for the use of `map?` and `sorted?` \n\n(and (sorted? m) (map? m))"],
-  :notes nil,
+  :notes
+  ["If transient operations are needed for sorted-map, use [data.avl](https://github.com/clojure/data.avl) instead of this built-in one."],
   :arglists ["& keyvals"],
   :doc
   "keyval => key val\n  Returns a new sorted map with supplied mappings.  If any keys are\n  equal, they are handled as if by repeated uses of assoc.",
