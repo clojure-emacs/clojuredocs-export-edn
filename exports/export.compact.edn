@@ -24753,7 +24753,7 @@
    :clojure.core/short],
   :line 882,
   :examples
-  ["user=> (int 1)\n1\n\nuser=> (int 1M)\n1\n\nuser=> (int 1.2)\n1\n\nuser=> (int \\1)\n49\n\nuser=> (int \\a)\n97\n\n;; Strings cannot be cast to an int.\nuser=> (int \"1\")\nExecution error (ClassCastException) at user/eval175 (REPL:1).\njava.lang.String cannot be cast to java.lang.Character\n\n;; Use Java interop instead\n(Integer/parseInt \"1\")\n;;=> 1"],
+  ["user=> (int 1)\n1\n\nuser=> (int 1M)\n1\n\nuser=> (int 1.2)\n1\n\nuser=> (int \\1)\n49\n\nuser=> (int \\a)\n97\n\n;; Strings cannot be cast to an int.\nuser=> (int \"1\")\nExecution error (ClassCastException) at user/eval175 (REPL:1).\njava.lang.String cannot be cast to java.lang.Character\n\n;; Use Java interop instead\n(Integer/parseInt \"1\")\n;;=> 1\n\n;; Using JavaScript interlop for ClojureScript\n(js/parseInt \"5\")\n;;=> 5\n\n(js/parseInt \"5.22\")\n;;=> 5"],
   :notes
   ["To convert a string containing a number to an integer, use Java's Integer/parseInt, e.g. `(Integer/parseInt \"-10\")`."],
   :arglists ["x"],
