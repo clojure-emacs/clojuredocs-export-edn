@@ -15142,8 +15142,7 @@
    :clojure.core/defprotocol],
   :line 868,
   :examples
-  ["(defprotocol XmlNode\n  (as-xml [this]))\n\n(defrecord User [^Integer id ^String name ^java.util.Date dob])\n\n;; Protocols can be extended to existing types and user defined types\n(extend-protocol XmlNode\n  Integer\n    (as-xml [this] (str this))\n  String\n    (as-xml [this] (identity this))\n  java.util.Date\n    (as-xml [this] (-> (java.text.SimpleDateFormat. \"yyyy-MM-dd HH:mm:ss\")\n                       (.format this)))\n  User\n    (as-xml [this] (str \"<user>\"\n                        \"<id>\" (as-xml (:id this)) \"</id>\"\n                        \"<name>\" (as-xml (:name this)) \"</name>\"\n                        \"<dob>\" (as-xml (:dob this)) \"</dob>\"\n                        \"</user>\")))"
-   "(defprotocol My-Abstraction\n  (hello [val]))\n\n; implementing protocol abstraction for multiple types\n(extend-protocol My-Abstraction\n  String\n    (hello [val] (str \"Hello \" val))\n  Object\n    (hello [val] (hello (str val)))) ; using recursion to handle default implementation\n\nuser=> (hello \"world\")\n\"Hello world\"\n\nuser=> (hello 1)\n\"Hello 1\""],
+  ["(defprotocol XmlNode\n  (as-xml [this]))\n\n(defrecord User [^Integer id ^String name ^java.util.Date dob])\n\n;; Protocols can be extended to existing types and user defined types\n(extend-protocol XmlNode\n  Integer\n    (as-xml [this] (str this))\n  String\n    (as-xml [this] (identity this))\n  java.util.Date\n    (as-xml [this] (-> (java.text.SimpleDateFormat. \"yyyy-MM-dd HH:mm:ss\")\n                       (.format this)))\n  User\n    (as-xml [this] (str \"<user>\"\n                        \"<id>\" (as-xml (:id this)) \"</id>\"\n                        \"<name>\" (as-xml (:name this)) \"</name>\"\n                        \"<dob>\" (as-xml (:dob this)) \"</dob>\"\n                        \"</user>\")))"],
   :macro true,
   :notes nil,
   :arglists ["p & specs"],
@@ -20551,10 +20550,15 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/alter-var-root :clojure.core/ns-unmap],
+  :see-alsos
+  [:clojure.core/alter-var-root
+   :clojure.core/ns-unmap
+   :clojure.core/create-ns],
   :line 6317,
   :examples
-  ["user=> (intern 'user 'x \"Foobar\")\n#'user/x\n\nuser=> x\n\"Foobar\"\n"],
+  ["user=> (intern 'user 'x \"Foobar\")\n#'user/x\n\nuser=> x\n\"Foobar\"\n"
+   ";; being able to define fn as a val\nuser=> (intern 'user 'sum (fn [a b c]\n                            (+ a b c)))\n#'user/sum\n\nuser=> (sum 1 2 3)\n6"
+   ";; you can defind defmethod as well by using intern.\n;; firstly, define defmulti so that upper-case can convert string and keyword into upper-case, respectively.\nuser=> (defmulti upper-case [this]\n         (type this))\n\n;; defmethods can be created as a var by clojure.core/intern\nuser=> (intern 'user 'upper-case (defmethod upper-case java.lang.String [this]\n                                   (clojure.string/upper-case this)))\n\nuser=> (intern 'user 'upper-case (defmethod upper-case clojure.lang.Keyword [this]\n                                   (-> this name clojure.string/upper-case keyword)))\n\nuser=> (upper-case \"abc\")\n\"ABC\"\n\nuser=> (upper-case :abc)\n:ABC"],
   :notes
   ["\"The Namespace system maintains global maps of symbols to Var objects (see Namespaces). If a def expression does not find an interned entry in the current namespace for the symbol being def-ed, it creates one, otherwise it uses the existing Var. This find-or-create process is called interning. This means that, unless they have been unmap-ed, Var objects are stable references and need not be looked up every time. It also means that namespaces constitute a global environment in which, as described in Evaluation, the compiler attempts to resolve all free symbols as Vars.\n\n\"The var special form or the #' reader macro (see Reader) can be used to get an interned Var object instead of its current value.\"\n\n-- [https://clojure.org/reference/vars]"],
   :arglists ["ns name" "ns name val"],
