@@ -6455,7 +6455,7 @@
   :file "clojure/core/logic.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core.logic/conda],
   :line 1175,
   :examples
   [";; conde accepts vectors of goals.\n;; makes 'or' of all the goals represented by each vector\n;; Where within each of those goals all condition must be met \n\n(run*\n [x y]\n  (conde\n  \t [(conso x y [1 2 3 4]) (== x 1)] ;; (conso x y [1 2 3 4]) and (== x 1)\n  \t   \t  ;; OR\n  \t [(== x y) (== x 2)]))  \t  ;; (== x y) and (== x 2)\n\n;; ([1 (2 3 4)] [2 2])"],
@@ -19432,7 +19432,8 @@
   :column 1,
   :see-alsos nil,
   :line 1207,
-  :examples nil,
+  :examples
+  ["(run* [q]\n  (fresh [a]\n    (membero a [2 3])\n    (== a q)))\n; => (2 3)\n\n;; a is a member of [2 3]\n;; a and q are unified.\n;; Note that only q will occur in the result."],
   :macro true,
   :notes nil,
   :arglists ["[& lvars] & goals"],
@@ -26173,7 +26174,8 @@
    :clojure.core.logic/fna],
   :line 1417,
   :examples
-  [";; Mind the order:\n\n(defn logic-test-1 []\n  (run* [q r]\n    (membero q [\"linux\" \"windows\" \"mac\" \"android\" \"\"])\n    (conda\n     [(membero q [\"linux\" \"windows\"]) (== r 1)]\n     [(== q \"mac\") (== r 2)]\n     [succeed (== q \"\") (== r 3)])))\n;; => ([\"linux\" 1] [\"windows\" 1] [\"mac\" 2] [\"\" 3])\n;; conda takes ground values and matches them one by one against its clauses.   \n\n(defn logic-test-2 []\n  (run* [q r]\n    (conda\n     [(membero q [\"linux\" \"windows\"]) (== r 1)]\n     [(== q \"mac\") (== r 2)]\n     [succeed (== q \"\") (== r 3)])\n    (membero q [\"linux\" \"windows\" \"mac\" \"android\" \"\"])))\n;; ([\"linux\" 1] [\"windows\" 1])\n;; conda takes a fresh variable and associates it to the head of its first clause.\n;; only the rest of the first clause (== r 1) is considered"],
+  [";; Mind the order:\n\n(defn logic-test-1 []\n  (run* [q r]\n    (membero q [\"linux\" \"windows\" \"mac\" \"android\" \"\"])\n    (conda\n     [(membero q [\"linux\" \"windows\"]) (== r 1)]\n     [(== q \"mac\") (== r 2)]\n     [succeed (== q \"\") (== r 3)])))\n;; => ([\"linux\" 1] [\"windows\" 1] [\"mac\" 2] [\"\" 3])\n;; conda takes ground values and matches them one by one against its clauses.   \n\n(defn logic-test-2 []\n  (run* [q r]\n    (conda\n     [(membero q [\"linux\" \"windows\"]) (== r 1)]\n     [(== q \"mac\") (== r 2)]\n     [succeed (== q \"\") (== r 3)])\n    (membero q [\"linux\" \"windows\" \"mac\" \"android\" \"\"])))\n;; ([\"linux\" 1] [\"windows\" 1])\n;; conda takes a fresh variable and associates it to the head of its first clause.\n;; only the rest of the first clause (== r 1) is considered"
+   ";; The order of \"cond\"s matters\n\n(run* [q]\n  (conda\n   [(membero 1 [q 2 3])]\n   [(membero q [4 5 6])]))\n;; => (1)\n\n\n(run* [q]\n  (conda\n   [(membero q [4 5 6])]\n   [(membero 1 [q 2 3])]))\n;; => (4 5 6)"],
   :macro true,
   :notes nil,
   :arglists ["& clauses"],
