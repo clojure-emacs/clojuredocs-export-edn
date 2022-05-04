@@ -13014,7 +13014,8 @@
   :see-alsos [:clojure.spec.alpha/or],
   :line 620,
   :examples
-  ["(require '[clojure.spec.alpha :as s])\n\n(let [spec (s/alt :n number? :b boolean?)]\n  [(s/conform spec [1])\n   (s/conform spec [true])\n   (s/conform spec [\"str\"])])\n;; => [[:n 1] [:b true] :clojure.spec.alpha/invalid]"],
+  ["(require '[clojure.spec.alpha :as s])\n\n(let [spec (s/alt :n number? :b boolean?)]\n  [(s/conform spec [1])\n   (s/conform spec [true])\n   (s/conform spec [\"str\"])])\n;; => [[:n 1] [:b true] :clojure.spec.alpha/invalid]"
+   "(require '[clojure.spec.alpha :as s])\n\n(s/def ::type-hinted-destructure\n  (s/* (s/alt :hinted (s/cat :symbol symbol?\n                             :separator #(= :- %)\n                             :schema any?)\n              :not-hinted (s/cat :symbol symbol?))))\n\n(s/conform ::type-hinted-destructure\n           '[first :- string?           ; `first :- string?` not `[first :- string?]`\n             last])\n;; [[:hinted {:symbol first, :separator :-, :schema string?}] [:not-hinted {:symbol last}]]\n"],
   :macro true,
   :notes nil,
   :arglists ["& key-pred-forms"],
@@ -16802,7 +16803,8 @@
    :clojure.spec.alpha/and],
   :line 471,
   :examples
-  ["(require '[clojure.spec.alpha :as s])\n\n(let [spec (s/or :n number? :b boolean?)]\n  [(s/conform spec 1)\n   (s/conform spec true)\n   (s/conform spec \"str\")])\n;; => [[:n 1] [:b true] :clojure.spec.alpha/invalid]"],
+  ["(require '[clojure.spec.alpha :as s])\n\n(let [spec (s/or :n number? :b boolean?)]\n  [(s/conform spec 1)\n   (s/conform spec true)\n   (s/conform spec \"str\")])\n;; => [[:n 1] [:b true] :clojure.spec.alpha/invalid]"
+   "(require '[clojure.spec.alpha :as s])\n\n(s/def ::type-hinted-destructure\n  (s/* (s/or :hinted (s/cat :symbol symbol?\n                            :separator #(= :- %)\n                            :schema any?)\n             :not-hinted (s/cat :symbol symbol?))))\n\n(s/conform ::type-hinted-destructure\n           '[[first :- string?]    ; `[first :- string?]` not `first :- string?`\n             [last]])\n;; [[:hinted {:symbol first, :separator :-, :schema string?}] [:not-hinted {:symbol last}]]"],
   :macro true,
   :notes nil,
   :arglists ["& key-pred-forms"],
