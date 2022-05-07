@@ -19304,7 +19304,8 @@
   :see-alsos [:clojure.core/false? :clojure.core/boolean],
   :line 512,
   :examples
-  ["user=> (true? true)\ntrue\nuser=> (true? 1)\nfalse\nuser=> (true? (= 1 1))\ntrue"],
+  ["user=> (true? true)\ntrue\nuser=> (true? 1)\nfalse\nuser=> (true? (= 1 1))\ntrue"
+   "user=> (true? false)\nfalse"],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x"],
