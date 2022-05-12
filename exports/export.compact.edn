@@ -18440,7 +18440,8 @@
    ";; Segregate even and odd numbers in collection.\n\n((juxt (partial filter even?) (partial filter odd?)) (range 0 9))\n;;=> [(0 2 4 6 8) (1 3 5 7)]"
    ";;keywords serve as getter functions to produce an ordered vector\n\n((juxt :lname :fname) {:fname \"Bill\" :lname \"Gates\"})\n=> [\"Gates\" \"Bill\"]"
    ";; sort by two values\n\n(sort-by (juxt :a :b) [{:a 2 :b 4} {:a 1 :b 2} {:a 2 :b 1}])\n=> ({:a 1, :b 2} {:a 2, :b 1} {:a 2, :b 4})"
-   ";; something similar to group-by\n\n(def split-by (juxt filter remove))\n\n(split-by pos? [-1 -2 4 5 3 -9])\n=> [(4 5 3) (-1 -2 -9)]\n"],
+   ";; something similar to group-by\n\n(def split-by (juxt filter remove))\n\n(split-by pos? [-1 -2 4 5 3 -9])\n=> [(4 5 3) (-1 -2 -9)]\n"
+   ";; Extract nested value from the map\n\n((juxt :a #(get-in % [:c :d])) {:a 1 :b 2 :c {:d 2}})\n=> [1 2]"],
   :notes
   ["I kinda love this fn =)"
    "\"reduce1\" -> \"reduce\"\r\n\r\ncore sources from 33 line to 37 line"],
