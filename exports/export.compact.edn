@@ -24901,7 +24901,10 @@
   :file "clojure/core/async.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core.async/tap :clojure.core.async/untap],
+  :see-alsos
+  [:clojure.core.async/tap
+   :clojure.core.async/untap
+   :clojure.core.async/mix],
   :line 669,
   :examples
   ["user=> (def sz 20)\n#'user/sz\n\nuser=> (def c (chan sz))\n#'user/c\n\nuser=> (def mult-c (mult c))\n#'user/mult-c\n\nuser=> (def cx (chan sz))\n#'user/cx\n\nuser=> (def cy (chan sz))\n#'user/cy\n\nuser=> (def cz (chan sz))\n#'user/cz\n\nuser=> (tap mult-c cx)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@63942268>\n\nuser=> (tap mult-c cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@1f025346>\n\nuser=> (tap mult-c cz)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@29d4cd91>\n\nuser=> (put! c \"sent to all\")\ntrue\n\nuser=> (<!! cx)\n\"sent to all\"\n\nuser=> (<!! cy)\n\"sent to all\"\n\nuser=> (<!! cz)\n\"sent to all\"\n\n"
