@@ -10532,7 +10532,10 @@
   :type "function",
   :column 1,
   :see-alsos
-  [:clojure.core/ns-resolve :clojure.core/symbol :clojure.core/deref],
+  [:clojure.core/ns-resolve
+   :clojure.core/symbol
+   :clojure.core/deref
+   :clojure.core/requiring-resolve],
   :line 4372,
   :examples
   ["user=> ((-> \"first\" symbol resolve) [1 2 3])\n1"
@@ -16565,7 +16568,9 @@
    :clojure.core/import
    :clojure.core/use
    :clojure.core/ns
-   :clojure.core/refer],
+   :clojure.core/refer
+   :clojure.core/requiring-resolve
+   :clojure.core/resolve],
   :line 6007,
   :examples
   [";; Require clojure.java.io and call its file function:\n\nuser=> (require '(clojure.java.io))\nuser=> (clojure.java.io/file \"filename\")\n#<File filename>"
@@ -16574,7 +16579,8 @@
    "(require '(clojure.contrib [sql :as sql]))"
    "(ns myproject.core\n  (:use [clojure.core] :reload)\n  (:require [clojure.string :as str :refer [replace]] :reload-all))\n\n(str/replace \"foo\" #\"o\" \"e\")\n\"fee\"\n\n; similar but using a prefix.\n(ns myproject.core\n  (:require (clojure [core]\n                     [string :as str :refer [replace]] ))) \n\n"
    "; rename a function name (thanks for @noisesmith)\n; rename 'clojure.repl/doc' to 'd'\nuser=> (require '[clojure.repl :as r :refer [doc] :rename {doc d}])\nnil\nuser=> (d doc)\n-------------------------\nclojure.repl/doc\n([name])\nMacro\n  Prints documentation for a var or special form given its name\nnil\n"
-   ";; Note that require is known _not_ to be thread safe in Clojure 1.10.x and\n;; earlier, so avoid calling it concurrently from multiple threads.\n\n;; See https://ask.clojure.org/index.php/9893/require-is-not-thread-safe\n;; for some thoughts on approaches to using require from multiple threads\n;; safely, which today boils down to \"use locks to make all calls to require\n;; guaranteed to execute one at a time\"."],
+   ";; Note that require is known _not_ to be thread safe in Clojure 1.10.x and\n;; earlier, so avoid calling it concurrently from multiple threads.\n\n;; See https://ask.clojure.org/index.php/9893/require-is-not-thread-safe\n;; for some thoughts on approaches to using require from multiple threads\n;; safely, which today boils down to \"use locks to make all calls to require\n;; guaranteed to execute one at a time\"."
+   ";; Watch out for the Gilardi scenario: https://technomancy.us/143\n;; If you need to refer to the required symbols in the same block\n;; of code as it is being defined, that will only work at top level\n;; and in top-level `do`:\n\n(do\n  (require '[clojure.set :as c-set])\n  (c-set/union #{1} #{2})) ; => #{\"1\" \"2\"}\n\n;; It won't work here, because the compiler does not know about\n;; `c-set` when it tries to compile the form:\n\n(->> [\"1\" \"2\"]\n     (reduce (fn [acc v]\n               (require '[clojure.set :as c-set])\n               (c-set/union acc #{v}))\n             #{})) ; => Syntax error compiling at ...\n                   ;    No such namespace: c-set\n\n;; A solution is to move the use of the required symbol to run-time.\n;; E.g. with `resolve`:\n\n(->> [\"1\" \"2\"]\n     (reduce (fn [acc v]\n               (require '[clojure.set :as c-set])\n               ((resolve 'c-set/union) acc #{v}))\n             #{})) ; => #{\"1\" \"2\"}\n\n;; At which point `requiring-resolve` might be clearer:\n\n(->> [\"1\" \"2\"]\n     (reduce (fn [acc v]\n               ((requiring-resolve 'clojure.set/union) acc #{v}))\n             #{})) ; => #{\"1\" \"2\"}"],
   :notes
   ["Good description of use/require/import here:\r\n\r\nhttp://blog.8thlight.com/articles/2010/12/6/clojure-libs-and-namespaces-require-use-import-and-ns"],
   :arglists ["& args"],
