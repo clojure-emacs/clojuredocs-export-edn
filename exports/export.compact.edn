@@ -9923,7 +9923,8 @@
   :see-alsos nil,
   :line 1755,
   :examples
-  [";; Usage: (membero x l)\n\n(run* [q]\n  (membero :a [q :b :c])) ;; :a\n(run* [q]\n  (membero q [:a :b :c])) ;; [:a :b :c]\n"],
+  [";; Usage: (membero x l)\n\n(run* [q]\n  (membero :a [q :b :c])) ;; :a\n(run* [q]\n  (membero q [:a :b :c])) ;; [:a :b :c]\n"
+   " (run* [q]\n   (membero q [1 2 3])\n   (membero q [2 3 4])) ;;=> (2 3)"],
   :notes nil,
   :arglists ["x l"],
   :doc "A relation where l is a collection, such that l contains x.",
