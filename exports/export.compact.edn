@@ -22683,7 +22683,7 @@
   :line 1156,
   :examples
   ["(require '[clojure.core.logic :as logic :refer [run* ==])\n\n(run* [q]\n  (== q 1))\n;; (1)\n\n(run* [q]\n  (== q [1 2 3]))\n;; ([1 2 3])\n\n(run* [q]\n  (== [1 q 3] [1 2 3]))\n;; (2)"],
-  :notes nil,
+  :notes ["==, or unify"],
   :arglists ["u v"],
   :doc "A goal that attempts to unify terms u and v.",
   :library-url "https://github.com/clojure/clojure",
