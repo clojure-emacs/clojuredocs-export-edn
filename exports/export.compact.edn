@@ -20176,7 +20176,8 @@
   :examples
   ["user=> (distinct [1 2 1 3 1 4 1 5])\n(1 2 3 4 5)"
    "user=> (def fractions \n         (for [n (range 1 100) d (range (inc n) 100)] \n           (let [gcd (clojure.contrib.math/gcd n d)] \n             (/ (/ n gcd) (/ d gcd)))))\n;; all irreducible fractions with denominator < 100\n;; (1/2 1/3 ... 1/99 2/3 1/2 2/5 1/3 ...)\n\nuser=> (count fractions)\n4851\n\nuser=> (count (distinct fractions))\n3003\n"
-   "user=> (distinct [1/2 2/4])\n(1/2)\n\nuser=> (distinct [1/2 0.5])\n(1/2 0.5)"],
+   "user=> (distinct [1/2 2/4])\n(1/2)\n\nuser=> (distinct [1/2 0.5])\n(1/2 0.5)"
+   "user=> (apply str (distinct \"tattoo\"))\n\"tao\""],
   :notes
   ["If you do not need the lazyness of distinct, set can be faster. Like: (count (set some-coll))."
    "Use this function if you want to remove only consequtive duplicates\r\n\r\n    (defn distinct-consequtive [sequence] (map first (partition-by identity sequence)))\r\n\r\n    (distinct-consequtive [1 1 2 3 3 2 2 3])\r\n    ;=> (1 2 3 2 3)"
