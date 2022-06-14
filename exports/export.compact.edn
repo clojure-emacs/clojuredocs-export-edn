@@ -19831,7 +19831,9 @@
    ";; increment a map value\n(def m1 (atom {:a \"A\" :b \"B\" :n 0}))\n;; atom\n\n;; dereference the atom\n@m1\n;;=> {:a \"A\", :b \"B\", :n 0}\n\n;; notice that the value swapped in, is part of the returned value\n(swap! m1 update-in [:n] inc)\n;;=> {:a \"A\", :b \"B\", :n 1}"
    "(def car\n  (atom {:make \"Audi\"\n         :model \"Q3\"}))\n\n@car\n;;{:make \"Audi\", :model \"Q3\"}\n\n(swap!\n car\n assoc :model \"Q5\")\n;;{:make \"Audi\", :model \"Q5\"}\n\n(swap!\n car\n update-in [:model] str \" Sport\")\n;;{:make \"Audi\", :model \"Q5 Sport\"}"
    ";; Update vector inside map\n(def data (atom {:name \"hello\" :nums []}))\n\n@data\n;; {:name \"hello\" :nums []}\n\n(swap! data update :nums conj {:first 1 :second 2})\n;; {:name \"hello\" :nums [{:first 1 :second 2}]}\n"],
-  :notes ["If you want to swap the entire atom, user `reset!`."],
+  :notes
+  ["If you want to swap the entire atom, user `reset!`."
+   "When using `swap!`, it's important you're *only* taking into consideration the\nvalue of the atom *inside* `f`. See https://ericnormand.me/mini-guide/atom-code-explanation for more information."],
   :arglists ["atom f" "atom f x" "atom f x y" "atom f x y & args"],
   :doc
   "Atomically swaps the value of atom to be:\n  (apply f current-value-of-atom args). Note that f may be called\n  multiple times, and thus should be free of side effects.  Returns\n  the value that was swapped in.",
