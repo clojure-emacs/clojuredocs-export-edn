@@ -25649,8 +25649,7 @@
   :examples
   [";; NOTICE!\n;; `pipeline-async` has different syntax, in it's `af` function, \n;; than the other 2 `pipeline` fns\n\n(def ca> (chan 1))\n(def cb> (chan 1))\n(defn c-af [val result] ; notice the signature is different for `pipeline-async`, it includes a channel\n  (go (<! (timeout 1000))\n      (>! result (str val \"!!!\"))\n      (close! result)))\n(pipeline-async\n 1\n cb>\n c-af\n ca>)\n(go (println (<! cb>)))\n(go (>! ca> \"hello\"))"],
   :notes
-  ["I think the phrase `af must close! the channel before returning.` is confusing, and should be changed to something along the lines of `af must close! the channel before the async operation completes`."
-   "I tried several times with the demo, but cannot get the result. Should we put the message to cb> instead of result?\n<pre>\n (go (<! (timeout 1000))\n      (>! cb> (str val \"!!!\"))\n      (close! result)))\n<pre/>"],
+  ["I think the phrase `af must close! the channel before returning.` is confusing, and should be changed to something along the lines of `af must close! the channel before the async operation completes`."],
   :arglists ["n to af from" "n to af from close?"],
   :doc
   "Takes elements from the from channel and supplies them to the to\n  channel, subject to the async function af, with parallelism n. af\n  must be a function of two arguments, the first an input value and\n  the second a channel on which to place the result(s). af must close!\n  the channel before returning.  The presumption is that af will\n  return immediately, having launched some asynchronous operation\n  (i.e. in another thread) whose completion/callback will manipulate\n  the result channel. Outputs will be returned in order relative to\n  the inputs. By default, the to channel will be closed when the from\n  channel closes, but can be determined by the close?  parameter. Will\n  stop consuming the from channel if the to channel closes. See also\n  pipeline, pipeline-blocking.",
