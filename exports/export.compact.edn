@@ -1273,7 +1273,8 @@
   :column 1,
   :see-alsos nil,
   :line 145,
-  :examples nil,
+  :examples
+  ["(fd/finite-domain? (fd/domain 0 1));; => true\n(fd/finite-domain? (fd/interval 0 1));; => false"],
   :notes nil,
   :arglists ["x"],
   :library-url "https://github.com/clojure/clojure",
@@ -16654,10 +16655,12 @@
   :file "clojure/core/logic/fd.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos
+  [:clojure.core.logic.fd/domain :clojure.core.logic.fd/interval],
   :line 646,
   :examples
-  ["(logic/run* [x y]\n  (fd/in x y (fd/interval 0 10))\n  (fd/+ x y 10))\n;; => ([0 5] [1 4] [2 3] [3 2] [4 1] [5 0])"],
+  ["(logic/run* [x y]\n  (fd/in x y (fd/interval 0 5))\n  (fd/+ x y 5))\n;; => ([0 5] [1 4] [2 3] [3 2] [4 1] [5 0])"
+   ";; Modelling the possible combination of values of 2 coin tosses\n;; heads - 1, tails - 0; or vice-versa\n(logic/run* [coin-1 coin-2]\n  (let [coin (fd/domain 0 1)]\n    (fd/in coin-1 coin-2 coin)))\n;; => ([0 0] [1 0] [0 1] [1 1])"],
   :macro true,
   :notes nil,
   :arglists ["& xs-and-dom"],
@@ -18477,7 +18480,8 @@
    :clojure.core/juxt
    :clojure.core/mapv
    :clojure.core/reduce
-   :clojure.core/run!],
+   :clojure.core/run!
+   :clojure.core/filter],
   :line 2727,
   :examples
   ["(map inc [1 2 3 4 5])\n;;=> (2 3 4 5 6)\n\n\n;; map can be used with multiple collections. Collections will be consumed\n;; and passed to the mapping function in parallel:\n(map + [1 2 3] [4 5 6])\n;;=> (5 7 9)\n\n\n;; When map is passed more than one collection, the mapping function will\n;; be applied until one of the collections runs out:\n(map + [1 2 3] (iterate inc 1))\n;;=> (2 4 6)\n\n\n\n;; map is often used in conjunction with the # reader macro:\n(map #(str \"Hello \" % \"!\" ) [\"Ford\" \"Arthur\" \"Tricia\"])\n;;=> (\"Hello Ford!\" \"Hello Arthur!\" \"Hello Tricia!\")\n\n;; A useful idiom to pull \"columns\" out of a collection of collections. \n;; Note, it is equivalent to:\n;; user=> (map vector [:a :b :c] [:d :e :f] [:g :h :i])\n\n(apply map vector [[:a :b :c]\n                   [:d :e :f]\n                   [:g :h :i]])\n\n;;=> ([:a :d :g] [:b :e :h] [:c :f :i])\n\n;; From http://clojure-examples.appspot.com/clojure.core/map"
