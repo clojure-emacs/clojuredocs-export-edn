@@ -1151,7 +1151,8 @@
   :see-alsos [:clojure.core/byte-array :clojure.core/bytes?],
   :line 5353,
   :examples
-  [";; for fast interop\n(bytes (byte-array (map (comp byte int) \"ascii\")))\n;=> #<byte[] [B@7a004f62>\n(def the-bytes *1)\n;=> #'user/the-bytes\n(defn get-byte [the-bytes i] (aget the-bytes i))\n;=> #'user/get-byte Reflection warning, NO_SOURCE_PATH:1 - call to aget can't be resolved.\n\n(defn get-byte [the-bytes i] \n   (let [the-bytes (bytes the-bytes)] \n      (aget the-bytes i)))\n;=> #'user/get-byte\n(get-byte the-bytes 0)\n;=> 97\n"],
+  [";; for fast interop\n(bytes (byte-array (map (comp byte int) \"ascii\")))\n;=> #<byte[] [B@7a004f62>\n(def the-bytes *1)\n;=> #'user/the-bytes\n(defn get-byte [the-bytes i] (aget the-bytes i))\n;=> #'user/get-byte Reflection warning, NO_SOURCE_PATH:1 - call to aget can't be resolved.\n\n(defn get-byte [the-bytes i] \n   (let [the-bytes (bytes the-bytes)] \n      (aget the-bytes i)))\n;=> #'user/get-byte\n(get-byte the-bytes 0)\n;=> 97\n"
+   ";; byte-array will convert where possible\n(byte-array [127 128 129]);; => [127, -128, -127]\n\n;; bytes will not\n(try (bytes [127 128 129])\n     (catch ClassCastException e (ex-message e)))\n;; => \"clojure.lang.PersistentVector cannot be cast to [B\"\n"],
   :notes
   ["Why is the `(comp byte int)` required in the example? This seems to work just as well:\r\n\r\n<pre>\r\nuser=> (def b (bytes (byte-array (map byte \"ascii\"))))\r\nuser=> (String. b)\r\n\"ascii\"\r\n</pre>"
    "For that matter, why is the `bytes` needed? Consider:\r\n\r\n<pre>\r\nuser=> (String. (byte-array (map byte \"ascii\")))\r\n\"ascii\"\r\n</pre>\r\n"
@@ -4871,7 +4872,7 @@
   [";; `list*` function:\nuser=> (list* 1 [2 3])\n(1 2 3)\nuser=> (list* 1 2 [3 4])\n(1 2 3 4)\n\n;; compared to regular `list` function:\nuser=> (list 1 [2 3])\n(1 [2 3])\nuser=> (list 1 2 [3 4])\n(1 2 [3 4])\n\n;; Corner cases:\nuser=> (list* nil [1 2])\n(nil 1 2)\nuser=> (list* 1 nil)\n(1)\nuser=> (list* () [1 2])\n(() 1 2)\nuser=> (list* 1 ())\n(1)\n"
    ";;Prepend a map to a list\nuser=> (list* {:name \"Anne\"} [{:city \"NJ\"}]) \n({:name \"Anne\"} {:city \"NJ\"})"
    ";; Useful if you want to get all the arguments of a function into a list (actually a seq, but that is not important)\n(defn args-to-list [a b c & args]\n  (list* a b c args))\n\nuser=> (args-to-list 1 2 3 4 5 6)\n(1 2 3 4 5 6)\n\n;; same as list, but it expects the last element to be a sequence which is then unpacked \n\n;; Example usage in the wild\n(defn my-max\n  ([a] a)\n  ([a b] (if (> a b) a b))\n  ([a b & args] (reduce my-max (list* a b args))))\n\n"
-   ";; `list*` function:\nuser=> (list* 1 (2 3))\n(1 2 3)\n\nuser=> (list* 1 2 (3 4))\n(1 2 3 4)"],
+   ";; `list*` function:\nuser=> (list* 1 '(2 3))\n(1 2 3)\n\nuser=> (list* 1 2 '(3 4))\n(1 2 3 4)"],
   :notes
   ["The doc string mentions returning a new list, but it should say a new sequence.  Surprisingly, `list*` typically does not return an actual list. Instead, it usually returns a Cons, which works as a seq, but is not strictly a list.  \n\n```\n(list? (list* 1 '(2 3)))\n;=> false\n\n(type (list* 1 '(2 3)))\n;=> clojure.lang.Cons\n\n(first (list* 1 '(2 3)))\n;=> 1\n\n(peek (list* 1 '(2 3)))\nClassCastException clojure.lang.Cons cannot be cast to clojure.lang.IPersistentStack\n\n(list? (list* '(2 3)))\n;=> true\n\n(list? (into () (list* 1 '(2 3))))\n;=> true\n```\n\nI think `seq*` would have been a better name for this function."],
   :arglists ["args" "a args" "a b args" "a b c args" "a b c d & more"],
@@ -5885,9 +5886,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/double-array],
   :line 5378,
-  :examples nil,
+  :examples
+  [";; double-array will convert where possible\n(double-array [1 2 3]);; => [1.0, 2.0, 3.0]\n\n;; doubles will not\n(try (doubles [1 2 3])\n     (catch ClassCastException e (ex-message e)))\n;; => \"clojure.lang.PersistentVector cannot be cast to [D\""],
   :notes
   ["Anybody know what this is used for?\r\nAll I could find is that you can cast an existing double-array to another \r\ndouble-array???\r\n\r\n<pre>user=&gt; (doubles [1 2 3 4 5])\r\njava.lang.ClassCastException: clojure.lang.PersistentVector cannot be cast to [D (NO_SOURCE_FILE:0)\r\nuser=&gt; (doubles (int-array [2 3 2]))\r\njava.lang.ClassCastException: [I cannot be cast to [D (NO_SOURCE_FILE:0)\r\nuser=&gt; (doubles (float-array [2 3 2]))\r\njava.lang.ClassCastException: [F cannot be cast to [D (NO_SOURCE_FILE:0)\r\nuser=&gt; (doubles (double-array [2 3 2]))\r\n#<double[] [d@3c1fc1a6=\"\">\r\nuser=&gt; (type (double-array [2 3 2]))\r\n[D\r\nuser=&gt; (type (doubles (double-array [2 3 2])))\r\n[D\r\nuser=&gt;\r\n</pre>\r\n"],
   :arglists ["xs"],
@@ -7092,7 +7094,8 @@
    :clojure.core/ref],
   :line 2463,
   :examples
-  ["user=> (def store (ref {}))\n#'user/store\nuser=> (ref-history-count store)\n0\nuser=> (ref-max-history store)\n10\nuser=> (ref-min-history store)\n0"],
+  ["user=> (def store (ref {}))\n#'user/store\nuser=> (ref-history-count store)\n0\nuser=> (ref-max-history store)\n10\nuser=> (ref-min-history store)\n0"
+   ";; ref must have a :min-history of >0 to use the history queue\n\n(def r (ref 42 :min-history 2));; => #'user/r\n(ref-history-count r);; => 0\n(dosync (alter r inc));; => 43\n(ref-history-count r);; => 1\n(dosync (alter r inc));; => 44\n(ref-history-count r);; => 2"],
   :notes nil,
   :arglists ["ref"],
   :doc "Returns the history count of a ref",
@@ -11096,7 +11099,7 @@
   :line 54,
   :examples
   [";; Special characters are escaped\n\n(use '[clojure.string :only (re-quote-replacement)])\n\nuser=> (re-quote-replacement \"string \\\\ $\")\n\"string \\\\\\\\ \\\\$\""
-   ";; Use with s/replace to prevent unwanted reference\n;; to matching groups (i.e. $1, $2 etc.)\n\n(require '[clojure.string :as s])\n(def s \"May 2018, June 2019\")\n(s/replace s #\"May|June\" \"10$\") ;; IllegalArgumentException\n(s/replace s #\"May|June\" (s/re-quote-replacement \"10$ in\"))\n;; \"1$ in 2018, 1$ in 2019\""],
+   ";; Use with s/replace to prevent unwanted reference\n;; to matching groups (i.e. $1, $2 etc.)\n\n(require '[clojure.string :as s])\n(def s \"May 2018, June 2019\")\n(s/replace s #\"May|June\" \"10$\") ;; IllegalArgumentException\n(s/replace s #\"May|June\" (s/re-quote-replacement \"10$ in\"))\n;; \"10$ in 2018, 10$ in 2019\""],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["replacement"],
@@ -11718,7 +11721,8 @@
   :column 1,
   :see-alsos [:clojure.core/long-array],
   :line 5383,
-  :examples nil,
+  :examples
+  ["(def my-floats (float-array [1.1 2.2 3.3]));; => #'user/my-floats\n\n;; long-array will convert where possible\n(long-array my-floats);; => [1, 2, 3]\n\n;; longs will not\n(try (longs my-floats)\n     (catch ClassCastException e (ex-message e)));; => \"[F cannot be cast to [J\""],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to long[]",
@@ -13790,7 +13794,8 @@
   :column 1,
   :see-alsos [:clojure.core/short-array],
   :line 5363,
-  :examples nil,
+  :examples
+  [";; short-array will convert where possible\n(short-array [32767 32768 32769]);; => [32767, -32768, -32767]\n\n;; shorts will not\n(try (shorts [32767 32768 32769])\n     (catch ClassCastException e (ex-message e)))\n;; => \"clojure.lang.PersistentVector cannot be cast to [S\"\n"],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to shorts[]",
@@ -17508,7 +17513,8 @@
   :column 1,
   :see-alsos nil,
   :line 83,
-  :examples nil,
+  :examples
+  [";; where o is an object to be printed, and w is a java.io.Writer\n;; prints metadata if *print-dup* or *print-meta* & *print-readably* are truthy\n;; stringifies and writes the object to the writer\n\n;; We can bind *out* to a writer and return that\n(let [s (java.io.StringWriter.)]\n  (binding [*out* s]\n    (print \"Hello!\")\n    (str s)))\n;; => \"Hello!\"\n\n;; Or we can use print-simple with no binding necessary\n(let [s (java.io.StringWriter.)]\n  (print-simple \"Hello!\" s)\n  (str s))\n;; => \"Hello!\"\n"],
   :notes nil,
   :arglists ["o w"],
   :library-url "https://github.com/clojure/clojure",
@@ -19146,7 +19152,7 @@
   :examples
   ["(def letters (set \"abcdefghijklmnopqrstuvwxyz\"))\n(def vowels (set \"aeiou\"))\n\n;; Remove the vowels from a string.\n(transduce (remove vowels) str \"hello\")\n;;=> \"hll\"\n\n;; Same, but halt when seeing a non-letter (and return that non-letter).\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello\")\n;;=> \"hll\"\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello world\")\n;;=> \\space\n"
    ";; \"halt-when\" can only really be used with \"transduce\", but not with other\n;; functions that support transducers like \"into\" or \"sequence\".\n\n(def v (vec (concat (range 5) [:x])))\n(def xf (comp (take 10) (halt-when keyword?) (map inc)))\n\n(transduce xf conj [] v)\n;;=> :x\n\n(into [] xf v)\n;;=> ClassCastException!\n;; Clojure 1.11.0 Alpha 4 updates \"into\" so that this works and produces:\n;;=> :x\n\n(sequence xf v)\n;;=> (1 2 3 4 5), wrong result!\n"
-   ";; Using the second argument in alt-when\n\n(transduce\n (comp (halt-when #{30}                ;; stop at 30th item\n                  (fn [acc itm] acc))) ;; return all items so far\n (completing conj #(reduce + %))       ;; sums items on exit\n (range))\n;; 435"],
+   ";; Using the second argument in halt-when\n\n(transduce\n (comp (halt-when #{30}                ;; stop at 30th item\n                  (fn [acc itm] acc))) ;; return all items so far\n (completing conj #(reduce + %))       ;; sums items on exit\n (range))\n;; 435"],
   :notes
   ["`halt-when` is an odd transducer in that it is supposed to be used with `transduce`, but not in other transducible contexts like `sequence` or `into`.\n\nSays Alex Miller at https://dev.clojure.org/jira/browse/CLJ-1451: ‘Yeah, halt-when is a little tricky to use in transducible contexts other than transduce.’ Some more discussion at https://groups.google.com/d/msg/clojure/6HvmJIUsXKk/gLqUsfcnAwAJ.\n"],
   :arglists ["pred" "pred retf"],
@@ -22635,7 +22641,8 @@
   :column 1,
   :see-alsos [:clojure.core/int-array],
   :line 5373,
-  :examples nil,
+  :examples
+  ["(def my-floats (float-array [1.1 2.2 3.3]));; => #'user/my-floats\n\n;; int-array will convert where possible\n(int-array my-floats);; => [1, 2, 3]\n\n;; ints will not\n(try (ints my-floats)\n     (catch ClassCastException e (ex-message e)));; => \"[F cannot be cast to [I\"\n"],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to int[]",
@@ -23234,7 +23241,8 @@
   :see-alsos [:clojure.core/char-array],
   :line 5358,
   :examples
-  ["user=> (seq (chars (char-array \"this is a good one\")))\n(\\t \\h \\i \\s \\space \\i \\s \\space \\a \\space \\g \\o \\o \\d \\space \\o \\n \\e)"],
+  ["user=> (seq (chars (char-array \"this is a good one\")))\n(\\t \\h \\i \\s \\space \\i \\s \\space \\a \\space \\g \\o \\o \\d \\space \\o \\n \\e)"
+   ";; char-array will convert where possible\n(char-array \"foo\");; => [\\f, \\o, \\o]\n\n;; chars will not\n(try (chars \"foo\")\n     (catch ClassCastException e (ex-message e)))\n;; => \"java.lang.String cannot be cast to [C\"\n"],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to chars[]",
