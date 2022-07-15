@@ -12247,10 +12247,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/aset :clojure.core/aget],
   :line 5277,
   :examples
-  ["user=> (float-array [1 2 3])\n#<float[] [F@4d8dfa76>"
+  ["user=> (float-array [1 2 3])\n#<float[] [F@4d8dfa76>\nuser=> (aget *1 2)\n3.0\n"
    "user=> (def f (float-array [1 2 3]))\n#'user/f\n\nuser=> f\n#object[\"[F\" 0x56ce4eda \"[F@56ce4eda\"]\n\n;;You can transform the array back into a Clojure vector with vec\nuser=> (vec f)\n[1.0 2.0 3.0]\n\n;;Also with into, works with list vector and set but not map\nuser=> (into [] f)\n[1.0 2.0 3.0]\n\nuser=> (into () f)\n(3.0 2.0 1.0)\n\nuser=> (into #{} f)\n=> #{3.0 2.0 1.0}\n\nuser=> (into {} f)\nExecution error (IllegalArgumentException) at user/eval1691 \n(form-init8077017244851884694.clj:1).\nDon't know how to create ISeq from: java.lang.Float"
    ";;Works for vector, list and set\nuser=> (float-array [1 2 3])\n#object[\"[F\" 0x6a86faa1 \"[F@6a86faa1\"]\n\nuser=> (float-array '(1 2 3))\n#object[\"[F\" 0xd5e9fe8 \"[F@d5e9fe8\"]\n\nuser=> (float-array #{1 2 3})\n#object[\"[F\" 0x7b327946 \"[F@7b327946\"]\n\n;;But not map\nuser=> (float-array {1 2})\nExecution error (ClassCastException) at user/eval2022 \n(form-init8077017244851884694.clj:1).\nclojure.lang.MapEntry cannot be cast to java.lang.Number"],
   :notes nil,
