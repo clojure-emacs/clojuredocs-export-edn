@@ -504,9 +504,10 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/set-error-mode!],
   :line 2229,
-  :examples nil,
+  :examples
+  ["(def a (agent 42))\n(error-mode a);; => :fail\n\n(set-error-mode! a :continue)\n(error-mode a);; => :continue"],
   :notes nil,
   :arglists ["a"],
   :doc "Returns the error-mode of agent a.  See set-error-mode!",
@@ -6517,7 +6518,8 @@
    ";; See examples for \"if\" explaining Clojure's idea of logical true\n;; and logical false."
    ";;evaluates last expression for this case\nuser> (or nil false)\nfalse\n\nuser> (or false nil)\nnil"
    ";; Defaulted value\nuser> (or nil \"crazy default value\")\ncrazy default value\n\nuser> (or \"value\" \"not useful default value\")\nvalue"
-   ";; It cares about function's return. Example:\n;; println returns 'nil', so the next param will be evaluated.\n(or (println \"Clojure\") true \"Code\" false)\nClojure\n;;=>true\n"],
+   ";; It cares about function's return. Example:\n;; println returns 'nil', so the next param will be evaluated.\n(or (println \"Clojure\") true \"Code\" false)\nClojure\n;;=>true\n"
+   ";; `or` is a macro, so can't be given where a fn is expected\n(map or [true false] [false false])\n;; => Syntax error compiling at ...\n;; => Can't take value of a macro: #'clojure.core/or\n\n;; wrap in a fn instead\n(map #(or %1 %2) [true false] [false false])\n;; => (true false)"],
   :macro true,
   :notes nil,
   :arglists ["" "x" "x & next"],
@@ -7035,9 +7037,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/float-array],
   :line 5368,
-  :examples nil,
+  :examples
+  [";; float-array will convert where possible\n(float-array [1 2 3]);; => [1.0, 2.0, 3.0]\n\n;; floats will not\n(try (floats [1 2 3])\n     (catch ClassCastException e (ex-message e)))\n;; => \"clojure.lang.PersistentVector cannot be cast to [F\""],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to float[]",
