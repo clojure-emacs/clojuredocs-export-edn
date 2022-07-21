@@ -19151,7 +19151,7 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/transduce],
   :line 7631,
   :examples
   ["(def letters (set \"abcdefghijklmnopqrstuvwxyz\"))\n(def vowels (set \"aeiou\"))\n\n;; Remove the vowels from a string.\n(transduce (remove vowels) str \"hello\")\n;;=> \"hll\"\n\n;; Same, but halt when seeing a non-letter (and return that non-letter).\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello\")\n;;=> \"hll\"\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello world\")\n;;=> \\space\n"
