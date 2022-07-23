@@ -5514,7 +5514,8 @@
   :column 1,
   :see-alsos nil,
   :line 1163,
-  :examples nil,
+  :examples
+  ["(unchecked-dec-int 42);; => 41\n(unchecked-dec-int 42.2);; => 41\n(unchecked-dec-int Integer/MIN_VALUE);; => 2147483647"],
   :notes nil,
   :arglists ["x"],
   :doc
@@ -8846,7 +8847,8 @@
   :column 1,
   :see-alsos nil,
   :line 1149,
-  :examples nil,
+  :examples
+  ["(unchecked-inc-int 42);; => 43\n(unchecked-inc-int 42.8);; => 43\n(unchecked-inc-int Integer/MAX_VALUE);; => -2147483648"],
   :notes nil,
   :arglists ["x"],
   :doc
