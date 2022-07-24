@@ -7368,7 +7368,8 @@
    "(ns http)\n\n(defn post [url]\n  {:body \"Hello world\"})\n\n(ns app\n  (:require [clojure.test :refer [deftest is run-tests]]))\n\n(deftest is-a-macro\n  (with-redefs [http/post (fn [url] {:body \"Goodbye world\"})]\n    (is (= {:body \"Goodbye world\"} (http/post \"http://service.com/greet\")))))\n\n(run-tests) ;; test is passing"
    ";; be careful, with-redefs can permanently change a var if applied concurrently:\n\nuser> (defn ten [] 10)\n#'user/ten\nuser> (doall (pmap #(with-redefs [ten (fn [] %)] (ten)) (range 20 100)))\n...\nuser> (ten)\n79"
    ";; redefine var\n(def foo 1)\n#'user/foo\n(with-redefs [foo 2] foo)\n2\n\n;; redefine private var\n(ns first)\n(def ^:private foo 1)\n#'first/foo\n\n(ns second)\n(with-redefs [first/foo 2] @#'first/foo)\n2\n\n;; @#' is the macros of (deref (var first/foo))\n(with-redefs [first/foo 2] (deref (var first/foo))\n2"
-   ";; Vars return to their previous value outside of `with-redefs` body\n\n(with-redefs [first last] (first [1 2]))\n;; => 2\n((with-redefs [first last] #(first [1 2])))\n;; => 1"],
+   ";; Vars return to their previous value outside of `with-redefs` body\n\n(with-redefs [first last] (first [1 2]))\n;; => 2\n((with-redefs [first last] #(first [1 2])))\n;; => 1"
+   ";; Macros are not stored in vars, so `with-redef` doesn't work on them.\n(defmacro a [] 1)\n=> #'user/a\n(a)\n=> 1\n(with-redefs [a (constantly 2)] (a))\n=> 1"],
   :macro true,
   :notes nil,
   :arglists ["bindings & body"],
