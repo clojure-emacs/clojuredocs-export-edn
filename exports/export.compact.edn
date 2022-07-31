@@ -17672,7 +17672,8 @@
    :clojure.core/partition-all
    :clojure.core/group-by
    :clojure.core/dedupe
-   :clojure.core/sort],
+   :clojure.core/sort
+   :clojure.core/split-with],
   :line 7160,
   :examples
   ["user=> (partition-by #(= 3 %) [1 2 3 4 5])\n((1 2) (3) (4 5))"
@@ -21633,7 +21634,8 @@
   [:clojure.core/split-at
    :clojure.string/split
    :clojure.core/take-while
-   :clojure.core/drop-while],
+   :clojure.core/drop-while
+   :clojure.core/partition-by],
   :line 2992,
   :examples
   ["user=> (split-with (partial >= 3) [1 2 3 4 5])\n[(1 2 3) (4 5)]\n\nuser=> (split-with (partial > 3) [1 2 3 2 1])\n[(1 2) (3 2 1)]\n\nuser=> (split-with (partial > 10) [1 2 3 2 1])\n[(1 2 3 2 1) ()]"
