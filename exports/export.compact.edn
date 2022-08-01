@@ -2343,7 +2343,8 @@
   :column 1,
   :see-alsos nil,
   :line 342,
-  :examples nil,
+  :examples
+  ["```clojure\n(ns my-app.entry \n (:require [clojure.spec.alpha :as s]\n           [clojure.repl :refer [doc]]))\n\n;; the :: macro will automatically prepend current namespace into \n;; the qualified :entry-state spec keyword\n(s/def ::entry-state #{:entered :exited})\n\n;; check it out:\n(doc :my-app.entry/entry-state)\n;; -------------------------\n;; :my-app.entry/entry-state\n;; Spec\n;;  #{:entered :exited}\n```"],
   :macro true,
   :notes nil,
   :arglists ["k spec-form"],
