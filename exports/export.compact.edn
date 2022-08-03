@@ -3766,7 +3766,8 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/dorun :clojure.core/doseq],
+  :see-alsos
+  [:clojure.core/dorun :clojure.core/doseq :clojure.core/run!],
   :line 3148,
   :examples
   [";; Nothing is printed because map returns a lazy-seq\nuser=> (def foo (map println [1 2 3]))\n#'user/foo\n\n;; doall forces the seq to be realized\nuser=> (def foo (doall (map println [1 2 3])))\n1\n2\n3\n#'user/foo\n\n;; where\n(doall (map println [1 2 3]))\n1\n2\n3\n(nil nil nil)"
