@@ -21326,7 +21326,8 @@
   :examples
   [";; cat is handy for untangling nested collections when using transducers\n\n(into [] (comp cat cat (map inc)) [[[1] [2]] [[3] [4]]])\n;; => [2 3 4 5]"
    ";; Remove the need of (mapcat identity coll) idiom:\n(def rota (sequence cat (repeat [\"tom\" \"nick\" \"jane\"])))\n(nth rota 7) ; who's up next week?\n;; nick"
-   ";; combining map-indexed with cat for a \"mapcat-indexed\"\n(into []\n  (comp\n    (map-indexed (fn [index val]\n                   (repeat index val)))\n    cat)\n  (range 5))\n;; => [1 2 2 3 3 3 4 4 4 4]"],
+   ";; combining map-indexed with cat for a \"mapcat-indexed\"\n(into []\n  (comp\n    (map-indexed (fn [index val]\n                   (repeat index val)))\n    cat)\n  (range 5))\n;; => [1 2 2 3 3 3 4 4 4 4]"
+   ";;; a concise and performant way to concat into a vector\n\n(into [] cat [[1 2 3] [4] [5 6 7]])\n;; => [1 2 3 4 5 6 7]\n\n(defn concatv\n  \"Concatenate `xs` and return the result as a vector.\"\n  [& xs]\n  (into [] cat xs))\n\n(concatv '(1 2) [3] [4 5])\n;; => [1 2 3 4 5]\n\n;;; this xducer form is equivalent to the `(vec (concat...` pattern\n(let [x [1 2 3]\n      y 4\n      z [5 6 7]]\n  (= \n    (into [] cat [x [y] z])\n    (vec (concat x [y] z))))\n\n;; => true"],
   :notes nil,
   :arglists ["rf"],
   :doc
