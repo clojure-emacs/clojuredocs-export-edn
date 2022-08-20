@@ -3177,7 +3177,8 @@
   :line 174,
   :examples
   [";; this is the idiomatic vector \n(vector? [1 2 3])\n;;=> true\n\n;; a list is not a vector\n(vector? '(1 2 3))\n;;=> false\n\n;; a list may be converted into a vector\n(vector? (vec '(1 2 3)))\n;;=> true\n\n;; a map is not a vector\n(vector? {:a 1 :b 2 :c 3})\n;;=> false\n\n;; a set is not a vector\n(vector? #{:a :b :c})\n;;=> false\n\n(first {:a 1 :b 2 :c 3})\n;;=> [:c 3]\n(vector? (first {:a 1 :b 2 :c 3}))\n;;=> true"
-   ";; an quoted vector is still a vector\n(vector? '[])\n;;=> true"],
+   ";; an quoted vector is still a vector\n(vector? '[])\n;;=> true"
+   ";; Be careful while traversing data:\n;; map entries are vectors!\n\nuser=> (vector? (first {:a 1}))\ntrue\n\nuser=> (vector? (clojure.lang.MapEntry. :a 1))\ntrue\n\nuser=> (clojure.walk/postwalk\n         #(cond-> % (vector? %) set)\n         {:a [1 1 2 3]})\n; Unhandled java.lang.ClassCastException\n;  class clojure.lang.PersistentHashSet cannot be cast to class\n;  java.util.Map$Entry (clojure.lang.PersistentHashSet is in unnamed module of\n;  loader 'app'; java.util.Map$Entry is in module java.base of loader\n;  'bootstrap')\n\nuser=> (clojure.walk/postwalk\n         #(cond-> %\n            (and (vector? %)\n                 (not (map-entry? %)))\n            set)\n         {:a [1 1 2 3]})\n{:a #{1 3 2}}"],
   :notes nil,
   :arglists ["x"],
   :doc "Return true if x implements IPersistentVector",
@@ -4553,7 +4554,8 @@
   [:clojure.core/seq? :clojure.core/coll? :clojure.core/seqable?],
   :line 6250,
   :examples
-  ["user=> (sequential? '(1 2 3))\ntrue\n\nuser=> (sequential? [1 2 3])\ntrue\n\nuser=> (sequential? (range 1 5))\ntrue\n\nuser=> (sequential? '())\ntrue\n\nuser=> (sequential? [])\ntrue\n\nuser=> (sequential? nil)\nfalse\n\nuser=> (sequential? 1)\nfalse\n\nuser=> (sequential? \"abc\")\nfalse\n\nuser=> (sequential? {:a 2 :b 1})\nfalse\n\nuser=> (sequential? #{1 2 3})\nfalse"],
+  ["user=> (sequential? '(1 2 3))\ntrue\n\nuser=> (sequential? [1 2 3])\ntrue\n\nuser=> (sequential? (range 1 5))\ntrue\n\nuser=> (sequential? '())\ntrue\n\nuser=> (sequential? [])\ntrue\n\nuser=> (sequential? nil)\nfalse\n\nuser=> (sequential? 1)\nfalse\n\nuser=> (sequential? \"abc\")\nfalse\n\nuser=> (sequential? {:a 2 :b 1})\nfalse\n\nuser=> (sequential? #{1 2 3})\nfalse"
+   ";; Be careful while traversing data:\n;; map entries are vectors and thus sequential!\n\nuser=> (sequential? (first {:a 1}))\ntrue\n\nuser=> (sequential? (clojure.lang.MapEntry. :a 1))\ntrue\n\nuser=> (vector? (first {:a 1}))\ntrue\n\nuser=> (vector? (clojure.lang.MapEntry. :a 1))\ntrue\n\nuser=> (clojure.walk/postwalk\n         #(cond-> % (sequential? %) set)\n         {:a [1 1 2 3]})\n; Unhandled java.lang.ClassCastException\n;  class clojure.lang.PersistentHashSet cannot be cast to class\n;  java.util.Map$Entry (clojure.lang.PersistentHashSet is in unnamed module of\n;  loader 'app'; java.util.Map$Entry is in module java.base of loader\n;  'bootstrap')\n\nuser=> (clojure.walk/postwalk\n         #(cond-> %\n            (and (sequential? %)\n                 (not (map-entry? %)))\n            set)\n         {:a [1 1 2 3]})\n{:a #{1 3 2}}\n"],
   :notes
   ["Of the four key collection types, vectors and lists are ordered (aka sequential). Sets and maps are not."],
   :arglists ["coll"],
@@ -22331,7 +22333,8 @@
   :column 1,
   :see-alsos [:clojure.core/tap> :clojure.core/remove-tap],
   :line 7868,
-  :examples nil,
+  :examples
+  [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so every adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"],
   :notes nil,
   :arglists ["f"],
   :doc
