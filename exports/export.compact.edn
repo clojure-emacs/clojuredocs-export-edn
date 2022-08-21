@@ -2736,7 +2736,7 @@
   :see-alsos [:clojure.core.async/thread :clojure.core.async/go],
   :line 430,
   :examples
-  ["(defn fake-fetch []\n  (Thread/sleep 5000) \n  \"Ready!\")\n\n;; returns immediately, prints \"Ready!\" after 5 secs\n(let [c (thread-call fake-fetch)]\n  (go (println (<! c))))"],
+  ["(defn fake-fetch []\n  (Thread/sleep 5000) \n  \"Ready!\")\n\n;; returns immediately, prints \"Ready!\" after 5 secs\n(let [c (thread-call fake-fetch)]\n  (println (<!! c)))"],
   :notes nil,
   :arglists ["f"],
   :doc
@@ -10230,7 +10230,7 @@
   :file "clojure/core/async.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core.async/into :clojure.core.async/to-chan],
   :line 633,
   :examples
   ["user=> (def c (chan))\n#'user/c\n\nuser=> (onto-chan c (range 100))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@2e68de5>\n\nuser=> (<!! c)\n0\nuser=> (<!! c)\n1\nuser=> (<!! c)\n2\n"
