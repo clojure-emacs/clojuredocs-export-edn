@@ -2329,7 +2329,8 @@
   :examples
   ["(first '(:alpha :bravo :charlie))\n;;=> :alpha"
    ";; nil is a valid (but empty) collection.\n(first nil)\n;;=> nil\n\n;; if collection is empty, returns nil.\n(first [])\n;;=> nil\n\n;; if first item in collection is nil, returns nil\n(first [nil])\n;;=> nil"
-   "=> (first [1 2])\n1\n\n=> (first [ [1 2] [3 4] ])\n[1 2]"],
+   "=> (first [1 2])\n1\n\n=> (first [ [1 2] [3 4] ])\n[1 2]"
+   "=> (first \"j\")\n\\j\n\n=> (int (first \"j\"))\n106"],
   :notes nil,
   :arglists ["coll"],
   :doc
@@ -5429,7 +5430,8 @@
    "Notice that it is nondeterministic that return happens first\nor the `print` call happens first. (because they are happening in different threads)\n \nuser> (def a (agent 0))\n=> #'user/a\nuser> a\n=> #agent[{:status :ready, :val 0} 0x591e4e8e]\nuser> (add-watch a :key (fn [k r os ns] (print k r os ns)))\n=> #agent[{:status :ready, :val 0} 0x591e4e8e]\nuser> (send a inc)\n=> #agent[{:status :ready, :val 1} 0x591e4e8e]\n:key #agent[{:status :ready, :val 1} 0x591e4e8e] 0 1\nuser> (send a inc)\n:key #agent[{:status :ready, :val 2} 0x591e4e8e] 1 2\n=> #agent[{:status :ready, :val 2} 0x591e4e8e]\n"
    "(def a (atom {}))\n\n(add-watch a :watcher\n  (fn [key atom old-state new-state]\n    (prn \"-- Atom Changed --\")\n    (prn \"key\" key)\n    (prn \"atom\" atom)\n    (prn \"old-state\" old-state)\n    (prn \"new-state\" new-state)))\n\n(reset! a {:foo \"bar\"})\n\n;; \"-- Atom Changed --\"\n;; \"key\" :watcher\n;; \"atom\" #<Atom@4b020acf: {:foo \"bar\"}>\n;; \"old-state\" {}\n;; \"new-state\" {:foo \"bar\"}\n;; {:foo \"bar\"}"
    ";; The name of my account can change, and I want to update another atom accordingly.\n;; I just take the fourth argument that contains the new state and I ignore the other arguments.\n\n(let [account (atom {:name \"pending\" \n                     :funds 100.50 \n                     :profit-loss 23.45})\n      label-account-name (atom \"no-name-yet\")]\n   (add-watch account :listener-one #(reset! label-account-name (:name %4)))\n   (println \"Before swap:\" @label-account-name)\n   (swap! account assoc :name \"CFD\")\n   (println \"After swap:\" @label-account-name))\n\n;; Before swap: no-name-yet\n;; After swap: CFD"
-   ";; ClojureScript: Log the new value of the ref to console whenever it changes\n\n(def a (atom nil))\n\n(add-watch a :logger #(-> %4 clj->js js/console.log))\n\n(reset! a (my-app/initial-state))"],
+   ";; ClojureScript: Log the new value of the ref to console whenever it changes\n\n(def a (atom nil))\n\n(add-watch a :logger #(-> %4 clj->js js/console.log))\n\n(reset! a (my-app/initial-state))"
+   ";; The example above of user zk is great. \n;; It works the same for agents:\n\n(def a (agent {}))\n;; => #'user/a\n\n(add-watch a :watcher\n  (fn [key agt old-state new-state]\n    (prn \"-- Agent Changed --\")\n    (prn \"key\" key)\n    (prn \"agent\" agt)\n    (prn \"old-state\" old-state)\n    (prn \"new-state\" new-state)))\n;; => #<Agent@7a863978: {}>\n\n(send a assoc :foo \"bar\")\n;; => \"-- Agent Changed --\"\n;;    \"key\" :watcher\n;;    \"agent\" #agent[{:status :ready, :val {:foo \"bar\"}} 0x7a863978]\n;;    \"old-state\" {}\n;;    \"new-state\" {:foo \"bar\"}\n;;    #<Agent@7a863978: {:foo \"bar\"}>\n"],
   :notes
   ["One \"gotcha\" is that atoms `add-watch`es do not always guarantee order semantics. So if you have a watch put `[old-val new-val]` on a channel, and your atom operation is something like `(swap! a inc)`, you may see values in your channel like this:\n\n```\n[0 1]\n[2 3]\n[1 2]\n[3 4]\n[6 7]\n[4 5]\n```\n\nThis is because the watches are dispatched in different threads.\n\n[Source](https://groups.google.com/d/msg/clojure/RI1Pq3E3188/YyqyGq36f1oJ)"],
   :arglists ["reference key fn"],
@@ -14070,7 +14072,8 @@
    ";; A quirk in use with vectors (tested with 1.10.3)\n;; If you throw away the argument to the function, you can add a value to\n;; the end of the vector: \n\n;; Normal, expected behavior:\n(update [1 2 3] 2 (fn [_] 42))\n;;=> [1 2 42]\n\n;; If the index is just past the end, you can append to the vector:\n(update [1 2 3] 3 (fn [_] 42))\n;;=> [1 2 3 42]\n\n;; More than one past end won't work\n(update [1 2 3] 4 (fn [_] 42))\n;;=> Execution error (IndexOutOfBoundsException) at user/eval2049 (form-init3979469036338260438.clj:1).\n\n;; If you don't throw away the argument, and your index is one past\n;; the end of the vector, you'll still get an error:\n\n;; Normal, expected behavior:\n(update [1 2 3] 2 inc)\n;;=> [1 2 4]\n\n;; Here the trick fails:\n(update [1 2 3] 3 inc)\n;;=> Execution error (NullPointerException) at user/eval1985 (form-init8618353961027343980.clj:1)."],
   :notes
   ["But how do you do a pure update idiomatically? So update one value for another?"
-   "To the previous note (alper), you are looking for `assoc`. "],
+   "To the previous note (alper), you are looking for `assoc`. "
+   "in clojure 1.11 there is an [update-vals](https://github.com/clojure/clojure/blob/5ffe3833508495ca7c635d47ad7a1c8b820eab76/src/clj/clojure/core.clj#L8061) and [update-keys](https://github.com/clojure/clojure/blob/5ffe3833508495ca7c635d47ad7a1c8b820eab76/src/clj/clojure/core.clj#L8077) to apply function for all values or all keys respectively"],
   :arglists
   ["m k f" "m k f x" "m k f x y" "m k f x y z" "m k f x y z & more"],
   :doc
