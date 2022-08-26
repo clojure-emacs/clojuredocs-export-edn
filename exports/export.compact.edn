@@ -832,7 +832,8 @@
    :clojure.core/aset-double],
   :line 5317,
   :examples
-  [";; create a double array using double-array\n;; and show it can be used with the standard Java functions\n;; binarySearch and fill\n\nuser=> (def ds (double-array (range 3 20)))\n#'user/ds\nuser=> (type ds)\n[D\nuser=> (vec ds)\n[3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0]\nuser=> (java.util.Arrays/binarySearch ds 10.0)\n7\nuser=> (java.util.Arrays/fill ds 3 8 99.0)\nnil\nuser=> (vec ds)\n[3.0 4.0 5.0 99.0 99.0 99.0 99.0 99.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19\n.0]\nuser=>"],
+  [";; create a double array using double-array\n;; and show it can be used with the standard Java functions\n;; binarySearch and fill\n\nuser=> (def ds (double-array (range 3 20)))\n#'user/ds\nuser=> (type ds)\n[D\nuser=> (vec ds)\n[3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0]\nuser=> (java.util.Arrays/binarySearch ds 10.0)\n7\nuser=> (java.util.Arrays/fill ds 3 8 99.0)\nnil\nuser=> (vec ds)\n[3.0 4.0 5.0 99.0 99.0 99.0 99.0 99.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19\n.0]\nuser=>"
+   "(double-array [1 2.2 3.5])\n;;=> #object[\"[D\" 0x249e3e74 \"[D@249e3e74\"]\n\n(vec (double-array [1 2.2 3.5]))\n;;=> [1.0 2.2 3.5]"],
   :notes nil,
   :arglists ["size-or-seq" "size init-val-or-seq"],
   :doc "Creates an array of doubles",
