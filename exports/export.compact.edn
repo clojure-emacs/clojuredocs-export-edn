@@ -1322,9 +1322,11 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.edn/read-string],
   :line 7725,
-  :examples nil,
+  :examples
+  ["(def x (tagged-literal 'user {:name \"Foo\"}))\n\n(:form x) ;; Get the actual codeform\n;; => {:name \"Foo\"}\n\n(:tag x)  ;; Get the tagged symbol\n;; => user"
+   "(require '[clojure.edn :as edn])\n(edn/read-string {:default tagged-literal} \"#js [1 2 3]\")\n;; => #js [1 2 3]\n"],
   :notes
   ["`tagged-literal` is useful as a value fo `clojure.core/*default-data-reader-fn*`"],
   :arglists ["tag form"],
@@ -9482,7 +9484,8 @@
   :see-alsos
   [:clojure.java.shell/with-sh-dir
    :clojure.java.shell/with-sh-env
-   :clojure.core/future],
+   :clojure.core/future
+   :clojure.core/shutdown-agents],
   :line 79,
   :examples
   ["user=> (use '[clojure.java.shell :only [sh]])\n\n;; Note: The actual output you see from a command like this will look messier.\n;; The output below has had all newline characters replaced with line\n;; breaks.  You would see a big long string with \\n characters in the middle.\nuser=> (sh \"ls\" \"-aul\")\n\n{:exit 0, \n :out \"total 64\ndrwxr-xr-x  11 zkim  staff    374 Jul  5 13:21 .\ndrwxr-xr-x  25 zkim  staff    850 Jul  5 13:02 ..\ndrwxr-xr-x  12 zkim  staff    408 Jul  5 13:02 .git\n-rw-r--r--   1 zkim  staff     13 Jul  5 13:02 .gitignore\n-rw-r--r--   1 zkim  staff  12638 Jul  5 13:02 LICENSE.html\n-rw-r--r--   1 zkim  staff   4092 Jul  5 13:02 README.md\ndrwxr-xr-x   2 zkim  staff     68 Jul  5 13:15 classes\ndrwxr-xr-x   5 zkim  staff    170 Jul  5 13:15 lib\n-rw-r--r--@  1 zkim  staff   3396 Jul  5 13:03 pom.xml\n-rw-r--r--@  1 zkim  staff    367 Jul  5 13:15 project.clj\ndrwxr-xr-x   4 zkim  staff    136 Jul  5 13:15 src\n\", :err \"\"}"
@@ -16536,7 +16539,8 @@
   ["user=> (def my-atom (atom 0))\n#'user/my-atom\n\nuser=> @my-atom\n0\n\nuser=> (swap! my-atom inc)\n1\n\nuser=> @my-atom\n1\n\nuser=> (swap! my-atom (fn [n] (* (+ n n) 2)))\n4\n\nuser=> (reset! my-atom 0)\n0\n\nuser=> @my-atom\n0"
    "user=> (def a (atom #{}))\n#'user/a\n\nuser=>(swap! a conj :tag)\n#{:tag}\n\nuser=> @a\n#{:tag}"
    "user=> (def my-atom (atom 0 :validator even?))\n#'user/my-atom\n\nuser=> @my-atom\n0\n\nuser=> (swap! my-atom inc)\nIllegalStateException Invalid reference state  clojure.lang.ARef.validate (ARef.java:33)\n\nuser=> (swap! my-atom (partial + 2))\n2\n\nuser=> @my-atom\n2"
-   "(def car\n  (atom {:make \"Audi\"\n         :model \"Q3\"}))\n\n@car\n;;{:make \"Audi\", :model \"Q3\"}\n\n(swap!\n car\n assoc :model \"Q5\")\n;;{:make \"Audi\", :model \"Q5\"}\n\n(reset! car {:make \"\" :model \"\"})\n;;{:make \"\", :model \"\"}"],
+   "(def car\n  (atom {:make \"Audi\"\n         :model \"Q3\"}))\n\n@car\n;;{:make \"Audi\", :model \"Q3\"}\n\n(swap!\n car\n assoc :model \"Q5\")\n;;{:make \"Audi\", :model \"Q5\"}\n\n(reset! car {:make \"\" :model \"\"})\n;;{:make \"\", :model \"\"}"
+   "(defn atom? [v]\n  #?(:clj  (instance? clojure.lang.Atom v)\n     :cljs (satisfies? cljs.core/IAtom v)))\n\n(atom? (atom nil)) ;; => true"],
   :notes nil,
   :arglists ["x" "x & options"],
   :doc
@@ -22337,10 +22341,12 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/tap> :clojure.core/remove-tap],
+  :see-alsos
+  [:clojure.core/tap> :clojure.core/remove-tap :clojure.datafy/datafy],
   :line 7868,
   :examples
-  [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so every adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"],
+  [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so every adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"
+   ";; Your tap target function can do interesting things when it receives a value\n;; besides printing it\n(require '[clojure.datafy :refer [datafy]])\n(add-tap (comp prn datafy))\n"],
   :notes nil,
   :arglists ["f"],
   :doc
@@ -24606,7 +24612,8 @@
   [:clojure.edn/read
    :clojure.core/prn-str
    :clojure.core/read-string
-   :clojure.main/load-script],
+   :clojure.main/load-script
+   :clojure.core/tagged-literal],
   :line 37,
   :examples
   [";; The following code is a subset of that found at\n;; http://www.compoundtheory.com/clojure-edn-walkthrough\n;; It illustrates the fact that the readers \n;; 'read' and 'read-string' have symmetric writers\n;; 'prn' and 'prn-str'.\n\n(ns edn-example.core\n    (require [clojure.edn :as edn]))\n \n(def sample-map {:foo \"bar\" :bar \"foo\"})\n \n;; Here you can see that the 'prn-str' is the writer...\n(defn convert-sample-map-to-edn\n    \"Converting a Map to EDN\"\n    []\n    ;; yep, converting a map to EDN is that simple\"\n    (prn-str sample-map))\n \n(println \"Let's convert a map to EDN: \" (convert-sample-map-to-edn))\n;=> Let's convert a map to EDN:  {:foo \"bar\", :bar \"foo\"}\n \n;; ...and the reader is 'read-string'\n(println \"Now let's covert the map back: \" (edn/read-string (convert-sample-map-to-edn)))\n;=> Now let's covert the map back:  {:foo bar, :bar foo}"
