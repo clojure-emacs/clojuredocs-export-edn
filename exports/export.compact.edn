@@ -14466,7 +14466,8 @@
    ";; for Clojurescript use js/Object as type\n(try\n   (/ 1 0)\n   (catch js/Object e\n       (.log js/console e)))"
    ";; Example with multiple catch clauses and a finally clause.\n(try (f)\n    (catch SQLException se (prn (.getNextException e)))\n    (catch Exception2 e (prn \"Handle generic exception\"))\n    (finally (prn \"Release some resource\")))"
    ";; The catch/finally clause is an implicit do.\n(try\n  (/ 1 0)\n  (catch Exception ex \n     (.printStackTrace ex)\n     (str \"caught exception: \" (.getMessage ex))))\n;; java.lang.ArithmeticException: Divide by zero\n;;\tat clojure.lang.Numbers.divide(Numbers.java:163)\n;;\tat clojure.lang.Numbers.divide(Numbers.java:3833)\n;; ...\n;;      at main.java:37)\n;;=> \"caught exception: Divide by zero\"\n"
-   ";; try multiple expressions\n(try (println \"expression 1\")\n     (println \"expression 2\")\n     (/ 1 0)\n     (println \"expression 4\")\n     (catch Exception e (println \"expression 3 throws\")))\n;;=> expression 1\n;;=> expression 2\n;;=> expression 3 throws"],
+   ";; try multiple expressions\n(try (println \"expression 1\")\n     (println \"expression 2\")\n     (/ 1 0)\n     (println \"expression 4\")\n     (catch Exception e (println \"expression 3 throws\")))\n;;=> expression 1\n;;=> expression 2\n;;=> expression 3 throws"
+   ";; The last value in the body of try will be returned.\n(try \"I will not be returned.\"\n     \"I will be returned\"\n     (catch Exception e (.getMessage e))\n     (finally \"I will also not be returned.\"))\n;; => \"I will be returned\"\n\n;; If there's an exception the last value in the body of catch will be returned.\n(try (throw (RuntimeException.))\n     \"I will not be returned\"\n     (catch Exception e \"I will be returned\")\n     (finally \"I will also not be returned.\"))\n;; => \"I will be returned\""],
   :notes nil,
   :arglists [],
   :doc
@@ -21705,7 +21706,8 @@
   [:clojure.core/add-watch
    :clojure.core/atom
    :clojure.core/var
-   :clojure.core/ref],
+   :clojure.core/ref
+   :clojure.core/agent],
   :line 2162,
   :examples
   ["(def a (atom nil))\n\n;; The key of the watch is `:logger`\n(add-watch a :logger #(println %4))\n\n(reset! a [1 2 3])\n\n;; Deactivate the watch by its assigned key\n(remove-watch a :logger)"],
