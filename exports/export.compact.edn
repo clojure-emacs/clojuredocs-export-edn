@@ -1820,7 +1820,8 @@
    ";; suppose you want to pretty print to a file.\n(clojure.pprint/pprint *map* (clojure.java.io/writer \"foo.txt\"))\n;; writes the contents of *map* to a file named 'foo.txt'"
    ";; pprint into a string using with-out-str\n(with-out-str (clojure.pprint/pprint {:x 1 :y -1}))\n;; => \"{:x 1, :y -1}\\n\"\n\n;; pprint into a string using StringWriter\n(let [out (java.io.StringWriter.)]\n  (clojure.pprint/pprint {:a 1 :b 2} out)\n  (clojure.pprint/pprint {:c 3 :d 4} out)\n  (.toString out))\n;; => \"{:a 1, :b 2}\\n{:c 3, :d 4}\\n\"\n"
    ";;how to use it with :require and :use\n\n;; :require \n(ns example.pprinter\n   (:require [clojure.pprint :as pp]))\n\n(def myname \"John Smith\")\n(pp/pprint myname)\n\n--------------\n\n;;:use\n(ns example.pprinter\n    (:use clojure.pprint))\n\n(def myname \"John Smith\")\n(pprint myname)"
-   ";; get Clojure snippets to print nicely\n(require '[clojure.pprint :as p])\n\n(def lost-formatting \n  \"(defn op [sel] (condp = sel :plus + :minus - :mult * \n   :div / :rem rem :quot quot :mod mod))\")\n\n(p/with-pprint-dispatch\n  p/code-dispatch\n  (p/pprint \n    (clojure.edn/read-string lost-formatting)))\n\n;; (defn op [sel]\n;;   (condp = sel\n;;     :plus +\n;;     :minus -\n;;     :mult *\n;;     :div /\n;;     :rem rem\n;;     :quot quot\n;;     :mod mod))"],
+   ";; get Clojure snippets to print nicely\n(require '[clojure.pprint :as p])\n\n(def lost-formatting \n  \"(defn op [sel] (condp = sel :plus + :minus - :mult * \n   :div / :rem rem :quot quot :mod mod))\")\n\n(p/with-pprint-dispatch\n  p/code-dispatch\n  (p/pprint \n    (clojure.edn/read-string lost-formatting)))\n\n;; (defn op [sel]\n;;   (condp = sel\n;;     :plus +\n;;     :minus -\n;;     :mult *\n;;     :div /\n;;     :rem rem\n;;     :quot quot\n;;     :mod mod))"
+   ";; pprint with metadata, requires Clojure >= 1.10.2\n(require '[clojure.pprint :as p])\n(binding [*print-meta* true]\n  (p/pprint ^{:hello :world} {}))"],
   :notes
   ["When using Clojure from the REPL, you don't need to specify `clojure.pprint` to use `pprint` or `pp`. At the REPL `(clojure.pprint x)` is equivalent to `(pprint x)`."],
   :arglists ["object" "object writer"],
@@ -22347,7 +22348,7 @@
   :line 7868,
   :examples
   [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so every adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"
-   ";; Your tap target function can do interesting things when it receives a value\n;; besides printing it\n(require '[clojure.datafy :refer [datafy]])\n(add-tap (comp prn datafy))\n"],
+   ";; Your tap target function can do interesting things when it receives a value\n;; before printing it\n(require '[clojure.datafy :refer [datafy]])\n(add-tap (comp prn datafy))\n"],
   :notes nil,
   :arglists ["f"],
   :doc
