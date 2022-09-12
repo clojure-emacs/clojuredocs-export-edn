@@ -24491,7 +24491,8 @@
    "It is also quite useful in unit tests:\n\n<pre>\n(deftest foo\n  (testing \"Clojure tweets only\"\n    (with-redefs [twitter/get-tweets\n                  (constantly [\"#clojure is awesome!\" \"Yay! #winning\"])]\n      (is (= [\"#clojure is awesome!\"]\n             (only-clojure \"@happyguy\"))))))\n</pre>\n"
    "Basically, when you already know the result of a function that you would need\nto pass to a higher order function, you can simply wrap it in a constantly to\navoid creating a variadic anonymous function.\n\n    (defn hof [f]\n      (do-something-with (f ...))\n\n    (def x \"result\")\n\n    (hof (constantly x)) "
    "I've used this to create a `no-op`  function.\n\n```clojure\n(let [handler (if (some? value)\n                 #(do-something-with value)\n                 ; else no-op\n                 (constantly nil))]\n  ; call handler\n  (handler \"foo\" \"bar\"))\n```"
-   "Just a shortcut to <pre>(fn [& args] x)</pre>\n"],
+   "Just a shortcut to <pre>(fn [& args] x)</pre>\n"
+   "It's useful when you want to conditionally tread something\n\n<pre>\n(defn movie-titles [movies filter-input]\n  (cond->> movies\n    ;; Always do this\n    (constantly true) (map #(:title %))\n    ;; Do this when there is a input\n    (some? filter-input) (filter #(s/includes? % filter-input)))) \n</pre>"],
   :arglists ["x"],
   :doc
   "Returns a function that takes any number of arguments and returns x.",
