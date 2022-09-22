@@ -25960,7 +25960,8 @@
    ";; To use the percent sign % you need to escape it with %: %%\nuser=> (format \"%.2f %%\" 2.5)\n\"2.50 %\""
    ";; Do notice that it uses the host locale for formatting.\n;; E.g. With Finnish locale it uses comma for separator.\nuser=> (format \"%.2f\" 1.23)\n\"1,23\"\n\n;; You can use the java.lang.String/format to force it.\nuser=> (java.lang.String/format java.util.Locale/US \"%.2f\" (to-array [1.23]))\n\"1.23\"\n\n;; You can override the default, but this affects other things, too.\nuser=> (java.util.Locale/setDefault java.util.Locale/US)\nnil\n\nuser=> (format \"%.2f\" 1.23)\n\"1.23\"\n\n\n"],
   :notes
-  ["Note that `(format)` is [not currently supported](http://dev.clojure.org/jira/browse/CLJS-324) in ClojureScript, only in Clojure."],
+  ["Note that `(format)` is [not currently supported](http://dev.clojure.org/jira/browse/CLJS-324) in ClojureScript, only in Clojure."
+   "For ClojureScript there is https://github.com/quoll/clormat. As of this writing it is new and because of that maybe not always fully compliant. Afaiu the goal is to make it fully compliant."],
   :arglists ["fmt & args"],
   :doc
   "Formats a string using java.lang.String.format, see java.util.Formatter for format\n  string syntax",
