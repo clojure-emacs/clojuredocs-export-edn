@@ -8900,7 +8900,7 @@
    "user=> (every? empty? [\"\" [] () '() {} #{} nil])\ntrue\n\n;example of recommended idiom for testing if not empty\nuser=> (every? seq [\"1\" [1] '(1) {:1 1} #{1}])\ntrue"
    "user=> (drop-while empty? [\"\" [] \"foobar\"])\n(\"foobar\")"
    "user=> (empty? nil)\ntrue"
-   ";; A collection with nothing in it is not empty.\n(= true\n   (every? false? [(empty? [nil])\n                   (empty? #{nil})\n                   (empty? '(nil))]))\n\n;; But a collection of nothing is empty.\n(= true\n   (every? true? [(empty? [])\n                  (empty? #{})\n                  (empty? '())]))"],
+   ";; A collection with a \"nothing\" in it is not empty.\n(= true\n   (every? false? [(empty? [nil])\n                   (empty? #{nil})\n                   (empty? '(nil))]))\n\n;; But a collection of nothing is empty.\n(= true\n   (every? true? [(empty? [])\n                  (empty? #{})\n                  (empty? '())]))"],
   :notes
   ["Some explanation of why (seq x) is preferable over (not (empty? x)) would be good. Because it's far less readable. When I come across (not (empty? x)) in some code, I immediately understand the author's intention. Not so much with (seq x)."
    "I think this is an efficiency thing.  If you expand the source you can see that empty? is equivalent to (not (seq coll))  so (not (empty? coll)) would macroexpand to (not (not (seq coll))  "
@@ -14566,11 +14566,12 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.pprint/*print-radix*],
   :dynamic true,
   :line 87,
   :examples
-  ["(binding [clojure.pprint/*print-base* 10]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 42\n\n(binding [clojure.pprint/*print-base* 2]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 101010"],
+  ["(binding [clojure.pprint/*print-base* 10]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 42\n\n(binding [clojure.pprint/*print-base* 2]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 101010"
+   ";; Prints list of hexadecimals with radix specifier: #x\nuser> (with-bindings {#'clojure.pprint/*print-base* 16\n                      #'clojure.pprint/*print-radix* true}\n        (clojure.pprint/pprint (range 16)))\n(#x0 #x1 #x2 #x3 #x4 #x5 #x6 #x7 #x8 #x9 #xa #xb #xc #xd #xe #xf)\nnil\n"],
   :notes nil,
   :arglists [],
   :doc "The base to use for printing integers and rationals.",
@@ -16916,7 +16917,7 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.pprint/*print-base*],
   :dynamic true,
   :line 80,
   :examples
@@ -25880,7 +25881,8 @@
   :line 4745,
   :examples
   ["user=> (def x \"Hello!\\nMy name is George.\\n\")\n#'user/x\n\nuser=> (prn-str x)\n=> \"\\\"Hello!\\\\nMy name is George.\\\\n\\\"\\n\"\n"
-   ";; Be aware that prn-str and friends are influenced by a couple global variables\n;; such as *print-length*:\n\n(set! *print-length* 10)\n(prn-str (range 15))\n;=> \"(0 1 2 3 4 5 6 7 8 9 ...)\\n\"\n\n(set! *print-length* -1)\n(prn-str (range 15))\n;=> \"(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14)\\n\""],
+   ";; Be aware that prn-str and friends are influenced by a couple global variables\n;; such as *print-length*:\n\n(set! *print-length* 10)\n(prn-str (range 15))\n;=> \"(0 1 2 3 4 5 6 7 8 9 ...)\\n\"\n\n(set! *print-length* -1)\n(prn-str (range 15))\n;=> \"(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14)\\n\""
+   ";; Also, set! cannot change the root binding for *print-length*.\n;; Try the following instead.\n\n(def v [1 2 3 4 5 6 7 8 9 10])\n\n(binding [*print-length* 5] (prn-str v))\n;;=> \"[1 2 3 4 5 ...]\\n\"\n\n(binding [*print-length* -1] (prn-str v))\n;;=> \"[1 2 3 4 5 6 7 8 9 10]\\n\""],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["& xs"],
