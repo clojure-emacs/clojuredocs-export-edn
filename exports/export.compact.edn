@@ -14571,7 +14571,7 @@
   :line 87,
   :examples
   ["(binding [clojure.pprint/*print-base* 10]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 42\n\n(binding [clojure.pprint/*print-base* 2]\n  (clojure.pprint/pprint 42))\n; Prints:\n; 101010"
-   ";; Prints list of hexadecimals with radix specifier: #x\nuser> (with-bindings {#'clojure.pprint/*print-base* 16\n                      #'clojure.pprint/*print-radix* true}\n        (clojure.pprint/pprint (range 16)))\n(#x0 #x1 #x2 #x3 #x4 #x5 #x6 #x7 #x8 #x9 #xa #xb #xc #xd #xe #xf)\nnil\n"],
+   ";; Prints list of hexadecimals with radix specifier: #x\nuser> (with-bindings {#'clojure.pprint/*print-base* 16\n                      #'clojure.pprint/*print-radix* true}\n        (clojure.pprint/pprint (range 16)))\n;;=> (#x0 #x1 #x2 #x3 #x4 #x5 #x6 #x7 #x8 #x9 #xa #xb #xc #xd #xe #xf)\n\n"],
   :notes nil,
   :arglists [],
   :doc "The base to use for printing integers and rationals.",
