@@ -19067,7 +19067,7 @@
   [:clojure.spec.alpha/explain :clojure.spec.alpha/explain-str],
   :line 218,
   :examples
-  ["(require '[clojure.spec.alpha :as spec])\n\n(spec/def ::name string?)\n;;=> :ns/name\n\n(spec/explain-data ::name \"n0\")\n;;=> nil\n\n(spec/explain-data ::name 0)\n;;=>\n;;#:clojure.spec.alpha{:problems [{:path [],\n;;                                 :pred clojure.core/string?,\n;;                                 :val 0,\n;;                                 :via [:ns/name],\n;;                                 :in []}],\n;;                     :spec :ns.ns/name,\n;;                     :value 0"],
+  ["(require '[clojure.spec.alpha :as spec])\n\n(spec/def ::name string?)\n;;=> :ns/name\n\n(spec/explain-data ::name \"n0\")\n;;=> nil\n\n(spec/explain-data ::name 0)\n;;=>\n;;#:clojure.spec.alpha{:problems [{:path [],\n;;                                 :pred clojure.core/string?,\n;;                                 :val 0,\n;;                                 :via [:ns/name],\n;;                                 :in []}],\n;;                     :spec :ns.ns/name,\n;;                     :value 0\n\n\n;; To extract :problems alone \n(:clojure.spec.alpha/problems (spec/explain-data ::name 0)) \n;; => [{:path [],:pred clojure.core/string?,:val 0,:via [:ns/name],:in []}]"],
   :notes nil,
   :arglists ["spec x"],
   :doc
