@@ -22383,9 +22383,10 @@
   :line 6805,
   :examples
   ["(uuid? (java.util.UUID/randomUUID))\n;;=> true\n(uuid? (read-string \"#uuid \\\"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\\\"\"))\n;;=> true\n\n(uuid? \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\")\n;;=> false"
-   ";; There is no (uuid) function to coerce a string to a UUID, but you can \n;; produce one via Java interop:\n\n(def u (java.util.UUID/fromString \"4fe5d828-6444-11e8-8222-720007e40350\"))\n;;=> #'user/u\nu\n;;=> #uuid \"4fe5d828-6444-11e8-8222-720007e40350\"\n(uuid? u)\n;;=> true"
+   ";; If using a version of Clojure >= 1.11 use `parse-uuid`\n(def new-u (parse-uuid \"4fe5d828-6444-11e8-8222-720007e40350\"))\n;;=> #'user/new-u\nnew-u\n;;=> #uuid \"4fe5d828-6444-11e8-8222-720007e40350\"\n(uuid? new-u)\n;;=> true\n\n;; There is no (uuid) function to coerce a string to a UUID prior to Clojure v1.11, but you can \n;; produce one via Java interop:\n\n(def old-u (java.util.UUID/fromString \"4fe5d828-6444-11e8-8222-720007e40350\"))\n;;=> #'user/old-u\nold-u\n;;=> #uuid \"4fe5d828-6444-11e8-8222-720007e40350\"\n(uuid? old-u)\n;;=> true"
    ";; Change a UUID to a string:\n\n\n(.toString (java.util.UUID/randomUUID))\n;;=>\"91bb281c-4cdd-4bea-bd9c-27b5f9c75812\""],
-  :notes nil,
+  :notes
+  [";; Docs for added UUID functions in Clojure 1.11\n\n`parse-uuid`: https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/parse-uuid\n\n`random-uuid`: https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/random-uuid"],
   :arglists ["x"],
   :doc "Return true if x is a java.util.UUID",
   :library-url "https://github.com/clojure/clojure",
