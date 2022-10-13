@@ -16586,7 +16586,10 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/split-with :clojure.string/split],
+  :see-alsos
+  [:clojure.core/split-with
+   :clojure.string/split
+   :clojure.core/subvec],
   :line 2985,
   :examples
   ["user=> (split-at 2 [1 2 3 4 5])\n[(1 2) (3 4 5)]\n\nuser=> (split-at 3 [1 2])\n[(1 2) ()]"],
@@ -18523,7 +18526,7 @@
    :clojure.core/filter],
   :line 2727,
   :examples
-  ["(map inc [1 2 3 4 5])\n;;=> (2 3 4 5 6)\n\n\n;; map can be used with multiple collections. Collections will be consumed\n;; and passed to the mapping function in parallel:\n(map + [1 2 3] [4 5 6])\n;;=> (5 7 9)\n\n\n;; When map is passed more than one collection, the mapping function will\n;; be applied until one of the collections runs out:\n(map + [1 2 3] (iterate inc 1))\n;;=> (2 4 6)\n\n\n\n;; map is often used in conjunction with the # reader macro:\n(map #(str \"Hello \" % \"!\" ) [\"Ford\" \"Arthur\" \"Tricia\"])\n;;=> (\"Hello Ford!\" \"Hello Arthur!\" \"Hello Tricia!\")\n\n;; A useful idiom to pull \"columns\" out of a collection of collections. \n;; Note, it is equivalent to:\n;; user=> (map vector [:a :b :c] [:d :e :f] [:g :h :i])\n\n(apply map vector [[:a :b :c]\n                   [:d :e :f]\n                   [:g :h :i]])\n\n;;=> ([:a :d :g] [:b :e :h] [:c :f :i])\n\n;; From http://clojure-examples.appspot.com/clojure.core/map"
+  ["(map inc [1 2 3 4 5])\n;;=> (2 3 4 5 6)\n\n\n;; map can be used with multiple collections. Collections will be consumed\n;; and passed to the mapping function in parallel:\n(map + [1 2 3] [4 5 6])\n;;=> (5 7 9)\n\n\n;; When map is passed more than one collection, the mapping function will\n;; be applied until one of the collections runs out:\n(map + [1 2 3] (iterate inc 1))\n;;=> (2 4 6)\n\n\n\n;; map is often used in conjunction with the # reader macro:\n(map #(str \"Hello \" % \"!\" ) [\"Ford\" \"Arthur\" \"Tricia\"])\n;;=> (\"Hello Ford!\" \"Hello Arthur!\" \"Hello Tricia!\")\n\n;; A useful idiom to pull \"columns\" out of a collection of collections. \n;; Note, it is equivalent to:\n;; user=> (map vector [:a :b :c] [:d :e :f] [:g :h :i])\n\n(apply map vector [[:a :b :c]\n                   [:d :e :f]\n                   [:g :h :i]])\n\n;;=> ([:a :d :g] [:b :e :h] [:c :f :i])\n\n;; From http://clojure-examples.appspot.com/clojure.core/map\n"
    ";; map sends key-value pairs from a hash-map\n(map #(vector (first %) (* 2 (second %)))\n            {:a 1 :b 2 :c 3})\n;;=> ([:a 2] [:b 4] [:c 6])\n\n;; or the same thing using destructuring\n(map (fn [[key value]] [key (* 2 value)])\n            {:a 1 :b 2 :c 3})\n;;=> ([:a 2] [:b 4] [:c 6])\n\n(into {} *1)\n;;=> {:a 2, :b 4, :c 6}\n"
    ";; Use a hash-map as a function to translate values in a collection from the \n;; given key to the associated value\n\nuser=> (map {2 \"two\" 3 \"three\"} [5 3 2])\n(nil \"three\" \"two\")\n\n;; then use (filter identity... to remove the nils\nuser=> (filter identity (map {2 \"two\" 3 \"three\"} [5 3 2]))\n(\"three\" \"two\")\n\n;; an alternative to the above map+filter steps is keep.\n(keep {2 \"two\" 3 \"three\"} [5 3 2])\n;;=> (\"three\" \"two\")"
    ";; mapping over a hash-map applies (into) first. \n;; need to use functions that deal with arrays (fn [[key val]] ...)\n(map pprint {:key :val :key1 :val1})\n([:key :val]\n[:key1 :val1]\nnil nil)\n\n;;above, the pprint output appears to be part of the return value but it's not:\n(hash-set (map pprint {:key :val :key1 :val1}))\n[:key :val]\n[:key1 :val1]\n#{(nil nil)}\n\n(map second {:key :val :key1 :val1})\n;;=>(:val :val1)\n\n(map last {:x 1 :y 2 :z 3})\n;;=> (1 2 3)"
