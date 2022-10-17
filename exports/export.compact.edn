@@ -10061,7 +10061,7 @@
    "(conj nil 1)\n;=>(1)\n(conj nil [1 2])\n;=>([1 2])\n"
    ";; Conj new-element into nested structures \"conj-in\"\n\n(def db {:users [{:name \"Eduardo\"}]})\n(def new-element {:name \"Eva\"})\n\n(assoc db :users (conj (:users db) new-element))\n;; => {:users [{:name \"Eduardo\"} {:name \"Eva\"}]}"
    ";; implement stack semantics with conj, peek and pop.\n\n;; we start with a list\n(def stack '(2 1 0))\n\n(peek stack)\n;; => 2\n(pop stack)\n;; => (1 0)\n(type (pop stack))\n;; => cljs.core/List\n;; push = conj\n(conj stack 3)\n;; => (3 2 1 0)\n(type (conj stack 3))\n;; => cljs.core/List\n\n;; now let us try a vector\n(def stack [0 1 2])\n\n(peek stack)\n;; => 2\n(pop stack)\n;; => [0 1]\n(type (pop stack))\n;; => clojure.lang.PersistentVector\n;; push = conj\n(conj stack 3)\n;; => [0 1 2 3]\n(type (conj stack 3))\n;; => clojure.lang.PersistentVector\n"
-   ";; Based in the example from the great book CLOJURE for the BRAVE and TRUE\n;; https://www.braveclojure.com/core-functions-in-depth/\n\n(defn add-first-vec\n\t[target addition]\n\t(apply conj (if (vector? addition) addition [addition]) target))\n\n(add-first-vec [3 4 5 6] 1)\n;; [1 3 4 5 6]\n\n(add-first-vec [3 4 5 6] [1 2])\n;; [1 2 3 4 5 6]"],
+   ";; Based on examples from the great book CLOJURE for the BRAVE and TRUE\n;; https://www.braveclojure.com/core-functions-in-depth/\n\n(defn add-first-vec\n\t[target addition]\n\t(apply conj (if (vector? addition) addition [addition]) target))\n\n(add-first-vec [3 4 5 6] 1)\n;; [1 3 4 5 6]\n\n(add-first-vec [3 4 5 6] [1 2])\n;; [1 2 3 4 5 6]"],
   :notes ["list prepend\nvector append"],
   :arglists ["coll x" "coll x & xs"],
   :doc
