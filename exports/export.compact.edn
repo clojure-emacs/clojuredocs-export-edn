@@ -7626,7 +7626,8 @@
   :line 1320,
   :examples
   ["user=> (bit-and-not 2r1100 2r1001) ; (and X (not Y))\n4\n;; 4 = 2r0100"
-   ";; here is the truth table for AND-NOT (which is not the same as NAND) \n(Integer/toBinaryString (bit-and-not 2r1100 2r1010) )\n;;=> \"100\"\n;; or 2r0100\n\n;; NAND would be...\n(Integer/toBinaryString (bit-not (bit-and 2r1100 2r1010)) )\n;;=> \"11111111111111111111111111110111\"\n;; which is clearly not the same\n\n;; this operation is material non-implication\n(= (bit-and-not 2r1100 2r1010) (bit-and 2r1100 (bit-not 2r1010)) )\n;;=> true\n"],
+   ";; here is the truth table for AND-NOT (which is not the same as NAND) \n(Integer/toBinaryString (bit-and-not 2r1100 2r1010) )\n;;=> \"100\"\n;; or 2r0100\n\n;; NAND would be...\n(Integer/toBinaryString (bit-not (bit-and 2r1100 2r1010)) )\n;;=> \"11111111111111111111111111110111\"\n;; which is clearly not the same\n\n;; this operation is material non-implication\n(= (bit-and-not 2r1100 2r1010) (bit-and 2r1100 (bit-not 2r1010)) )\n;;=> true\n"
+   ";;flip the bits of a seq\n(map (fn [n] (bit-and-not 0xff n)) (range 1 10)) ; ~n & 0xff\n;;=> (254 253 252 251 250 249 248 247 246)\n"],
   :notes nil,
   :arglists ["x y" "x y & more"],
   :doc "Bitwise and with complement",
