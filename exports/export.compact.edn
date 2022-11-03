@@ -16617,7 +16617,7 @@
    :clojure.core/resolve],
   :line 6007,
   :examples
-  [";; Require clojure.java.io and call its file function:\n\nuser=> (require '(clojure.java.io))\nuser=> (clojure.java.io/file \"filename\")\n#<File filename>"
+  [";; Require clojure.set and call its union function:\n\nuser=> (require 'clojure.set)\nnil\nuser=> (clojure.set/union #{1} #{2})\n#{1 2}\n"
    ";; alias clojure.java.io as io\nuser=> (require '[clojure.java.io :as io])\nnil\n\nuser=> (io/file \"Filename\")\n#<File Filename>\n\n;; alias clojure.java.io as io using prefixes\nuser=> (require '(clojure.java [io :as io2]))\nnil\n\nuser=> (io2/file \"Filename\")\n#<File Filename>"
    "(ns rosettacode.24game\n  (:require [clojure.string :as str]))\n\n(defn parse-infix-data\n  \"input '1+2+3+4'\n   output (1 + 2 + 3 + 4)\n   where the numbers are clojure numbers, and the symbols are clojure operators\"\n  [string] (map read-string (next (str/split string #\"\"))))"
    "(require '(clojure.contrib [sql :as sql]))"
