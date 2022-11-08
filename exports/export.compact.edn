@@ -12099,7 +12099,8 @@
   :column 1,
   :see-alsos nil,
   :line 154,
-  :examples nil,
+  :examples
+  [";; lambda provided as predicate: (fn [n] (< n 4))\n;; collection to filter: [1, 2, 3, 4, 5]\n\n(filter (fn [n] (< n 4)) [1, 2, 3, 4, 5]) ;; => (1 2 3)"],
   :notes nil,
   :arglists ["pred" "pred coll"],
   :doc
