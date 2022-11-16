@@ -17930,7 +17930,8 @@
   :line 3724,
   :examples
   [";; same as println, but without a newline\nuser> (print \"foo\") (print \"foo\")\nfoofoo"
-   ";; Output only flushes when there is a newline. It is likely that (print)\n;; will be seen in the company of (flush).\n\n;; Buggy case. Wants to print a prompt character, but it doesn't appear.\n(print \"> \") ;;  This doesn't work,\n(readline)\n\n;; Working case. The output can be flushed this way.\n(print \"> \")\n(flush)\n(readline)"],
+   ";; Output only flushes when there is a newline. It is likely that (print)\n;; will be seen in the company of (flush).\n\n;; Buggy case. Wants to print a prompt character, but it doesn't appear.\n(print \"> \") ;;  This doesn't work,\n(readline)\n\n;; Working case. The output can be flushed this way.\n(print \"> \")\n(flush)\n(readline)"
+   "(print \"foo\" \"foo\")\n;; => foo foo"],
   :notes
   ["\"Human consumption\" means, for example, that a string is printed as-is -- without surrounding double quotes and without nonprinting characters being escaped."],
   :arglists ["& more"],
