@@ -12042,7 +12042,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/aget],
+  :see-alsos
+  [:clojure.core/aget
+   :clojure.core/aset-int
+   :clojure.core/aset-double],
   :line 3923,
   :examples
   ["user=> (def my-array (into-array Integer/TYPE [1 2 3]))\n#'user/my-array\n\nuser=> (aset my-array 1 10) ; Set the element with index 1 to 10\n10\n\nuser=> (into [] my-array)\n[1 10 3]"
