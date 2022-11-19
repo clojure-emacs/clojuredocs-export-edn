@@ -5040,7 +5040,8 @@
   :line 6536,
   :examples
   ["user=> (def f (future (Thread/sleep 5000) (inc 0)))\n\nuser=> (future-done? f)                            \nfalse\n\nuser=> (Thread/sleep 5000)\nnil\n\nuser=> (future-done? f)\ntrue\n\n"
-   ";; beware of cancellation !!!\n\nuser=> (def f (future (Thread/sleep 5000) (inc 0)))\n#'user/f\n\nuser=> (future-cancel f)                           \ntrue\n\nuser=> (future-cancelled? f)                       \ntrue\n\nuser=> (future-done? f)                            \ntrue\n\nuser=> @f                                          \njava.util.concurrent.CancellationException (NO_SOURCE_FILE:0)"],
+   ";; beware of cancellation !!!\n\nuser=> (def f (future (Thread/sleep 5000) (inc 0)))\n#'user/f\n\nuser=> (future-cancel f)                           \ntrue\n\nuser=> (future-cancelled? f)                       \ntrue\n\nuser=> (future-done? f)                            \ntrue\n\nuser=> @f                                          \njava.util.concurrent.CancellationException (NO_SOURCE_FILE:0)"
+   "user=> (defn checkRandInt27? []\n         (let [x (rand-int 30)]\n            (Thread/sleep 2000)\n            (if (= x 27)\n                (do (println \"End at 27\") ::done)\n                (do (println \"Rand Value-\" x) (recur)))))\n\n#'user/isRandInt27?\nuser=> (def f (future (Thread/sleep 1000) (checkRandInt27?)))\n#'user/f\nuser=> Rand Value- 6\nRand Value- 22\nRand Value- 25\nuser=> (future-cancelled? f)\nfalse\nuser=> Rand Value- 9\nRand Value- 26\nRand Value- 16\nuser=> (future-cancel f)\ntrue\nuser=> (future-cancelled? f)\ntrue"],
   :notes
   ["Future \"done\" returns true even for abnormal termination like being cancelled or throwing an exception.\r\n\r\nhttp://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html#isDone()"],
   :arglists ["f"],
@@ -24444,7 +24445,7 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/compare],
   :line 3094,
   :examples
   [";; simple example to create an ArrayList, initially [1,2,0]\n;; and sort it in descending order\n\nuser=> (def a (new java.util.ArrayList [1 2 0]))\n#'user/a\nuser=> (def compx (comparator (fn [x y] (> x y))))\n#'user/compx\nuser=> (java.util.Collections/sort a compx)\nnil\nuser=> a\n#<ArrayList [2, 1, 0]>\n\n;; Note however that 'comparator' is rarely (never?) needed because if\n;; the fn returns a boolean, the .compare implementation Clojure provides\n;; causes it to behave the same as if 'comparator' were wrapped around it:\n\n(sort (comparator (fn [x y] (> x y))) [1 2 0]) ;=> (2 1 0)\n(sort (fn [x y] (> x y)) [1 2 0])              ;=> (2 1 0)\n(sort > [1 2 0])                               ;=> (2 1 0)\n(sort < [1 2 0])                               ;=> (0 1 2)"],
