@@ -8520,7 +8520,8 @@
   :column 1,
   :see-alsos nil,
   :line 1305,
-  :examples nil,
+  :examples
+  ["(run* [q]\n  (fresh [v]\n    (conde\n     [(trace-lvars \"1:B clause\" q v)\n      (== q 1)\n      (== v 23)\n      (trace-lvars \"1:A clause\" q v)]\n     [(== q 2)\n      (trace-lvars \"2:A clause\" q v)\n      (== q v)\n      (trace-lvars \"2:B clause\" q v)])))\n\n\n;; => (1 _0)\n\n1:B clause\n    q = _0\n    v = _0\n1:A clause\n    q = 1\n    v = 23\n2:A clause\n    q = 2\n    v = _0\n2:B clause\n    q = 2\n    v = 2"],
   :macro true,
   :notes nil,
   :arglists ["title & lvars"],
