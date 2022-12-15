@@ -552,7 +552,8 @@
   :line 6858,
   :examples
   [";; Fix apparently inconsistent behaviour of \"-\" (minus) with transduce:\n(transduce (map inc) - 0 (range 10))\n;; 55\n(transduce (map inc) (completing -) 0 (range 10))\n;; -55"
-   ";; the reducing fn arity-1 executes the last transformation in transduce.\n;; completing defaults to \"identity\" but you can change it.\n;; Use this fact for example with transients and go back to persistent once done.\n(require '[clojure.string :refer [lower-case]])\n(transduce\n (comp\n  (remove nil?)\n  (map lower-case))\n (completing #(assoc! %1 %2 (inc (get %1 %2 0))) persistent!)\n (transient {})\n [\"hi\" \"ho\" \"Hello\" \"hoi\" \"Hi\" \"Ha\" \"ha\" \"hello\"])\n;; {\"hi\" 2, \"ho\" 1, \"hello\" 2, \"hoi\" 1, \"ha\" 2}"],
+   ";; the reducing fn arity-1 executes the last transformation in transduce.\n;; completing defaults to \"identity\" but you can change it.\n;; Use this fact for example with transients and go back to persistent once done.\n(require '[clojure.string :refer [lower-case]])\n(transduce\n (comp\n  (remove nil?)\n  (map lower-case))\n (completing #(assoc! %1 %2 (inc (get %1 %2 0))) persistent!)\n (transient {})\n [\"hi\" \"ho\" \"Hello\" \"hoi\" \"Hi\" \"Ha\" \"ha\" \"hello\"])\n;; {\"hi\" 2, \"ho\" 1, \"hello\" 2, \"hoi\" 1, \"ha\" 2}"
+   ";; Example calculating the average from \n;; https://aphyr.com/posts/360-loopr-a-loop-reduction-macro-for-clojure#comment-3800\n\n(transduce (map inc)\n           (completing (fn [[sum cnt] x] [(+ sum x) (inc cnt)])\n                       (fn [[sum cnt]] (/ sum cnt)))\n           [0 0]\n           (range 7))\n\n;; 4"],
   :notes nil,
   :arglists ["f" "f cf"],
   :doc
@@ -3479,7 +3480,7 @@
   :examples
   ["user=> (every? even? '(2 4 6))\ntrue\nuser=> (every? even? '(1 2 3))\nfalse"
    ";; you can use every? with a set as the predicate to return true if \n;; every member of a collection is in the set\nuser=> (every? #{1 2} [1 2 3])\nfalse\nuser=> (every? #{1 2} [1 2])\ntrue\n\n;; or use a hash-map as the predicate with every? to return true \n;; if every member of a collection is a key within the map\nuser=> (every? {1 \"one\" 2 \"two\"} [1 2])\ntrue\nuser=> (every? {1 \"one\" 2 \"two\"} [1 2 3])\nfalse"
-   ";; this is kind of weird IMO... but it works that way (the same for vectors)\n;; See: https://en.wikipedia.org/wiki/Vacuous_truth\nuser=> (every? true? '())\ntrue\nuser=> (every? false? '())\ntrue\n\n;; and similarly\nuser=> (every? map? '())\ntrue\nuser=> (every? vector? '())\ntrue\nuser=> (every? string? '())\ntrue\nuser=> (every? number? '())\ntrue\n\n;; As such a better description of every? would be\n\n;; Returns false if there exists a value x in coll \n;; such that (pred? x) is false, else true.\" \n"
+   ";; this is kind of weird IMO... but it works that way (the same for vectors)\n;; See: https://en.wikipedia.org/wiki/Vacuous_truth\nuser=> (every? true? '())\ntrue\nuser=> (every? false? '())\ntrue\n\n;; and similarly\nuser=> (every? map? '())\ntrue\nuser=> (every? vector? '())\ntrue\nuser=> (every? string? '())\ntrue\nuser=> (every? number? '())\ntrue\n\n;; and even\nuser=> (every? :foo nil)\ntrue\n\n;; As such a better description of every? would be\n\n;; Returns false if there exists a value x in coll \n;; such that (pred? x) is false, else true.\" \n"
    ";; every? can replace clojure.set/subset? if and only if\n;; the sets do not contain false / nil values\n\n(subset? #{1}   #{1 2}) ;;=> true\n(every?  #{1 2} #{1}  ) ;;=> true ✔\n\n(subset? #{1 3} #{1 2}) ;;=> false\n(every?  #{1 2} #{1 3}) ;;=> false ✔\n\n;; however, invoking a set with a value returns the matched element,\n;; causing the comparison below to fail\n\n(subset? #{true false} #{true false}) ;;=> true\n(every?  #{true false} #{true false}) ;;=> false ✘ 😦\n"],
   :notes nil,
   :tag "java.lang.Boolean",
@@ -4595,7 +4596,8 @@
   :see-alsos [:clojure.core/re-matches :clojure.string/index-of],
   :line 372,
   :examples
-  [";; String-oriented alternative to regular-expression functions in core\n(clojure.string/includes? \"clojure\" \"cl\")\n;;=> true\n\n;; Does *not* work with regular expressions!\n(clojure.string/includes? \"clojure\" #\"cl\")\n;;=> java.util.regex.Pattern cannot be cast to java.lang.CharSequence\n;;   (java.lang.ClassCastException)"],
+  [";; String-oriented alternative to regular-expression functions in core\n(clojure.string/includes? \"clojure\" \"cl\")\n;;=> true\n\n;; Does *not* work with regular expressions!\n(clojure.string/includes? \"clojure\" #\"cl\")\n;;=> java.util.regex.Pattern cannot be cast to java.lang.CharSequence\n;;   (java.lang.ClassCastException)"
+   "\n;; Be careful when you uses with maps \n(includes? (str (:name {})) \"Bob Alice\")\n;;=> false\n\n(includes? (:name {}) \"Bob Alice\")\n;;=> Execution error (NullPointerException) at user/eval63454 (REPL:1).\n;;Cannot invoke \"Object.toString()\" because \"s\" is null"],
   :notes nil,
   :arglists ["s substr"],
   :doc "True if s includes substr.",
@@ -11914,7 +11916,8 @@
    ";; Take a sequence of sequences (vector of vectors), and create a map\n;; using date as the map key.\n(def csv1 [[\"01/01/2012\" 1 2 3 4][\"06/15/2012\" 38 24 101]])\n\n(map #(hash-map (keyword (first %1)) (vec (rest %1))) csv1)\n;;=> ({:01/01/2012 [1 2 3 4]} {:06/15/2012 [38 24 101]})\n\n;; merge the list of maps into a single map\n(apply merge '({\"01/01/2012\" [1 2 3 4]} {\"06/15/2012\" [38 24 101]}))\n;;=> {\"06/15/2012\" [38 24 101], \"01/01/2012\" [1 2 3 4]}\n\n"
    "(apply hash-map [:a 1 :b 2])\n;;=> {:b 2 :a 1}\n\n;;is the same as\n(def build-map (partial assoc {}))\n(apply build-map [:a 1 :b 2])\n;;=> {:b 2 :a 1}"
    ";; A hash map acts like a lookup function taking a key as first argument:\n({:a 1, :b 2} :a)\n;;=> 1\n\n;; If the key is not present, nil is returned...\n({:a 1, :b 2} :qwerty)\n;;=> nil\n\n;; ... unless there is a second argument, which becomes the default value to\n;;     return when the lookup key is not found:\n({:a 1, :b 2} :qwerty :uiop)\n;;=> :uiop\n\n;; That behavior can lead to surprises:\n(let [map-example {:a 1, :b 2}]\n  (map-example #(* % %) (range 10)))\n;;=> (0 1 2 3 4 5 6 7 8 9) \n;; since (range 10) is the default and #(* % %) is an anonymous function that isn't a key in map-example\n\n;; It may be more explicit to use get instead\n(get {:a 1, :b 2} :qwerty :uiop)\n;;=> :uiop"],
-  :notes nil,
+  :notes
+  ["If you want to create a map from a sequence of pairs, e.g. `[[k1 v1] [k2 v2]]`, see [`into`](https://clojuredocs.org/clojure.core/into)."],
   :arglists ["" "& keyvals"],
   :doc
   "keyval => key val\n  Returns a new hash map with supplied mappings.  If any keys are\n  equal, they are handled as if by repeated uses of assoc.",
@@ -24436,7 +24439,8 @@
   :line 202,
   :examples
   ["(use 'clojure.pprint)\n(pprint (meta #'first))\n;;=> prints the following...\n{:ns #<Namespace clojure.core>,\n :name first,\n :added \"1.0\",\n :file \"clojure/core.clj\",\n :static true,\n :column 1,\n :line 49,\n :arglists ([coll]),\n :doc\n \"Returns the first item in the collection. Calls seq on its\\n    \n argument. If coll is nil, returns nil.\"}"
-   ";; attach metadata to s.\n;; ^:private is a shorthand notation for ^{:private true} and\n;; ^String is a shorthand notation for ^{:tag java.lang.String}.\n(def ^:private ^String s \"Hello, world!\")\n\n;; inspect the metadata attached to s.\n;; note, you need to use the var #'s, instead of the symbol s, as the argument.\n(clojure.pprint/pprint (meta #'s))\n;; =>\n{:private true,\n :tag java.lang.String,\n :line 3,\n :column 1,\n :file \"/tmp/form-init5430922801479403331.clj\",\n :name s,\n :ns #object[clojure.lang.Namespace 0x13fca031 \"user\"]}\n"],
+   ";; attach metadata to s.\n;; ^:private is a shorthand notation for ^{:private true} and\n;; ^String is a shorthand notation for ^{:tag java.lang.String}.\n(def ^:private ^String s \"Hello, world!\")\n\n;; inspect the metadata attached to s.\n;; note, you need to use the var #'s, instead of the symbol s, as the argument.\n(clojure.pprint/pprint (meta #'s))\n;; =>\n{:private true,\n :tag java.lang.String,\n :line 3,\n :column 1,\n :file \"/tmp/form-init5430922801479403331.clj\",\n :name s,\n :ns #object[clojure.lang.Namespace 0x13fca031 \"user\"]}\n"
+   ";; attach metadata to var x\n(def ^{:version 1} x [1 2 3])\n\n;; retrieve metadata of var x: note the notation\n(meta #'x)\n;; =>\n{:version 1,\n :line 3,\n :column 1,\n :file \"...\",\n :name x,\n :ns ...}\n\n;; attach metadata to an obj\n(def y ^{:version 1} [1 2 3])\n\n(meta y) ;=> {:version 1}\n"],
   :notes nil,
   :arglists ["obj"],
   :doc
@@ -24831,7 +24835,7 @@
    :clojure.string/replace],
   :line 5058,
   :examples
-  ["user=> (replace [:zeroth :first :second :third :fourth] [0 2 4 0])\n[:zeroth :second :fourth :zeroth]\n\nuser=> (replace [10 9 8 7 6] [0 2 4])\n[10 8 6]"
+  [";; Vectors in the first argument are implicitly treated like maps\n;; from zero-based indexes to values so this is equivalent to\n;;\n;; (replace {0 :zeroth, 1 :first, 2 :second, 3 :third, 4 :fourth} [0 2 4 0])\nuser=> (replace [:zeroth :first :second :third :fourth] [0 2 4 0])\n[:zeroth :second :fourth :zeroth]\n\nuser=> (replace [10 9 8 7 6] [0 2 4])\n[10 8 6]"
    "user=> (replace {2 :two, 4 :four} [4 2 3 4 5 6 2])\n[:four :two 3 :four 5 6 :two]\n\nuser=> (replace '{0 ZERO, 1 ONE, 2 TWO} '(This is the code 0 1 2 0))\n(This is the code ZERO ONE TWO ZERO)"
    "; Behaves somewhat similar to map, but notice the differences\nuser=> (map [:zeroth :first :second :third :fourth] [0 2 4 0])\n(:zeroth :second :fourth :zeroth)\n\n; 1. replace returns a vector, while map returns a seq\n; 2. replace keeps unmatched values, while map replace with nil\nuser=> (map {} [0])\n(nil)\nuser=> (map [] [0])\nIndexOutOfBoundsException   clojure.lang.PersistentVector.arrayFor (PersistentVector.java:107)\n"
    "user=> (replace {2 :a, 4 :b} [1 2 3 4])\n;;=> [1 :a 3 :b]"
