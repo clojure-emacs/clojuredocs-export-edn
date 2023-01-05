@@ -16787,7 +16787,7 @@
    :clojure.core/nfirst],
   :line 119,
   :examples
-  ["<pre>user=&gt; (nnext '(1 2 3))\r\n(3)\r\n</pre>\r\n\r\n<pre>user=&gt; (nnext [])\r\nnil \r\n</pre>\r\n\r\n<pre>user=&gt; (nnext ['(a b c) '(b a c) '(c b a) '(a c b)])\r\n((c b a) (a c b)) \r\n</pre>\r\n\r\n<pre>user=&gt; (nnext {:a 1, :b 2, :c 3, :d 4})\r\n([:c 3] [:d 4]) \r\n</pre>\r\n\r\n<pre>user=&gt; (nnext #{:a :b :c})\r\n(:c)\r\n</pre>\r\n"],
+  ["user=> (nnext '(1 2 3))\n(3)\n\nuser=> (nnext [])\nnil \n\nuser=> (nnext ['(a b c) '(b a c) '(c b a) '(a c b)])\n((c b a) (a c b)) \n\nuser=> (nnext {:a 1, :b 2, :c 3, :d 4})\n([:c 3] [:d 4]) \n\nuser=> (nnext #{:a :b :c})\n(:c)"],
   :notes nil,
   :arglists ["x"],
   :doc "Same as (next (next x))",
