@@ -6064,7 +6064,8 @@
   [";; can coerce an int (or similar)\nuser=> (char 97)\n\\a\n\n;; a byte can be coerced to a char\nuser=> (let [bytes-array (.getBytes \"abc\")]\n         (char (first bytes-array)))\n\\a\n\n;; char is just a function\nuser=> (map char [65 66 67 68])\n(\\A \\B \\C \\D)"
    "(->> [67 108 111 106 117 114 101]\n     (map char)\n     (apply str))\n\n\"Clojure\""
    ";; backslash\nuser=> (char 92)\n\\\\\n\n;; String madness:\nuser=> (map str [\\n \\newline \\\\])\n[\"n\" \"\\n\" \"\\\\\"]\n\n;; convert back to int:\nuser=> (int \\\\)\n92\n\n;; whoops! this will expect additional input because it char's the bracket\nuser=> (char \\)\n   #=> \n\n;; don't you dare this!\nuser=> (char \\ )\n\\space\n\n;; make it readable\nuser=> (char \\space)\n\\space\n\n;; it gets uglier! Mark the text to see the difference\nuser=> \\\n   #=>\n\nuser=> \\ \n\\space\n\n;; MaDnEsS!1!\nuser=> \\\\\\\\\\\\\\\\\n\\\\\n\\\\\n\\\\\n\\\\"
-   ";; string to code round trip\n;; input string\n(def in-string \"鬼\")\n;; single char from string\n(def in-char (.charAt in-string 0)) ;;=> \\鬼\n;; code from char\n(def code (int in-char)) ;;=> 39740\n;; char from code\n(def out-char (char code)) ;;=> \\鬼\n;; back to input string\n(def out-string (str out-char)) ;;=> \"鬼\"\n"],
+   ";; string to code round trip\n;; input string\n(def in-string \"鬼\")\n;; single char from string\n(def in-char (.charAt in-string 0)) ;;=> \\鬼\n;; code from char\n(def code (int in-char)) ;;=> 39740\n;; char from code\n(def out-char (char code)) ;;=> \\鬼\n;; back to input string\n(def out-string (str out-char)) ;;=> \"鬼\"\n"
+   "(defn u-sub-char\n  \"If n is a single-digit integer in [0, ..., 9], returns the\n  Unicode supscript character for n.  Returns nil for other numbers.\"\n  [n]\n  (if (and (>= n 0) (<= n 9))\n    (char (+ 0x2080 n))\n    nil))"],
   :notes nil,
   :arglists ["x"],
   :doc "Coerce to char",
