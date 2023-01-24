@@ -13432,7 +13432,8 @@
    "You can use this for any?:\n\n(def any?\n  (complement not-any?))"
    "You can also use <code>some</code> for <code>any?</code>"
    "`some` is not quite the same as `any?` because the latter returns a Boolean\n\n```\nuser> (def any? (complement not-any?))\n#'user/any?\nuser> (some #{:a} [:a :b :c])\n:a\nuser> (any? #{:a} [:a :b :c])\ntrue\nuser> (some #{:d} [:a :b :c])\nnil\nuser> (any? #{:d} [:a :b :c])\nfalse\n```\n\nI also find `one-of?` handy:\n\n```\n(defn one-of? [x coll]\n  (any? #{x} coll))\n```"
-   "<pre> \n(not-any?   #(= \"query\"  %)   (list \"hola\" \"query\" \"fin\"))   ;false\n(not-any?   #(= \"query\"  %)   (list \"hola\" \"fin\"))           ;true\n(not-any?   #(= \"query\"  %)   (list))                        ;true\n(not-any?   #(= \"query\"  %)   nil)                           ;true\n(not-any?   #(= \"query\"  %)   '())                           ;true\n"],
+   "<pre> \n(not-any?   #(= \"query\"  %)   (list \"hola\" \"query\" \"fin\"))   ;false\n(not-any?   #(= \"query\"  %)   (list \"hola\" \"fin\"))           ;true\n(not-any?   #(= \"query\"  %)   (list))                        ;true\n(not-any?   #(= \"query\"  %)   nil)                           ;true\n(not-any?   #(= \"query\"  %)   '())                           ;true\n"
+   "Here's another version for `any?`\n\n<pre>(def any? (comp boolean some))</pre>"],
   :tag "java.lang.Boolean",
   :arglists ["pred coll"],
   :doc
