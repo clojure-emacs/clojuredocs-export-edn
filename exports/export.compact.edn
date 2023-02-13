@@ -22105,7 +22105,8 @@
   :line 391,
   :examples
   ["(ns your-project\n  (:require [clojure.java.io :as io]))\n\n(defn copy-file [source-path dest-path]\n  (io/copy (io/file source-path) (io/file dest-path)))\n\n(copy-file \"/home/username/squirrel.txt\" \"/home/username/burt-reynolds.txt\")\n\n;; Or, after extending the related multimethod:\n\n(defmethod @#'io/do-copy [String String] [in out opts]\n  (apply io/copy (io/file in) (io/file out) opts))\n\n(io/copy \"/home/username/squirrel.txt\" \"/home/username/burt-reynolds.txt\")"
-   ";; Can be used to save a URL to disk. See: https://stackoverflow.com/a/19297746/1019491\n\n(defn copy-uri-to-file [uri file]\n  (with-open [in (clojure.java.io/input-stream uri)\n              out (clojure.java.io/output-stream file)]\n    (clojure.java.io/copy in out)))"],
+   ";; Can be used to save a URL to disk. See: https://stackoverflow.com/a/19297746/1019491\n\n(defn copy-uri-to-file [uri file]\n  (with-open [in (clojure.java.io/input-stream uri)\n              out (clojure.java.io/output-stream file)]\n    (clojure.java.io/copy in out)))"
+   ";; Concatenate two files.\n\n(with-open [out (clojure.java.io/output-stream \"output.txt\")]\n  (clojure.java.io/copy (clojure.java.io/file \"input1.txt\") out)\n  (clojure.java.io/copy (clojure.java.io/file \"input2.txt\") out))"],
   :notes nil,
   :arglists ["input output & opts"],
   :doc
