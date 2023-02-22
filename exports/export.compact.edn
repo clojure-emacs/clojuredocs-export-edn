@@ -3865,7 +3865,7 @@
   :file "clojure/string.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.string/starts-with?],
+  :see-alsos [:clojure.string/starts-with? :clojure.string/includes?],
   :line 366,
   :examples
   ["(use 'clojure.string)\n\n(ends-with? \"Minsun\" \"sun\")\n;;=> true\n(ends-with? \"Minsun\" \"suns\")\n;;=> false\n(ends-with? \"Minsun\" \"un\")\n;;=> true"],
@@ -22780,7 +22780,7 @@
   :file "clojure/string.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.string/ends-with? :clojure.string/includes?],
   :line 360,
   :examples
   ["(ns tst.xyz.core\n  (:use clojure.test )\n  (:require [clojure.string :as string] ))\n\n(deftest t-starts-with?\n  (is (string/starts-with? \"abcde\" \"a\"))\n  (is (string/starts-with? \"abcde\" \"ab\"))\n  (is (string/starts-with? \"abcde\" \"abc\"))\n\n  (is (not (string/starts-with? \"abcde\" \"b\")))\n  (is (not (string/starts-with? \"abcde\" \"bc\")))\n\n  (is (not (string/starts-with? \"a\" \"ab\")))\n  (is (not (string/starts-with? \"ab\" \"abc\"))))"],
