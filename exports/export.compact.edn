@@ -16845,7 +16845,8 @@
   :line 819,
   :examples
   ["user=> (not= 1 1)\nfalse\n\nuser=> (not= 1 2)\ntrue\n\nuser=> (not= true true)\nfalse\n\nuser=> (not= true false)\ntrue\n\nuser=> (not= true true true true)\nfalse\n\nuser=> (not= true true false true)\ntrue\n"
-   ";; See the Clojure Equality guide for more details:\n;; https://clojure.org/guides/equality"],
+   ";; See the Clojure Equality guide for more details:\n;; https://clojure.org/guides/equality"
+   ";; An exception to the docstring:\n\n(not= ##NaN ##NaN)\n;; => false\n\n(not (= ##NaN ##NaN))\n;; => true\n\n;; This is because of various shortcuts for checking identity when checking equality.\n;; As a rule of thumb, don't rely on either for testing against the ##NaN literal.\n;; Decide on which logic you want, and explicitly test. E.g.\n\n(defn != [x y]\n  (or (not= x y)\n      (Double/isNaN x)\n      (Double/isNaN y)))\n\n(!= ##NaN ##NaN)\n;; => true"],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x" "x y" "x y & more"],
