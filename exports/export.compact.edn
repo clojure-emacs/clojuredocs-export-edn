@@ -25507,7 +25507,8 @@
    :clojure.core/isa?],
   :line 5585,
   :examples
-  [";; simple example showing single parented derivation\n;; then adding another parent\n\nuser=> (derive ::toy_poodle ::poodle)\nnil\nuser=> (parents ::toy_poodle)\n#{:user/poodle}\nuser=> (derive ::toy_poodle ::toy_dogs)\nnil\nuser=> (parents ::toy_poodle)\n#{:user/poodle :user/toy_dogs}\nuser=>"],
+  [";; simple example showing single parented derivation\n;; then adding another parent\n\nuser=> (derive ::toy_poodle ::poodle)\nnil\nuser=> (parents ::toy_poodle)\n#{:user/poodle}\nuser=> (derive ::toy_poodle ::toy_dogs)\nnil\nuser=> (parents ::toy_poodle)\n#{:user/poodle :user/toy_dogs}\nuser=>"
+   ";; This works on Java classes as well. Note that\n;; it will only show direct parents, not the entire\n;; ancestor hierarchy.\n\n(parents CompletableFuture)\n=> #{java.util.concurrent.Future java.lang.Object java.util.concurrent.CompletionStage}\n\n(parents ConcurrentHashMap)\n=> #{java.io.Serializable java.util.AbstractMap java.util.concurrent.ConcurrentMap}"],
   :notes nil,
   :arglists ["tag" "h tag"],
   :doc
