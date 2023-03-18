@@ -7793,7 +7793,8 @@
   :see-alsos nil,
   :line 1950,
   :examples nil,
-  :notes nil,
+  :notes
+  ["You can also **enable check-asserts globally** using deps.edn you can add it to a profile. It is a jvm option. In your **deps.edn** you can add this:\n\n```\n:aliases {:dev {:jvm-opts [\"-Dclojure.spec.check-asserts=true\"]}}\n```"],
   :arglists ["flag"],
   :doc
   "Enable or disable spec asserts that have been compiled\nwith '*compile-asserts*' true.  See 'assert'.\n\nInitially set to boolean value of clojure.spec.check-asserts\nsystem property. Defaults to false.",
