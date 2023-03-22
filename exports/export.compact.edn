@@ -11761,7 +11761,8 @@
   :see-alsos [:clojure.core/long-array],
   :line 5383,
   :examples
-  ["(def my-floats (float-array [1.1 2.2 3.3]));; => #'user/my-floats\n\n;; long-array will convert where possible\n(long-array my-floats);; => [1, 2, 3]\n\n;; longs will not\n(try (longs my-floats)\n     (catch ClassCastException e (ex-message e)));; => \"[F cannot be cast to [J\""],
+  ["(def my-floats (float-array [1.1 2.2 3.3]));; => #'user/my-floats\n\n;; long-array will convert where possible\n(long-array my-floats);; => [1, 2, 3]\n\n;; longs will not\n(try (longs my-floats)\n     (catch ClassCastException e (ex-message e)));; => \"[F cannot be cast to [J\""
+   ";; longs does cast but not convert arrays\n;; it is used as a type-hinting device to avoid reflections\n;; very important for computation intensive codes\n(binding [*print-meta* true]\n  (def ^longs x (long-array [1 2 4]))\n  (clojure.pprint/pprint #'x))    ;; ^{:tag #function[clojure.core/longs], ...}"],
   :notes nil,
   :arglists ["xs"],
   :doc "Casts to long[]",
