@@ -16721,13 +16721,16 @@
   :type "macro",
   :column 1,
   :see-alsos
-  [:clojure.core.logic.fd/domain :clojure.core.logic.fd/interval],
+  [:clojure.core.logic.fd/domain
+   :clojure.core.logic.fd/interval
+   :clojure.core/contains?],
   :line 646,
   :examples
   ["(logic/run* [x y]\n  (fd/in x y (fd/interval 0 5))\n  (fd/+ x y 5))\n;; => ([0 5] [1 4] [2 3] [3 2] [4 1] [5 0])"
    ";; Modelling the possible combination of values of 2 coin tosses\n;; heads - 1, tails - 0; or vice-versa\n(logic/run* [coin-1 coin-2]\n  (let [coin (fd/domain 0 1)]\n    (fd/in coin-1 coin-2 coin)))\n;; => ([0 0] [1 0] [0 1] [1 1])"],
   :macro true,
-  :notes nil,
+  :notes
+  ["If you're looking to do simple membership tests, such a function isn't builtin\n\n`(defn in? [xs el] (some #(= % el) xs))`"],
   :arglists ["& xs-and-dom"],
   :doc "Assign vars to domain. The domain must come last.",
   :library-url "https://github.com/clojure/clojure",
@@ -21370,7 +21373,9 @@
   :type "function",
   :column 1,
   :see-alsos
-  [:clojure.core.reducers/cat :clojure.core.reducers/foldcat],
+  [:clojure.core.reducers/cat
+   :clojure.core.reducers/foldcat
+   :clojure.core/into],
   :line 7619,
   :examples
   [";; cat is handy for untangling nested collections when using transducers\n\n(into [] (comp cat cat (map inc)) [[[1] [2]] [[3] [4]]])\n;; => [2 3 4 5]"
