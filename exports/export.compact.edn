@@ -5798,7 +5798,7 @@
   :file "clojure/core/logic.clj",
   :type "macro",
   :column 1,
-  :see-alsos [:clojure.core.logic/fresh],
+  :see-alsos [:clojure.core.logic/fresh :clojure.core/every?],
   :line 1268,
   :examples nil,
   :macro true,
