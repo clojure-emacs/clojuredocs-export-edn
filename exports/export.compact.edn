@@ -1159,7 +1159,7 @@
   :see-alsos [:clojure.core/byte-array :clojure.core/bytes?],
   :line 5353,
   :examples
-  [";; for fast interop\n(bytes (byte-array (map (comp byte int) \"ascii\")))\n;=> #<byte[] [B@7a004f62>\n(def the-bytes *1)\n;=> #'user/the-bytes\n(defn get-byte [the-bytes i] (aget the-bytes i))\n;=> #'user/get-byte Reflection warning, NO_SOURCE_PATH:1 - call to aget can't be resolved.\n\n(defn get-byte [the-bytes i] \n   (let [the-bytes (bytes the-bytes)] \n      (aget the-bytes i)))\n;=> #'user/get-byte\n(get-byte the-bytes 0)\n;=> 97\n"
+  [";; for fast interop\n(bytes (byte-array (map (comp byte int) \"ascii\")))\n;=> #<byte[] [B@7a004f62>\n(def the-bytes *1)\n;=> #'user/the-bytes\n(set! *warn-on-reflection* true)\n(defn get-byte [the-bytes i] (aget the-bytes i))\n;=> #'user/get-byte Reflection warning, NO_SOURCE_PATH:1 - call to aget can't be resolved.\n\n(defn get-byte [the-bytes i] \n   (let [the-bytes (bytes the-bytes)] \n      (aget the-bytes i)))\n;=> #'user/get-byte\n(get-byte the-bytes 0)\n;=> 97\n"
    ";; byte-array will convert where possible\n(byte-array [127 128 129]);; => [127, -128, -127]\n\n;; bytes will not\n(try (bytes [127 128 129])\n     (catch ClassCastException e (ex-message e)))\n;; => \"clojure.lang.PersistentVector cannot be cast to [B\"\n"],
   :notes
   ["Why is the `(comp byte int)` required in the example? This seems to work just as well:\r\n\r\n<pre>\r\nuser=> (def b (bytes (byte-array (map byte \"ascii\"))))\r\nuser=> (String. b)\r\n\"ascii\"\r\n</pre>"
@@ -3433,7 +3433,8 @@
   :column 1,
   :see-alsos nil,
   :line 323,
-  :examples nil,
+  :examples
+  ["(def my-proxy\n  (proxy [java.lang.Object] []\n    (equals [_] false)\n    (toString [] \"I'm an object\")))\n;; => #'user/my-proxy\n\n(proxy-mappings my-proxy)\n;; => {\"equals\" #function[user/fn--43785/fn--43786],\n;;     \"toString\" #function[user/fn--43785/fn--43788]}\n\n(let [to-string-fn (-> my-proxy proxy-mappings (get \"toString\"))]\n  (to-string-fn :foo))\n;; => \"I'm an object\"\n"],
   :notes nil,
   :arglists ["proxy"],
   :doc "Takes a proxy instance and returns the proxy's fn map.",
@@ -5288,11 +5289,11 @@
   :file "clojure/core_deftype.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.repl/demunge],
+  :see-alsos [:clojure.repl/demunge :clojure.core/namespace-munge],
   :line 129,
   :examples
   ["user> (defn foo [] (println \"foo\"))\n#'user/foo\n\nuser> foo\n#<user$foo user$foo@a0dc71>\n\nuser> (munge foo)\n\"user_DOLLARSIGN_foo_CIRCA_a0dc71\""
-   "(doseq [c (remove #(Character/isLetterOrDigit %) (map char (range 32 127)))]\n  (println c \"->\" (munge c)))\n;; Prints:\n  ->\n! -> _BANG_\n\" -> _DOUBLEQUOTE_\n# -> _SHARP_\n$ -> $\n% -> _PERCENT_\n& -> _AMPERSAND_\n' -> _SINGLEQUOTE_\n( -> (\n) -> )\n* -> _STAR_\n+ -> _PLUS_\n, -> ,\n- -> _\n. -> .\n/ -> _SLASH_\n: -> _COLON_\n; -> ;\n< -> _LT_\n= -> _EQ_\n> -> _GT_\n? -> _QMARK_\n@ -> _CIRCA_\n[ -> _LBRACK_\n\\ -> _BSLASH_\n] -> _RBRACK_\n^ -> _CARET_\n_ -> _\n` -> `\n{ -> _LBRACE_\n| -> _BAR_\n} -> _RBRACE_\n~ -> _TILDE_"],
+   "(doseq [c (remove #(Character/isLetterOrDigit ^char %) (map char (range 32 127)))]\n  (println c \"->\" (munge c)))\n;; Prints:\n  ->\n! -> _BANG_\n\" -> _DOUBLEQUOTE_\n# -> _SHARP_\n$ -> $\n% -> _PERCENT_\n& -> _AMPERSAND_\n' -> _SINGLEQUOTE_\n( -> (\n) -> )\n* -> _STAR_\n+ -> _PLUS_\n, -> ,\n- -> _\n. -> .\n/ -> _SLASH_\n: -> _COLON_\n; -> ;\n< -> _LT_\n= -> _EQ_\n> -> _GT_\n? -> _QMARK_\n@ -> _CIRCA_\n[ -> _LBRACK_\n\\ -> _BSLASH_\n] -> _RBRACK_\n^ -> _CARET_\n_ -> _\n` -> `\n{ -> _LBRACE_\n| -> _BAR_\n} -> _RBRACE_\n~ -> _TILDE_"],
   :notes nil,
   :arglists ["s"],
   :library-url "https://github.com/clojure/clojure",
@@ -10682,7 +10683,7 @@
   :see-alsos [:clojure.core/munge],
   :line 13,
   :examples
-  [";;; replace \"-\" to \"_\"\nuser=> (namespace-munge \"hello-world\")\n\"hello_world\""],
+  [";;; replace \"-\" to \"_\" (this is the only conversion this fn does)\nuser=> (namespace-munge \"hello-world\")\n\"hello_world\""],
   :notes nil,
   :arglists ["ns"],
   :doc
