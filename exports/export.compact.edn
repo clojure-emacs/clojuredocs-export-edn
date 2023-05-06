@@ -14964,7 +14964,7 @@
   :line 1916,
   :examples
   ["(def my-formatter (pprint/formatter \"~:d\"))\n\n(with-open [stream (java.io.StringWriter.)]\n  (my-formatter stream 123456)\n  (str stream))\n;; => \"123,456\""
-   ";; Compiling the control string can have significant performance benefits…\n\n(time\n (with-open [stream (java.io.StringWriter.)]\n   (doseq [x (range 1e5)]\n     (pprint/cl-format stream \"Number is ~:d \" x))))\n;; Elapsed time: 5100.348801 msecs\n\n(def my-formatter (pprint/formatter \"Number is ~:d \"))\n\n(time\n (with-open [stream (java.io.StringWriter.)]\n   (doseq [x (range 1e5)]\n     (my-formatter stream x))))\n;; Elapsed time: 3620.067511 msecs"],
+   ";; Compiling the control string can have significant performance benefits…\n\n(time\n (with-open [stream (java.io.StringWriter.)]\n   (doseq [x (range 1e5)]\n     (pprint/cl-format stream \"Number is ~:d \" x))))\n;; Elapsed time: 5100.348801 msecs\n\n(def my-formatter (pprint/formatter \"Number is ~:d \"))\n\n(time\n (with-open [stream (java.io.StringWriter.)]\n   (doseq [x (range 1e5)]\n     (my-formatter stream x))))\n;; Elapsed time: 3620.067511 msecs\n\n;; But still not a patch on `format` with this example…\n\n(time\n (with-open [stream (java.io.StringWriter.)]\n   (doseq [x (range 1e5)]\n     (.write stream (format \"Number is %,d \" x)))))\n;; \"Elapsed time: 444.501672 msecs\""],
   :macro true,
   :notes nil,
   :arglists ["format-in"],
