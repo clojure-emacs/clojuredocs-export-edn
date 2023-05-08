@@ -14960,7 +14960,7 @@
   :file "clojure/pprint/cl_format.clj",
   :type "macro",
   :column 1,
-  :see-alsos [:clojure.pprint/formatter-out],
+  :see-alsos [:clojure.pprint/formatter-out :clojure.pprint/pprint],
   :line 1916,
   :examples
   ["(def my-formatter (pprint/formatter \"~:d\"))\n\n(with-open [stream (java.io.StringWriter.)]\n  (my-formatter stream 123456)\n  (str stream))\n;; => \"123,456\""
