@@ -8933,7 +8933,8 @@
    "Avoiding `(not (empty? s))` because it macroexpands into `(not (not ...))`, on the grounds of efficiency, is ridiculous. \n\nI'm a fan of:\n\n```clojure\n(when (not-empty s)\n  ...)\n```"
    "If I just want to return false when empty, true when not empty, then what can I use if I am going to avoid (not (empty? ...))?"
    "Just note `(not (empty? x))` is not perfectly equivalent to `seq`:\n\n~~~\nuser=> (seq '(1 2))\n(1 2)\nuser=> (not (empty? '(1 2)))\ntrue\n~~~"
-   "```\nuser> (let [r (and (not (empty? [])))] r)\n;; => false\nuser> (let [r (and (seq []))] r)\n;; => nil\n```\n"],
+   "```\nuser> (let [r (and (not (empty? [])))] r)\n;; => false\nuser> (let [r (and (seq []))] r)\n;; => nil\n```\n"
+   "`(seq x)` is considered idiomatic, so in theory it should be understood by experienced Clojurians.  `(not (empty? x))` might be better when you expect your code to be read by those who don't fit that description.  (However, there are a number of Clojure idioms that could be confusing to those without much experience; avoiding them all might not be desirable.)"],
   :arglists ["coll"],
   :doc
   "Returns true if coll has no items - same as (not (seq coll)).\n  Please use the idiom (seq x) rather than (not (empty? x))",
@@ -14645,7 +14646,9 @@
    :clojure.core/lazy-cat
    :clojure.core/quote
    :clojure.core/mapcat
-   :clojure.core/zipmap],
+   :clojure.core/zipmap
+   :clojure.core/cat
+   :clojure.core.reducers/cat],
   :line 718,
   :examples
   ["\nuser=> (concat [1 2] [3 4])\n(1 2 3 4)\n\nuser=> (into [] (concat [1 2] [3 4]))\n[1 2 3 4]\n\nuser=> (concat [:a :b] nil [1 [2 3] 4])\n(:a :b 1 [2 3] 4)\n\n=> (concat [1] [2] '(3 4) [5 6 7] #{9 10 8})\n(1 2 3 4 5 6 7 8 9 10)\n;; The last three elements might appear in a different order.\n"
@@ -17847,7 +17850,10 @@
   :file "clojure/core/reducers.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/cat :clojure.core.reducers/foldcat],
+  :see-alsos
+  [:clojure.core/cat
+   :clojure.core.reducers/foldcat
+   :clojure.core/concat],
   :line 255,
   :examples
   [";; The example showcase use of r/cat to build HashSets (instead \n;; of the default ArrayList) of distinct words in parallel \n;; and then merge all together walking the binary tree produced by r/fold.\n(require '[clojure.core.reducers :as r])\n(require '[clojure.string :refer [lower-case blank? split split-lines]])\n(import  'java.util.HashSet)\n\n(def book\n  (-> \"http://www.gutenberg.org/files/2600/2600-0.txt\"\n      slurp\n      split-lines))\n\n(def r-word (comp\n  (r/map lower-case)\n  (r/remove blank?)\n  (r/map #(re-find #\"\\w+\" %))\n  (r/mapcat #(split % #\"\\s+\"))))\n\n(def btree\n  (r/fold\n    (r/cat #(HashSet.))\n    r/append!\n    (r-word book)))\n\n(defn merge-tree [root res]\n  (cond\n    (instance? clojure.core.reducers.Cat root)\n    (do (merge-tree (.left root) res) (merge-tree (.right root) res))\n    (instance? HashSet root)\n    (doto res (.addAll root))\n    :else res))\n\n(def distinct-words (merge-tree btree (HashSet.)))\n(count distinct-words)\n;; 17200"],
@@ -19318,7 +19324,8 @@
   :line 7886,
   :examples
   [";; For a bit more documentation, see Clojure 1.10.0 release notes regarding\n;; tap> here:\n\n;; https://github.com/clojure/clojure/blob/master/changes.md#23-tap"
-   ";; Register a tap handler\n\n(add-tap (bound-fn* clojure.pprint/pprint))\n\n;; Log using the above handler\n\n(tap> \"Hello world\")"],
+   ";; Register a tap handler\n\n(add-tap (bound-fn* clojure.pprint/pprint))\n\n;; Log using the above handler\n\n(tap> \"Hello world\")"
+   ";; Using tap but returning initial content\n(defn major-champs [] [{:team-name \"SK\"}\n                       {:team-name \"LG\"}])\n\n(doto (major-champs)\n      (tap>))\n;;=> [{:team-name \"SK\"} {:team-name \"LG\"}]"],
   :notes
   ["`tap>` is a primary tool in the [Portal](https://github.com/djblue/portal) library. "],
   :arglists ["x"],
@@ -21398,7 +21405,8 @@
   :see-alsos
   [:clojure.core.reducers/cat
    :clojure.core.reducers/foldcat
-   :clojure.core/into],
+   :clojure.core/into
+   :clojure.core/concat],
   :line 7619,
   :examples
   [";; cat is handy for untangling nested collections when using transducers\n\n(into [] (comp cat cat (map inc)) [[[1] [2]] [[3] [4]]])\n;; => [2 3 4 5]"
