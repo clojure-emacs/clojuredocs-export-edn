@@ -11345,7 +11345,8 @@
    :clojure.core/in-ns
    :clojure.core/remove-ns
    :clojure.core/ns-map
-   :clojure.core/*ns*],
+   :clojure.core/*ns*
+   :clojure.core/alias],
   :line 5764,
   :examples
   [";; Generate a Java class\n(ns org.clojuredocs.test\n      (:gen-class))\n\n(defn -main [] (println \"Hello, World!\"))\n\n\n;; After compilation:\nsh$ java -cp classes org.clojuredocs.test\nHello, World!\n"
