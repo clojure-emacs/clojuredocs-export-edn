@@ -19409,7 +19409,8 @@
   :file "clojure/set.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/filter],
+  :see-alsos
+  [:clojure.core/filter :clojure.set/project :clojure.set/join],
   :line 65,
   :examples ["(clojure.set/select odd? #{1 2 3})\n;;=> #{1 3}\n"],
   :notes nil,
