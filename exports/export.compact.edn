@@ -22799,7 +22799,7 @@
   :line 5685,
   :examples
   ["user=> (distinct? 1 2 3)\ntrue\nuser=> (distinct? 1 2 3 3)\nfalse\nuser=> (distinct? 1 2 3 1)\nfalse"
-   "(distinct? ['A 'A 'c]) ;;=> true\n(distinct? 'A 'A 'c)   ;;=> false\n(distinct? [1 1 'c])   ;;=> true\n(distinct? 1 1 'c)     ;;=> false\n\n;; Like `min` or `max` and unlike `distinct` the \n;; parameters are taken separately, i.e. not in a \n;; collection. "],
+   "(distinct? ['A 'A 'c]) ;;=> true\n(distinct? 'A 'A 'c)   ;;=> false\n(apply distinct? ['A 'A 'c]) ;;=> false\n\n(distinct? [1 1 'c])   ;;=> true\n(distinct? 1 1 'c)     ;;=> false\n\n;; Like `min` or `max` and unlike `distinct` the \n;; parameters are taken separately, i.e. not in a \n;; collection. "],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x" "x y" "x y & more"],
