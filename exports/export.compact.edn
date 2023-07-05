@@ -14114,7 +14114,7 @@
    ";; the map in update can be nil, and f will still be applied to nil and \n;; return a value\n\n(def empty-map nil)\n#'user/empty-map\n\n(update empty-map :some-key #(str \"foo\" %))\n;;=> {:some-key \"foo\"}\n"
    ";; can also use in []\n\nuser=> (update [1 2 3] 0 inc)\n;;=> [2 2 3]\n\nuser=> (update [] 0 #(str \"foo\" %))\n;;=> [\"foo\"]"
    "(def ds [{:id 1.0 :name \"name1\"}\n         {:id 2.0 :name \"name2\"}\n         {:id 3.0 :name \"name3\"}])\n\n(map (fn [x] (update x :name #(if (= \"name2\" %) % \"not 2\"))) ds)\n\n;; ({:id 1.0, :name \"not 2\"} {:id 2.0, :name \"name2\"} {:id 3.0, :name \"not 2\"})"
-   ";; From string to boolean\n\n(def answer {:answer \"France\" :correct \"true\"  :age 11})\n(update answer :correct #(if (= % \"true\") true false))\n\n;; {:answer \"France\", :correct true, :age 11}"
+   ";; From string to boolean\n\n(def answer {:answer \"France\" :correct \"true\"  :age 11})\n(update answer :correct #(= % \"true\"))\n\n;; {:answer \"France\", :correct true, :age 11}"
    ";; Applying a function to the same key in a sequence of arrays\n\n(def dates [{:date \"20200430\",:time \"08:35\"}\n            {:date \"20200430\",:time \"09:15\"}]\n\n;; Takes the current time value in the array, and reduces it to the hour by \n;; calling the reduce-to-hour function (not included here)\n\n(map #(update % :time (constantly (reduce-to-hour (:time %)))) dates)\n=> ({:date \"20200430\", :time \"08\"} {:date \"20200430\", :time \"09\"})"
    ";; Very common, update a vector inside a map\n(def little-schemer {:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n                               {:name \"Matthias Felleisen\"}]\n                     :title \"The Little Schemer\"})\n\n(update little-schemer :authors conj {:name \"Gerald J. Sussman\"})\n;;=> \n{:authors [{:birth-year 1944, :name \"Daniel Friedman\"}\n           {:name \"Matthias Felleisen\"}\n           {:name \"Gerald J. Sussman\"}]\n :title \"The Little Schemer\"}"
    ";; For a simple change of value we can use constantly\n(def hm {:banana 1, :apple 2, :orange 3})\n\n(update hm :banana (constantly 6))\n;;=> {:banana 6 :apple 2 :orange 3}\n\n;; Which is equivalent to using \"assoc\"\n(assoc hm :banana 6)\n;;=> {:banana 6 :apple 2 :orange 3}"
@@ -15591,7 +15591,7 @@
   :line 203,
   :examples
   ["(use 'clojure.zip)\n\n(def vz (vector-zip [1 2 [73 88] 4]))\n\n(root (replace (-> vz down right right) 3))\n=>[1 2 3 4]"],
-  :notes nil,
+  :notes ["This throws an error if you replace the end node btw"],
   :arglists ["loc node"],
   :doc "Replaces the node at this loc, without moving",
   :library-url "https://github.com/clojure/clojure",
