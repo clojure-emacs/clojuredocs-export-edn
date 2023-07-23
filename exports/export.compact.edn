@@ -16646,7 +16646,8 @@
   :line 2985,
   :examples
   ["user=> (split-at 2 [1 2 3 4 5])\n[(1 2) (3 4 5)]\n\nuser=> (split-at 3 [1 2])\n[(1 2) ()]"
-   "user=> (let [[first-half second-half] (split-at 3 [1 2 3 4 5 6])] first-half)\n(1 2 3)"],
+   "user=> (let [[first-half second-half] (split-at 3 [1 2 3 4 5 6])] first-half)\n(1 2 3)"
+   "user=> (split-at 2 [:a :b :c :d])\n[(:a :b) (:c :d)]\n"],
   :notes nil,
   :arglists ["n coll"],
   :doc "Returns a vector of [(take n coll) (drop n coll)]",
