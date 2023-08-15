@@ -21889,7 +21889,7 @@
   :see-alsos nil,
   :line 398,
   :examples
-  ["user=> (import java.util.Date)\njava.util.Date\n\nuser=> (def ^:dynamic *now* (Date.))\n#'user/*now*\n\nuser=> (bean *now*)\n{:seconds 57, :date 13, :class java.util.Date, :minutes 55, :hours 17, :year 110, :timezoneOffset -330, :month 6, :day 2, :time 1279023957492}\n"
+  ["user=> (import java.util.Date)\njava.util.Date\n\nuser=> (bean (Date.))\n{:seconds 57, :date 13, :class java.util.Date, :minutes 55, :hours 17, :year 110, :timezoneOffset -330, :month 6, :day 2, :time 1279023957492}\n"
    ";; although not reference-able in Clojuredocs, \n;; org.clojure/java.data provides a useful, alternative 'from-java' function \n;; that works similarly to bean, but more customizable.\n;; See https://github.com/clojure/java.data for more info."],
   :notes nil,
   :arglists ["x"],
