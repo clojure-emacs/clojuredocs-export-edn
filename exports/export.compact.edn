@@ -10157,7 +10157,8 @@
    :clojure.core/get-method
    :clojure.core/defprotocol
    :clojure.core/make-hierarchy
-   :clojure.spec/multi-spec],
+   :clojure.spec/multi-spec
+   :clojure.core/derive],
   :line 1725,
   :examples
   [";; Define the multimethod\n(defmulti service-charge (juxt account-level :tag))\n\n;; Handlers for resulting dispatch values\n(defmethod service-charge [::acc/Basic   ::acc/Checking] [_] 25)\n(defmethod service-charge [::acc/Basic   ::acc/Savings]  [_] 10)\n(defmethod service-charge [::acc/Premium ::acc/Account]  [_] 0)"
