@@ -21677,7 +21677,8 @@
   :examples
   ["(use 'clojure.walk)\n\n(walk #(* 2 %) #(apply + %) [1 2 3 4 5])\n;=> 30\n\n(walk second #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 6\n\n(walk first #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 5\n\n(walk first reverse [ [1 2] [3 4] [5 6] ])\n;=> (5 3 1)"
    "(require '[clojure.walk :as w])\n\n(w/walk (fn [[k v]] [k (* 10 v)]) identity {:a 1 :b 2 :c 3})\n;=> {:a 10, :c 30, :b 20}\n\n(w/postwalk #(if (number? %) (* 2 %) %) [[1 2 3] [4 7 2] [2 5 2]])\n;=> [[2 4 6] [8 14 4] [4 10 4]]\n\n(let [s [1 '(2 3 [1])]] \n  (w/postwalk #(if (seq? %) (vec %) %) s))\n;=> [1 [2 3 [1]]]\n\n(w/walk (comp vec reverse) identity {0 :start 1 :inprogress 2 :end})\n;=> {:start 0, :inprogress 1, :end 2}"
-   ";; Recursively sort nested map\n(require '[clojure.walk :as w])\n\n(def m {:b 2, :c 3, :a 1, :d {:x 10, :c 3, :a 11, :b 22}})\n\n(w/postwalk (fn [x] (if (map? x) (into (sorted-map) x) x)) m)\n;;=> {:a 1, :b 2, :c 3, :d {:a 11, :b 22, :c 3, :x 10}}\n"],
+   ";; Recursively sort nested map\n(require '[clojure.walk :as w])\n\n(def m {:b 2, :c 3, :a 1, :d {:x 10, :c 3, :a 11, :b 22}})\n\n(w/postwalk (fn [x] (if (map? x) (into (sorted-map) x) x)) m)\n;;=> {:a 1, :b 2, :c 3, :d {:a 11, :b 22, :c 3, :x 10}}\n"
+   ";; Convert java.util.Map to Clojure map\n(import '[java.util Map HashMap])\n(require '[clojure.walk :as w])\n\n(defn javamap->map\n  [^java.util.Map m]\n  (->> (seq m)\n       (into {})\n       w/keywordize-keys))\n\n(let [m (doto (java.util.HashMap.)\n          (.put 1 \"one\")\n          (.put 2 \"two\")\n          (.put 3 \"three\"))]\n  (javamap->map m))\n\n;;=> {1 \"one\", 2 \"two\", 3 \"three\"}\n\n"],
   :notes nil,
   :arglists ["inner outer form"],
   :doc
