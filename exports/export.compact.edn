@@ -1818,7 +1818,9 @@
    :clojure.core/prn-str
    :clojure.core/pr
    :clojure.core/pr-str
-   :clojure.pprint/pprint-tab],
+   :clojure.pprint/pprint-tab
+   :clojure.pprint/*print-miser-width*
+   :clojure.pprint/*print-right-margin*],
   :line 241,
   :examples
   ["(def big-map (zipmap \n                 [:a :b :c :d :e] \n                 (repeat \n                   (zipmap [:a :b :c :d :e] \n                      (take 5 (range))))))\n;;=> #'user/big-map\n\nbig-map\n;;=> {:a {:a 0, :b 1, :c 2, :d 3, :e 4}, :b {:a 0, :b 1, :c 2, :d 3, :e 4}, :c {:a 0, :b 1, :c 2, :d 3, :e 4}, :d {:a 0, :b 1, :c 2, :d 3, :e 4}, :e {:a 0, :b 1, :c 2, :d 3, :e 4}}\n\n(clojure.pprint/pprint big-map)\n;; {:e {:e 4, :d 3, :c 2, :b 1, :a 0},\n;;  :d {:e 4, :d 3, :c 2, :b 1, :a 0},\n;;  :c {:e 4, :d 3, :c 2, :b 1, :a 0},\n;;  :b {:e 4, :d 3, :c 2, :b 1, :a 0},\n;;  :a {:e 4, :d 3, :c 2, :b 1, :a 0}}\n;; nil"
@@ -12225,7 +12227,8 @@
   ["(require '[clojure.walk :refer [postwalk]])\n(let [counter (atom -1)\n      line-counter (atom 0)\n      print-touch (fn [x]\n                    (print (swap! line-counter inc) \":\" (pr-str x) \"→ \"))\n      change (fn [x]\n               (let [new-x (swap! counter inc)]\n                 (prn new-x)\n                 [new-x x]))]\n  (postwalk (fn [x]\n              (print-touch x)\n              (change x))\n            {:a 1 :b 2}))\n\n;; printed output:\n\n1 : :a → 0\n2 : 1 → 1\n3 : [[0 :a] [1 1]] → 2\n4 : :b → 3\n5 : 2 → 4\n6 : [[3 :b] [4 2]] → 5\n7 : {2 [[0 :a] [1 1]], 5 [[3 :b] [4 2]]} → 6\n\n;; returned value:\n\n[6 {2 [[0 :a] [1 1]], 5 [[3 :b] [4 2]]}]"
    ";;example of removing namespaces from all keys in a nested data structure\n(def thing {:page/tags [{:tag/category \"lslsls\"}]})\n(postwalk #(if (keyword? %) (keyword (name %)) %) thing)\n{:tags [{:category \"lslsls\"}]}"
    "(use 'clojure.walk)\n\n;;example of evaluating an expression tree, starting at the leaves\n(def expression-tree\n  {:function +\n   :children\n    [1 {:function *\n        :children [2 6]}]})\n\n(defn evaluate [node]\n  (if-let [f (:function node)]\n    (apply f (:children node))\n    node))\n\n(postwalk evaluate expression-tree)\n\n=> 13"
-   ";; an example to show the differences between postwalk and prewalk\n;; (see the counterpart at prewalk)\n\n(let [counter     (atom 0)\n      print-touch (fn [x]\n                    (print (swap! counter inc) \":\" (pr-str x) \"→ \"))\n      change-type (fn [x]\n                    (let [new-x (if (vector? x)\n                                  (apply list x)\n                                  (str x))]\n                      (prn new-x)\n                      new-x))]\n  (clojure.walk/postwalk (fn [x]\n                           (print-touch x)\n                           (change-type x))\n                         [:a [:ba :bb] :c]))\n\n;; printed output:\n\n1 : :a → \":a\"\n2 : :ba → \":ba\"\n3 : :bb → \":bb\"\n4 : [\":ba\" \":bb\"] → (\":ba\" \":bb\")\n5 : :c → \":c\"\n6 : [\":a\" (\":ba\" \":bb\") \":c\"] → (\":a\" (\":ba\" \":bb\") \":c\")\n\n;; returned value:\n\n=> (\":a\" (\":ba\" \":bb\") \":c\")"],
+   ";; an example to show the differences between postwalk and prewalk\n;; (see the counterpart at prewalk)\n\n(let [counter     (atom 0)\n      print-touch (fn [x]\n                    (print (swap! counter inc) \":\" (pr-str x) \"→ \"))\n      change-type (fn [x]\n                    (let [new-x (if (vector? x)\n                                  (apply list x)\n                                  (str x))]\n                      (prn new-x)\n                      new-x))]\n  (clojure.walk/postwalk (fn [x]\n                           (print-touch x)\n                           (change-type x))\n                         [:a [:ba :bb] :c]))\n\n;; printed output:\n\n1 : :a → \":a\"\n2 : :ba → \":ba\"\n3 : :bb → \":bb\"\n4 : [\":ba\" \":bb\"] → (\":ba\" \":bb\")\n5 : :c → \":c\"\n6 : [\":a\" (\":ba\" \":bb\") \":c\"] → (\":a\" (\":ba\" \":bb\") \":c\")\n\n;; returned value:\n\n=> (\":a\" (\":ba\" \":bb\") \":c\")"
+   ";; Recursively sort nested map\n(require '[clojure.walk :as w])\n\n(def m {:b 2, :c 3, :a 1, :d {:x 10, :c 3, :a 11, :b 22}})\n\n(w/postwalk (fn [x] (if (map? x) (into (sorted-map) x) x)) m)\n;;=> {:a 1, :b 2, :c 3, :d {:a 11, :b 22, :c 3, :x 10}}"],
   :notes
   ["As of 1.9.0, postwalk passes the k/v pairs of a map to `f` not, as one might expect, as type `clojure.lang.MapEntry` but as `clojure.lang.PersistentVector` ([JIRA](https://dev.clojure.org/jira/browse/CLJ-2031)). As a result, `f` cannot distinguish k/v pairs from other two-element vectors."
    "Alex Miller's article [\"Tree visitors in Clojure\"](https://www.ibm.com/developerworks/library/j-treevisit/index.html) might be helpful in understanding general tree traversal and the usage of `clojure.walk/postwalk`.\n"
@@ -14798,7 +14801,7 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos [:clojure.pprint/write],
+  :see-alsos [:clojure.pprint/write :clojure.pprint/pprint],
   :dynamic true,
   :line 47,
   :examples
@@ -17726,7 +17729,8 @@
   :examples
   ["(require 'clojure.walk)\n(clojure.walk/keywordize-keys {\"a\" 1 \"b\" 2})\n;;=> {:a 1 :b 2}"
    "(use 'clojure.walk)\n\n(keywordize-keys {\"a\" 1, \"b\" {\"c\" {\"d\" 2}}})\n;;=> {:a 1, :b {:c {:d 2}}}"
-   ";; The input object also doesn't have to be a dictionary\n(require 'clojure.walk)\n(clojure.walk/keywordize-keys [{\"hello\" \"goodbye\"}])\n;;=>[{:hello \"goodbye\"}]"],
+   ";; The input object also doesn't have to be a dictionary\n(require 'clojure.walk)\n(clojure.walk/keywordize-keys [{\"hello\" \"goodbye\"}])\n;;=>[{:hello \"goodbye\"}]"
+   ";; Convert java.util.Map to Clojure map\n(import '[java.util Map HashMap])\n(require '[clojure.walk :as w])\n\n(defn javamap->map\n  [^java.util.Map m]\n  (->> (seq m)\n       (into {})\n       w/keywordize-keys))\n\n(let [m (doto (java.util.HashMap.)\n          (.put 1 \"one\")\n          (.put 2 \"two\")\n          (.put 3 \"three\"))]\n  (javamap->map m))\n\n;;=> {1 \"one\", 2 \"two\", 3 \"three\"}"],
   :notes nil,
   :arglists ["m"],
   :doc "Recursively transforms all map keys from strings to keywords.",
@@ -21676,9 +21680,7 @@
   :line 35,
   :examples
   ["(use 'clojure.walk)\n\n(walk #(* 2 %) #(apply + %) [1 2 3 4 5])\n;=> 30\n\n(walk second #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 6\n\n(walk first #(apply max %) [ [1 2] [3 4] [5 6] ])\n;=> 5\n\n(walk first reverse [ [1 2] [3 4] [5 6] ])\n;=> (5 3 1)"
-   "(require '[clojure.walk :as w])\n\n(w/walk (fn [[k v]] [k (* 10 v)]) identity {:a 1 :b 2 :c 3})\n;=> {:a 10, :c 30, :b 20}\n\n(w/postwalk #(if (number? %) (* 2 %) %) [[1 2 3] [4 7 2] [2 5 2]])\n;=> [[2 4 6] [8 14 4] [4 10 4]]\n\n(let [s [1 '(2 3 [1])]] \n  (w/postwalk #(if (seq? %) (vec %) %) s))\n;=> [1 [2 3 [1]]]\n\n(w/walk (comp vec reverse) identity {0 :start 1 :inprogress 2 :end})\n;=> {:start 0, :inprogress 1, :end 2}"
-   ";; Recursively sort nested map\n(require '[clojure.walk :as w])\n\n(def m {:b 2, :c 3, :a 1, :d {:x 10, :c 3, :a 11, :b 22}})\n\n(w/postwalk (fn [x] (if (map? x) (into (sorted-map) x) x)) m)\n;;=> {:a 1, :b 2, :c 3, :d {:a 11, :b 22, :c 3, :x 10}}\n"
-   ";; Convert java.util.Map to Clojure map\n(import '[java.util Map HashMap])\n(require '[clojure.walk :as w])\n\n(defn javamap->map\n  [^java.util.Map m]\n  (->> (seq m)\n       (into {})\n       w/keywordize-keys))\n\n(let [m (doto (java.util.HashMap.)\n          (.put 1 \"one\")\n          (.put 2 \"two\")\n          (.put 3 \"three\"))]\n  (javamap->map m))\n\n;;=> {1 \"one\", 2 \"two\", 3 \"three\"}\n\n"],
+   "(require '[clojure.walk :as w])\n\n(w/walk (fn [[k v]] [k (* 10 v)]) identity {:a 1 :b 2 :c 3})\n;=> {:a 10, :c 30, :b 20}\n\n(w/postwalk #(if (number? %) (* 2 %) %) [[1 2 3] [4 7 2] [2 5 2]])\n;=> [[2 4 6] [8 14 4] [4 10 4]]\n\n(let [s [1 '(2 3 [1])]] \n  (w/postwalk #(if (seq? %) (vec %) %) s))\n;=> [1 [2 3 [1]]]\n\n(w/walk (comp vec reverse) identity {0 :start 1 :inprogress 2 :end})\n;=> {:start 0, :inprogress 1, :end 2}"],
   :notes nil,
   :arglists ["inner outer form"],
   :doc
@@ -21943,7 +21945,7 @@
    :clojure.core/chunk-next],
   :line 715,
   :examples
-  ["user=> (chunked-seq? (range 1000))\nfalse\n\nuser=> (chunked-seq? (seq (range 1000)))\ntrue\n\nuser=> (chunked-seq? (iterate inc 10))\nfalse\n\nuser=> (chunked-seq? (seq (iterate inc 10)))\nfalse"],
+  ["user=> (chunked-seq? (range 1000))\ntrue\n\nuser=> (chunked-seq? (range))\nfalse\n\nuser=> (chunked-seq? (seq (range 1000)))\ntrue\n\nuser=> (chunked-seq? (iterate inc 10))\nfalse\n\nuser=> (chunked-seq? (seq (iterate inc 10)))\nfalse"],
   :notes nil,
   :arglists ["s"],
   :library-url "https://github.com/clojure/clojure",
@@ -23331,7 +23333,7 @@
   :file "clojure/pprint/pprint_base.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.pprint/pprint],
   :dynamic true,
   :line 40,
   :examples
