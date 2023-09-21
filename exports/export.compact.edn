@@ -17219,7 +17219,8 @@
   :see-alsos [:clojure.repl/source],
   :line 148,
   :examples
-  ["(source-fn 'max)\n\n;;=> \"(defn max\n     \\\"Returns the greatest of the nums.\\\"\n      {:added \\\"1.0\\\"\n      :inline-arities >1?\n      :inline (nary-inline 'max)}\n      ([x] x)\n      ([x y] (. clojure.lang.Numbers (max x y)))\n      ([x y & more]\n      (reduce1 max (max x y) more)))\"\n"],
+  ["(source-fn 'max)\n\n;;=> \"(defn max\n     \\\"Returns the greatest of the nums.\\\"\n      {:added \\\"1.0\\\"\n      :inline-arities >1?\n      :inline (nary-inline 'max)}\n      ([x] x)\n      ([x y] (. clojure.lang.Numbers (max x y)))\n      ([x y & more]\n      (reduce1 max (max x y) more)))\"\n"
+   ";; Capturing result of `source` via `with-out-str` removing the last new-line char\n;; is the same as the output from `source-fn`\n\n(require '[clojure.repl :as repl]\n         '[clojure.string :as str])\n\n(= (repl/source-fn 'max)\n   (-> (repl/source max)\n       with-out-str\n       str/trim-newline)) \n;;=> true\n\n(= (repl/source-fn 'map)\n   (-> (repl/source map)\n       with-out-str\n       str/trim-newline)) \n;;=> true\n"],
   :notes nil,
   :arglists ["x"],
   :doc
