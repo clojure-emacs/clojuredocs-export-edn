@@ -22446,7 +22446,7 @@
   [:clojure.core/tap> :clojure.core/remove-tap :clojure.datafy/datafy],
   :line 7868,
   :examples
-  [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so every adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"
+  [";; log to a file\n(defn log [x] \n  (spit \"event.log\" (str x \\newline) :append true))\n\n;; add log function to tap\n(add-tap log) ;;_=> returns nil\n\n(add-tap println)\n\n\n(tap> \"hello\") \n;; prints hello\n;; returns true if successful\n;; event.log:\n;; hello\\n\n(tap> \"clojure\")\n;; prints clojure\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n\n;; the tap set is a hash-set so adding the same function twice has no effect \n(add-tap println) \n(tap> \"<3\")\n;; prints <3\n;; returns true\n;; event.log:\n;; hello\\n\n;; clojure\\n\n;; <3\\n"
    ";; Your tap target function can do interesting things when it receives a value\n;; before printing it\n(require '[clojure.datafy :refer [datafy]])\n(add-tap (comp prn datafy))\n"],
   :notes nil,
   :arglists ["f"],
