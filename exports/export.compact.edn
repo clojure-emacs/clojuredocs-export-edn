@@ -14149,7 +14149,8 @@
   :column 1,
   :see-alsos [:clojure.spec.alpha/map-of :clojure.spec.alpha/every],
   :line 563,
-  :examples nil,
+  :examples
+  [";; Define a ::person spec for a map with string keys and string values\n(s/def ::person\n  (s/every-kv string? string?))\n\n;; Validate a person map with an 'int' age (fails)\n(s/valid? ::person {\"name\" \"Alice\" \"age\" 30 \"city\" \"New York\"})\n;; => false\n\n;; Validate a person map with 'string' values and keys (success)\n(s/valid? ::person {\"name\" \"Alice\" \"age\" \"30\" \"city\" \"New York\"})\n;; => true\n\n"],
   :macro true,
   :notes nil,
   :arglists ["kpred vpred & opts"],
