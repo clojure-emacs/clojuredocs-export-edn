@@ -10961,7 +10961,8 @@
   :column 1,
   :see-alsos nil,
   :line 38,
-  :examples nil,
+  :examples
+  ["(+ 1 2 3 4)\n;;=> 10\n\nuser> (reduce + (range 1 5))\n;;=> 10\n\n(reduce + (range 1 13))\n;;=> 78\n\n(reduce + (range 1 101))\n;;=> 5050\n\n"],
   :notes nil,
   :arglists ["f coll" "f init coll"],
   :doc
