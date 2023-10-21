@@ -1881,7 +1881,7 @@
   :line 2518,
   :examples nil,
   :notes nil,
-  :arglists ["m__8876__auto__"],
+  :arglists ["m__7888__auto__"],
   :doc
   "Factory function for class clojure.core.logic.PMap, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
@@ -16317,7 +16317,7 @@
   :line 1849,
   :examples nil,
   :notes nil,
-  :arglists ["m__8876__auto__"],
+  :arglists ["m__7888__auto__"],
   :doc
   "Factory function for class clojure.core.logic.SuspendedStream, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
@@ -25947,7 +25947,7 @@
   :line 197,
   :examples nil,
   :notes nil,
-  :arglists ["m__8876__auto__"],
+  :arglists ["m__7888__auto__"],
   :doc
   "Factory function for class clojure.core.logic.SubstValue, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
