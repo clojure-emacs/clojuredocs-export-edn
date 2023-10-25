@@ -10626,7 +10626,8 @@
   :column 1,
   :see-alsos nil,
   :line 1137,
-  :examples nil,
+  :examples
+  ["\nuser=> (abs -15)\n15\n\nuser=> (abs +29)\n29\n\nuser=> (abs 2023)\n2023\n\nuser=> (abs (- 3 2))\n1\n\nuser=> (abs nil)\nExecution error (NullPointerException) at user/eval3 (REPL:1).\nnull\n\nuser=> (abs 0)\n0\n"],
   :notes nil,
   :arglists ["a"],
   :doc
