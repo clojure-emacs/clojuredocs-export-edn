@@ -137,7 +137,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 340,
+  :line 342,
   :examples nil,
   :notes nil,
   :arglists ["alts clauses"],
@@ -460,7 +460,7 @@
   [:clojure.core.async/take!
    :clojure.core.async/>!
    :clojure.core.async/>!!],
-  :line 187,
+  :line 189,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (take! c\n              (fn [x]\n                (println \"Clojure callback value \" x)))\nnil\n\nuser=> (put! c \"XYZ\") ; return true unless the channel is closed.\nClojure callback value  XYZ\ntrue\n\nuser=> (put! c \"XYZ\")\ntrue\n"],
   :notes
@@ -1450,7 +1450,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1165,
+  :line 1168,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -1963,7 +1963,7 @@
   :line 2518,
   :examples nil,
   :notes nil,
-  :arglists ["m__7972__auto__"],
+  :arglists ["m__7585__auto__"],
   :doc
   "Factory function for class clojure.core.logic.PMap, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
@@ -2186,7 +2186,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 75,
+  :line 77,
   :examples nil,
   :notes nil,
   :arglists ["buff"],
@@ -2831,7 +2831,7 @@
   [:clojure.core.async/take!
    :clojure.core.async/<!!
    :clojure.core.async/>!],
-  :line 138,
+  :line 140,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (go-loop [data (<! c)]\n         (println \"Waited for => \" data)\n         (println \"No recur. Won't print again\"))\n\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@6a3d3df4>\n\nuser=> (put! c \"Example Async Data\")\n\nnil\n\nWaited for =>  Example Async Data\nNo recur. Won't print again\n\nuser=> (put! c \"Example Async Data\")\nnil\n"
    ";; Clojure 1.7\nuser=> (let [c (chan 1 (filter pos?))]\n \n         (go-loop []\n           (let [nums (<! c)]\n             (println nums))\n           (recur))\n   \n         (doseq [n (range -10 10)]\n           (put! c n)))\nnil\n1\n2\n3\n4\n5\n6\n7\n8\n9\n"],
@@ -2848,7 +2848,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/thread :clojure.core.async/go],
-  :line 473,
+  :line 475,
   :examples
   ["(defn fake-fetch []\n  (Thread/sleep 5000) \n  \"Ready!\")\n\n;; returns immediately, prints \"Ready!\" after 5 secs\n(let [c (thread-call fake-fetch)]\n  (println (<!! c)))"],
   :notes nil,
@@ -4025,7 +4025,7 @@
   :column 1,
   :see-alsos
   [:clojure.core.async/pipeline-async :clojure.core.async/pipeline],
-  :line 592,
+  :line 594,
   :examples
   ["(require '[clojure.core.async :as a :refer [chan to-chan pipeline-blocking <!!]])\n\n(defn blocking-operation [arg] 42)\n\n(let [concurrent 10\n      output-chan (chan)\n      input-coll (range 0 1000)]\n  (pipeline-blocking concurrent \n                     output-chan \n                     (map blocking-operation) \n                     (to-chan input-coll))\n  (<!! (a/into [] output-chan)))"],
   :notes nil,
@@ -4225,7 +4225,7 @@
   :type "var",
   :column 1,
   :see-alsos nil,
-  :line 808,
+  :line 809,
   :examples nil,
   :notes nil,
   :arglists [],
@@ -4239,7 +4239,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 990,
+  :line 991,
   :examples nil,
   :notes nil,
   :arglists ["p" "p topic"],
@@ -4813,7 +4813,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/sub],
-  :line 922,
+  :line 923,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (def sub-c (pub c :route))\n#'user/sub-c\n\nuser=> (def cx (chan 1))\n#'user/cx\n\nuser=> (sub sub-c :up-stream cx)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@526eb67f>\n\nuser=> (def cy (chan 1))\n#'user/cy\n\nuser=> (sub sub-c :down-stream cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@777692ac>\n\nuser=> (go-loop [_ (<! cx)]\n         (println \"Got something coming up!\"))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@49e2e0f9>\n\nuser=> (go-loop [_ (<! cy)]\n         (println \"Got something going down!\"))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@33498147>\n\nuser=> (put! c {:route :up-stream :data 123})\ntrue\nGot something coming up!\n\nuser=> (put! c {:route :down-stream :data 123})\nGot something going down!\ntrue\n"
    "(def news (chan 1))\n(def shouter (pub news :topics))\n\n(def alice (chan 1))\n(def bob (chan 1))\n(def clyde (chan 1))\n\n(sub shouter :celebrity-gossip alice)\n(sub shouter :space-x bob)\n(sub shouter :space-x clyde)\n\n(go-loop [heard (<! alice)] (println \"alice heard: \" heard))\n(go-loop [heard (<! bob)] (println \"bob heard: \" heard))\n(go-loop [heard (<! clyde)] (println \"clyde heard: \" heard))\n\n(put! news {:topics :celebrity-gossip :data \"omg she's prego!\"})\n(put! news {:topics :space-x :data \"omg we're landing!\"})\n\n; notice: they both \"heard\" the space-x news\n; Also, since I'm a bit new to `async`, I'm not sure on this:\n; There seems to be some issues with bob only hearing when clyde is listening.\n; not sure what's up."
@@ -4874,7 +4874,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/chan],
-  :line 212,
+  :line 214,
   :examples
   ["(let [c (chan 2) ]\n  (>!! c 1)\n  (>!! c 2)\n  (close! c)\n  (println (<!! c)) ; 1\n  (println (<!! c)) ; 2\n  ;; since we closed the channel this will return false(we can no longer add values)\n  (>!! c 1))"
    ";; Below example demonstrates go processes can take values (which were already put)\n;; from the unbuffered channel even after closing it.\n\n  (let [c (chan)]\n    (go (>! c 1))\n    (go (>! c 2))\n    ;; channel is closed even before \"2\" value is taken out. \n    (go (<! (timeout 5))\n        (close! c)\n        (println \"Channel closed\"))\n\n    (go (println (<! c))) ; 1 \n\n    \n    ;; Intentionally delaying the take operation so that channel can be closed\n    ;; before. \n    (go (<! (timeout 20))\n        (println (<! c)) ; We get 2 even though we tried to take after the channel\n                         ; is closed\n        (println (<! c)))) ; nil since we dried out the channel and it is closed \n                           ; as well."],
@@ -4891,7 +4891,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 900,
+  :line 901,
   :examples nil,
   :notes nil,
   :arglists ["mix state-map"],
@@ -4937,7 +4937,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1059,
+  :line 1062,
   :examples nil,
   :notes nil,
   :arglists ["n ch" "n ch buf-or-n"],
@@ -5478,7 +5478,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -5490,7 +5489,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this n"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -5534,7 +5532,7 @@
   [:clojure.core.async/alt!
    :clojure.core.async/alts!!
    :clojure.core.async/alts!],
-  :line 378,
+  :line 380,
   :examples
   [";; This example is taken from Timothy Baldridge's `core.async` course on Udemy\n;; https://www.udemy.com/communicating-sequential-processes-with-coreasync/learn/v4/overview\n\n;; Create two channels, c1 and c2\n(let [c1 (chan 1)\n      c2 (chan 1)]\n  ;; Put a value in each channel\n  (>!! c1 42)\n  (>!! c2 44)\n  (thread\n    ;; Take a value from one of the channels.\n    ;; - If the value is taken from c1, return the keyword :c1 and channel c1\n    ;; - Analogously for c2\n    (let [[v c] (alt!! [c1] [:c1 c1]\n                       [c2] [:c2 c2])]\n      ;; Print the returned keyword and whether the value was taken from c1 or c2\n      (println \"Value: \" v)\n      (println \"Chan 1?: \" (= c1 c))\n      (println \"Chan 1?: \" (= c2 c)))))"],
   :macro true,
@@ -5554,7 +5552,7 @@
   [:clojure.core.async/<!
    :clojure.core.async/take!
    :clojure.core.async/>!!],
-  :line 125,
+  :line 127,
   :examples
   ["user=> (>!! c \"Blocking - not in go-block\")\ntrue\nuser=> (<!! c)\n\"Blocking - not in go-block\"\n"],
   :notes nil,
@@ -6011,7 +6009,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1242,
+  :line 1245,
   :examples
   ["; Source: 4clojure (https://www.4clojure.com/problem/31)\n(partition-by identity [1 1 2 1 1 1 3 3])\n=> ((1 1) (2) (1 1 1) (3 3))"],
   :deprecated "0.1.319.0-6b1aca-alpha",
@@ -7112,7 +7110,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1217,
+  :line 1220,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -7476,7 +7474,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/chan],
-  :line 97,
+  :line 99,
   :examples
   [";; You can use promise-chan to program in an async style very similar\n;; to promise programming\n\n(defn inc-async\n  \"Increment num asynchronously, will pretend like it can take\n   between 0 and 2 seconds to do so for demo purpose, as if this\n   was a remote call. Returns a promise-chan which will have the\n   result delivered to it when completed.\"\n  [num]\n  (let [ret (promise-chan)]\n    (go\n      (<! (timeout (rand-int 2000))) ;; Randomly sleep up to 2 seconds\n      (put! ret (inc num)))\n    ret))\n\n;; Block until promise value is delivered and return it\n\n(<!! (inc-async 10))\n;> 11\n\n;; Similar to `promise` and `future`, after a value has been delivered to the\n;; promise-chan, taking from it will continue to return that value immediately\n;; over and over\n\n(def inc-promise (inc-async 10))\n\n(<!! inc-promise)\n;> 11\n(<!! inc-promise)\n;> 11\n(<!! inc-promise)\n;> 11\n\n;; That means unlike other channels, only one value can be put into a promise-chan, and \n;; taking from it afterwards will always return that value which is cached by the \n;; promise-chan, similar to what a promise or a future would.\n\n;; This makes using `promise-chan` very similar to async/await style of programming.\n;; You can create an async function by having a function return a promise-chan\n;; where it will `put!` (deliver) the value to it asynchronously as I showed with\n;; inc-async.\n\n;; You can then use `go` blocks like you'd mark `async` functions, and inside them\n;; use `<!` to await the result of a promise-chan to perform an async action when\n;; the value is delivered:\n\n(go ; Think of this as marking something as async\n  (let [res (<! (inc-async 100))] ; think of this as awaiting the result\n    (println res)))\n\n;; You can also chain things using `<!` inside `go` similar to how you'd use await\n\n(go\n  (let [a (<! (inc-async 1))\n        b (<! (inc-async a))\n        c (<! (inc-async b))]\n    (println [a b c])))\n\n;; To await all, use a/map:\n\n(go\n  (let [a (inc-async 1)\n        b (inc-async 10)\n        c (inc-async 100)]\n    (a/map (comp nil? println) [a b c])))\n\n;; One small annoyance is the function passed to a/map can't return nil, or it will \n;; error, since it will try to put nil into the channel returned by a/map which is not \n;; allowed. That's why I combine it with nil? so it returns true instead.\n\n;; To await any use alts!\n\n(go\n  (let [a (inc-async 1)\n        b (inc-async 10)\n        c (inc-async 100)]\n    (println (first (alts! [a b c])))))\n\n;; One small annoyance is alts! returns a vector of [result result-chan] so you need to \n;; call first on it.\n\n;; One can off course use all those with the `!!` and `thread` equivalents, if in Clojure,\n;; in which case you don't need to be inside a `go` block."],
   :notes
@@ -7523,7 +7521,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1199,
+  :line 1202,
   :examples ["()"],
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -7710,7 +7708,7 @@
    :clojure.core.async/mix
    :clojure.core.async/toggle
    :clojure.core.async/solo-mode],
-  :line 895,
+  :line 896,
   :examples nil,
   :notes nil,
   :arglists ["mix"],
@@ -7865,7 +7863,7 @@
   :type "macro",
   :column 1,
   :see-alsos nil,
-  :line 114,
+  :line 116,
   :examples nil,
   :macro true,
   :notes nil,
@@ -8450,7 +8448,7 @@
   [:clojure.core.async/alt!
    :clojure.core.async/alts!!
    :clojure.core.async/alt!!],
-  :line 314,
+  :line 316,
   :examples
   ["user> (let [chans (partition-all 2\n                                 (interleave\n                                  [\"Bob\"\n                                   \"Jane\"\n                                   \"GuyGirl22\"]\n                                  (repeatedly 3 chan)))]\n        (go\n          (let [[owner port] (rand-nth chans)\n                chans-only (mapv second chans)]\n\n            (go\n              (<! (timeout 1500))\n              (>! port\n                  (str owner \": First!!!\")))\n\n            (let [[v p] (alts! chans-only)]\n              (println \"Message: \" v \"\\nFrom Object: \" p)))))\n\n;; Returns => #<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@446ab69a>\n\n;; 1.5 seconds later =>\n;; Message:  Bob: First!!! \n;; From Object:  #<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@15ac28ae>\n"
    ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n;;\n;; THIS example shows `:default`s and `:priority`s\n\n(let [f (fn [x ch] (go (Thread/sleep (rand 100))\n                                (>! ch x)))\n      a (chan)\n      b (chan)\n      c (chan)]\n  (println \"----------\")\n  (f 1 a)\n  (f 2 b)\n  (f 3 c)\n  (Thread/sleep 200) ; if this is commented out, it returns the\n                     ; `:default` every time. If the thread *does*\n                     ; sleep, then it returns the `a` channel's `1`\n                     ; every time\n  (let [[n ch2] (alts!! [a b c]\n                        :default 42\n                        :priority true\n                        )]\n    (println \"received: \" n)))"],
@@ -8570,7 +8568,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this n"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -8713,8 +8710,7 @@
   :line 2385,
   :examples
   [";; first we make a demonstration atom\n(def a (atom 0))\n;; #'user/a \n\n;; failing to set the demonstration atom because the old-value does not match. \n(compare-and-set! a 10 20)\n;;=> false\n\n;; as you can see there was no change to the atom\n@a\n;;=> 0\n\n;; but when  the old-value matches the atom is set to the new-value.\n(compare-and-set! a 0 10)\n;;=> true\n\n@a\n;;=> 10\n"
-   ";; Use compare-and-set! to implement a version of swap!\n;; that stops retrying after some number of attempts, for example\n;; because of a slow update fn and high concurrency on the atom:\n\n(defn swap-or-bail! [a f & [attempts]]\n  (loop [i (or attempts 3)]\n    (if (zero? i)\n      (println \"Could not update. Bailing out.\")\n      (let [old (deref a)\n            success? (compare-and-set! a old (f old))]\n        (when-not success?)\n          (println \"Update failed. Retry\" i)\n          (recur (dec i)))))))\n\n(defn slow-inc [x]\n  (Thread/sleep 5000) \n  (inc x))\n\n(def a (atom 0))\n(def f (future (swap-or-bail! a slow-inc)))\n(reset! a 1)\n;; \"Update failed. Retry 3\"\n(reset! a 2)\n;; \"Update failed. Retry 2\"\n(reset! a 3)\n;; Could not update. Bailing out."
-   ";; Compare-and-set! is on a lower level than swap! and can be used for \n;; finer grained use of atoms. When part of an associative atom is not \n;; touched by others, there is no need to retry costly transformations. \n;; It’s still useful to have the state in one atom, since others can read \n;; the value in question as in a well defined state. Compare-and-set! can \n;; be used to retry an already transformed value as associated with \n;; current state, as long as the affected part hasn’t been changed \n;; concurrently.\n\n;; The following function, swap-key-in!, swaps a value at path in an \n;; associated atom, but retries by reusing previous transformation when \n;; only other parts have been altered concurrently.   \n\n(defn swap-key-in! [atom ks f & args]\n   (loop [old @atom\n          new (apply update-in old ks f args)]\n     (if-not (compare-and-set! atom old new)\n       (let [current @atom]\n         (if (= (get-in old ks) \n                (get-in current ks))\n           (recur current (assoc-in current ks (get-in new ks)))\n           (recur current (apply update-in current ks f args))))\n       new)))\n\n;; Can be used as:\n\n(def state (atom {:a 1 :b {:c 1}})\n(swap-key-in! state [:b :c] + 7)\n\n;; Value of :c would only be increased once if nothing or only other\n;; parts of the atom has been updated concurrently. A more expensive\n;; transformation can replace +, without causing unnecessary contention.\n"],
+   ";; Use compare-and-set! to implement a version of swap!\n;; that stops retrying after some number of attempts, for example\n;; because of a slow update fn and high concurrency on the atom:\n\n(defn swap-or-bail! [a f & [attempts]]\n  (loop [i (or attempts 3)]\n    (if (zero? i)\n      (println \"Could not update. Bailing out.\")\n      (let [old (deref a)\n            success? (compare-and-set! a old (f old))]\n        (when-not success?)\n          (println \"Update failed. Retry\" i)\n          (recur (dec i)))))))\n\n(defn slow-inc [x]\n  (Thread/sleep 5000) \n  (inc x))\n\n(def a (atom 0))\n(def f (future (swap-or-bail! a slow-inc)))\n(reset! a 1)\n;; \"Update failed. Retry 3\"\n(reset! a 2)\n;; \"Update failed. Retry 2\"\n(reset! a 3)\n;; Could not update. Bailing out."],
   :notes
   ["`compare-and-set!` actually runs an equality comparison, not an identity comparison. The documentation should read:\n\n> Atomically sets the value of atom to newval if and only if the current value of the atom is <del>identical</del> <ins>equal</ins> to oldval.\n\n    (def my-sym (atom 'a))\n    (identical? @my-sym 'a)\n    ;;=> false\n    (= @my-sym 'a)\n    ;;=> true\n    (compare-and-set! my-sym 'a 'z)\n    ;;=> true\n    @my-sym\n    ;;=> z"
    "The note that `compare-and-set!` uses equality comparison is wrong, `compare-and-set!` really _does_ use *identity comparison* (Java `==`). Internally, Clojure uses the `AtomicReference.compareAndSet(old, new)` method.\n\nThe reason his example works is due to interning of the `a` symbol: in his example, each `a` is the same (identical) object.\n\nBut as you can see from the example below, even numeric autoboxing can lead to surprising results:\n\n    (def a (atom 0))\n    ;=> #'user/a\n    (compare-and-set! a 0 100)\n    ;=> true\n    ;(compare-and-set! a 100 200)\n    ;=> true\n    ;; Fails?! (on Oracle JVM 8 with default settings)\n    (compare-and-set! a 200 300)\n    ;=> false\n    @a\n    ;=> 200 ; WAT?\n\nClojure almost always uses boxed numbers (via Java autoboxing) unless you take special steps to avoid it. compare-and-set! only accepts Objects, so numbers are autoboxed to Longs.\n\nJava JVMs will usually intern small integers; by default Oracle/OpenJDK will intern -127 to 128 (the `byte` range) so that all such boxed numbers are identical. This can be altered with the `-XX:AutoBoxCacheMax=` command line flag.  This may vary by JVM implementation, too.\n\n(In fact, on ClojureCLR, `compare-and-set!` of longs always fails because the CLR does not intern small numbers, see [this bug report](https://dev.clojure.org/jira/browse/CLJCLR-28).)\n\nSo in the example above, `compare-and-set!` on 0 and 100 work fine due to this auto-interning, but the compare with 200 fails because: `(identical? 200 200)` is false due to autoboxing: two distinct invisible `Long` objects are created for each \"200\" value.\n\nYou don't have to worry about this with `swap!` because the \"old\" value it compares against for the compare-and-set operation is always from the atom itself, so identity comparison works as long as no one else put a different object in the atom in the meantime. However, it is easy to imagine a pathological case with a highly-contented atom where everyone keeps putting the same \"equal\" value into it over and over, and yet swappers have to retry over and over."],
@@ -9164,7 +9160,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1078,
+  :line 1081,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes
@@ -9249,7 +9245,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1126,
+  :line 1129,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -9424,7 +9420,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 41,
+  :line 43,
   :examples nil,
   :notes nil,
   :arglists ["f" "f blockable"],
@@ -10401,7 +10397,7 @@
   :type "var",
   :column 1,
   :see-alsos nil,
-  :line 741,
+  :line 742,
   :examples nil,
   :notes nil,
   :arglists [],
@@ -10534,7 +10530,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 710,
+  :line 711,
   :examples
   ["user=> (def c (to-chan (range 10)))\n#'user/c\nuser=> (<!! c)\n0\nuser=> (<!! c)\n1\nuser=> (<!! c)\n2\nuser=> (<!! c)\n3\n"],
   :deprecated "1.2",
@@ -10582,7 +10578,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/into :clojure.core.async/to-chan],
-  :line 704,
+  :line 705,
   :examples
   ["user=> (def c (chan))\n#'user/c\n\nuser=> (onto-chan c (range 100))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@2e68de5>\n\nuser=> (<!! c)\n0\nuser=> (<!! c)\n1\nuser=> (<!! c)\n2\n"
    "\n;; `onto-chan` does not return the `ch` param channel, instead it returns a\n;; new channel indicating when the coll was added to the channel.\n(def coll (range 10))\n(def in-ch (chan))\n(def out-ch (onto-chan in-ch coll))\n\n(= in-ch out-ch)\n;; => false\n(identical? in-ch out-ch)\n;; => false\n"],
@@ -10626,8 +10622,7 @@
   :column 1,
   :see-alsos nil,
   :line 1137,
-  :examples
-  ["\nuser=> (abs -15)\n15\n\nuser=> (abs +29)\n29\n\nuser=> (abs 2023)\n2023\n\nuser=> (abs (- 3 2))\n1\n\nuser=> (abs nil)\nExecution error (NullPointerException) at user/eval3 (REPL:1).\nnull\n\nuser=> (abs 0)\n0\n"],
+  :examples nil,
   :notes nil,
   :arglists ["a"],
   :doc
@@ -10721,7 +10716,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 997,
+  :line 998,
   :examples
   ["user=> (def cx\n         (to-chan\n          (range 10)))\n#'user/cx\n\nuser=> (def cy\n         (to-chan\n          (range -10 0)))\n#'user/cy\n\nuser=> (def mapped-chans\n         (clojure.core.async/map + [cx cy]))\n#'user/mapped-chans\n\n;;\nuser=> (<!! mapped-chans)\n-10\nuser=> (<!! mapped-chans)\n-8\nuser=> (<!! mapped-chans)\n-6\nuser=> (<!! mapped-chans)\n-4\nuser=> (<!! mapped-chans)\n-2\nuser=> (<!! mapped-chans)\n0\nuser=> (<!! mapped-chans)\n2\nuser=> (<!! mapped-chans)\n4\nuser=> (<!! mapped-chans)\n6\nuser=> (<!! mapped-chans)\n8\nuser=> (<!! mapped-chans)\nnil\n"],
   :notes nil,
@@ -11447,7 +11442,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 416,
+  :line 418,
   :examples nil,
   :notes nil,
   :arglists ["state cont-block ports & {:as opts}"],
@@ -11462,7 +11457,7 @@
   :see-alsos
   [:clojure.core.async/pipeline-async
    :clojure.core.async/pipeline-blocking],
-  :line 575,
+  :line 577,
   :examples
   [";; SIMPLE EXAMPLE -----------------------\n\n(def ca (chan 1))\n(def cb (chan 1))\n\n(pipeline\n 4               ; thread count, i prefer egyptian cotton\n cb              ; to\n (filter even?)  ; transducer\n ca              ; from\n )\n\n(doseq [i (range 10)]\n  (go (>! ca i)))\n(go-loop []\n  (println (<! cb))\n  (recur))\n\n;; => prints even numbers in 0-10, note: not necessarily in order\n\n\n\n"
    ";; EXTENDED EXAMPLE ---------------------------\n\n(def ca (chan 1))\n(def cb (chan 1))\n\n(pipeline\n 4               \n cb             \n (filter (fn [x]\n           (if (> x 100)\n             (throw (Throwable. \"too big!\"))\n             (even? x))))           \n ca              \n false           ; should it close when `from` runs out?\n (fn [error] (println \"ahhh: \" (.getMessage error))))\n\n\n(doseq [i (range 10)]\n  (go (>! ca i)))\n(go-loop []\n  (println (<! cb))\n  (recur))\n; (go (>! ca 101)) ; this one throws an error\n"],
@@ -11482,7 +11477,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1181,
+  :line 1184,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -11679,7 +11674,7 @@
   [:clojure.core.async/alts!
    :clojure.core.async/alt!
    :clojure.core.async/alt!!],
-  :line 301,
+  :line 303,
   :examples
   ["user> (let [chans (partition-all 2\n                                 (interleave\n                                  [\"Bob\"\n                                   \"Jane\"\n                                   \"GuyGirl22\"]\n                                  (for [_ (range 3)]              \n                                    (chan))))\n            [owner port] (rand-nth chans)\n            chans-only (mapv second chans)]\n        \n        (go\n          (<! (timeout 1500))\n          (>! port\n              (str owner \": First!!!\")))\n\n        (let [[v p] (alts!! chans-only)]\n          (println \"Message: \" v \"\\nFrom Object: \" p)))\n\n;; Message:  Bob: First!!! \n;; From Object:  #<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@70c61ad7>\n;; nil\n"
    "(require '[clojure.core.async :as async])\n\n;; n.b. alts!! returns a *pair* of [value channel-where-value-came-from]\n\n; a channel with a single value ready in the queue\n(def c (async/chan))\n(async/put! c \"foo\")\n\n(println (async/alts!! [(async/timeout 2000) c]))\n;; => [\"foo\" <c-channel>]\n\n; no more values, so we will timeout\n(println (async/alts!! [(async/timeout 2000) c]))\n;; => [nil <timeout-channel>]\n"],
@@ -11970,7 +11965,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -11995,7 +11989,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 271,
+  :line 272,
   :examples nil,
   :notes nil,
   :arglists ["fret ports opts"],
@@ -12784,7 +12778,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1110,
+  :line 1113,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -13344,7 +13338,7 @@
   [:clojure.core.async/unmix
    :clojure.core.async/unmix-all
    :clojure.core.async/mix],
-  :line 885,
+  :line 886,
   :examples
   ["user=> (def ch-out (chan))\n#'user/ch-out\n\nuser=> (def mix-out (mix ch-out))\n#'user/mix-out\n\nuser=> (def ch-example1 (chan))\n#'user/ch-example1\n\nuser=> (def ch-example2 (chan))\n#'user/ch-example2\n\nuser=> (admix mix-out ch-example1)\ntrue\n\nuser=> (admix mix-out ch-example2)\ntrue\n\nuser=> (put! ch-example1 \"sent to chan 1\")\ntrue\n\nuser=> (put! ch-example2 \"sent to chan 2\")\ntrue\n\nuser=> (<!! ch-out)\n\"sent to chan 1\"\n\nuser=> (<!! ch-out)\n\"sent to chan 2\"\n\n"],
   :notes nil,
@@ -13439,7 +13433,7 @@
   [:clojure.core.async/put!
    :clojure.core.async/<!
    :clojure.core.async/<!!],
-  :line 144,
+  :line 146,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (take! c\n              (fn [x]\n                (println \"Clojure callback value \" x)))\nnil\n\nuser=> (put! c \"XYZ\")\nClojure callback value  XYZ\ntrue\n\nuser=> (put! c \"XYZ\")\ntrue\n"
    "(require '[clojure.core.async :refer [chan take! put!]])\n\n(def input-channel (chan 1))\n\n;; Take the first message from a channel and print it\n(take! input-channel println)\n\n(put! input-channel \"A\")\n;; => \"A\"\n\n(put! input-channel \"B\")\n;; Does not output anything because take only takes the first message\n"],
@@ -13847,7 +13841,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/mult :clojure.core.async/untap],
-  :line 791,
+  :line 792,
   :examples
   ["user=> (def sz 20)\n#'user/sz\n\nuser=> (def c (chan sz))\n#'user/c\n\nuser=> (def mult-c (mult c))\n#'user/mult-c\n\nuser=> (def cx (chan sz))\n#'user/cx\n\nuser=> (def cy (chan sz))\n#'user/cy\n\nuser=> (def cz (chan sz))\n#'user/cz\n\nuser=> (tap mult-c cx)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@63942268>\n\nuser=> (tap mult-c cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@1f025346>\n\nuser=> (tap mult-c cz)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@29d4cd91>\n\nuser=> (put! c \"sent to all\")\ntrue\n\nuser=> (<!! cx)\n\"sent to all\"\n\nuser=> (<!! cy)\n\"sent to all\"\n\nuser=> (<!! cz)\n\"sent to all\"\n\n"],
   :notes nil,
@@ -14052,7 +14046,7 @@
   :type "macro",
   :column 1,
   :see-alsos [:clojure.core.async/go-loop],
-  :line 441,
+  :line 443,
   :examples
   ["user=> (doseq [n (range 10)\n               :let [i (-> n\n                           inc\n                           range\n                           rand-nth)]]                    \n         (go\n           (<! (timeout (* i 1000)))\n           (println n)))\nnil\n5\n3\n0\n6\n4\n7\n1\n2\n9\n8\n\n"
    "(require '[clojure.core.async :as async])\n\n; create channel\n(def c (async/chan))\n\n; create promise\n(def d (promise))\n\n; record high-res timestamp;\n; place value (1) on channel;\n; in a callback, record duration of time between enqueueing and dequeueing;\n; resolve promise with that value\n(let [t (. System (nanoTime))]\n (async/put! c 1\n  (fn [_]\n   (deliver d (- (. System (nanoTime)) t)))))\n\n; do a blocking take from the channel, do a blocking resolve of the promise\n(println \"taken value, delivery time\" [(async/<!! c) @d])\n\n; same as above but with go block\n(def tc\n (let [t (. System (nanoTime))]\n  (async/put! c 2)\n  (async/go [(async/<! c) (- (. System (nanoTime)) t)])))\n\n; go blocks return a channel immediately, \n; the actual return value of the go block gets placed on the channel when ready\n(println \"taken value, delivery time\" (async/<!! tc))\n\n;; taken value, delivery time [1 1191935]\n;; taken value, delivery time [2 1668001]"
@@ -14461,7 +14455,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this that"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -15271,7 +15264,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 109,
+  :line 111,
   :examples
   ["user=> (go-loop [seconds (atom 0)\n                 add-seconds! #(swap! seconds + %)]\n         (println \"Waiting 1 second\")\n         (<! (timeout 1000))\n         (add-seconds! 1)\n         (println \"Waiting 2 seconds\")\n         (<! (timeout 2000))\n         (add-seconds! 2)\n         (println\n          (format \"Waited %s seconds\"\n                  @seconds))) \n\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@67ddcb0e>\n\n;; Waiting 1 second\n\n;; Waiting 2 seconds\n\n;; Waited 3 seconds\n"
    "user=> (doseq [n (range 10)\n               :let [i (-> n\n                           inc\n                           range\n                           rand-nth)]]                    \n         (go\n           (<! (timeout (* i 1000)))\n           (println n)))\nnil\n5\n3\n0\n6\n4\n7\n1\n2\n9\n8\n\n"
@@ -15506,7 +15499,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 505,
+  :line 507,
   :examples
   ["user=> (def cx (chan 1))\n#'user/cx\n\nuser=> (def cy (chan 1))\n#'user/cy\n\nuser=> (pipe cx cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@5064227c>\n\nuser=> (put! cx \"Going into CX\")\ntrue\n\nuser=> (<!! cy)\n\"Going into CX\"\n"
    "user> (def ch-1 (async/chan 10))\n#'user/ch-1\n\nuser> (def ch-2 (async/chan 10))\n#'user/ch-2\n\n;; start a thread that takes from channel 1, sleeping after each take\nuser> (async/thread\n        (loop []\n          (when-let [v (async/<!! ch-1)]\n            (println \"ch-1 taker got \" v)\n            (Thread/sleep 1000)\n            (recur))))\n#object[clojure.core.async.impl.channels.ManyToManyChannel ...]\n\n;; start a thread that takes from channel 2 that does not sleep\nuser> (async/thread\n        (loop []\n          (when-let [v (async/<!! ch-2)]\n            (println \"ch-2 taker got \" v)\n            (recur))))\n#object[clojure.core.async.impl.channels.ManyToManyChannel ...]\n\n;; create a pipe from ch-1 to ch-2\nuser> (async/pipe ch-1 ch-2)\n#object[clojure.core.async.impl.channels.ManyToManyChannel ...]\n\n;; lets try to add a new listener to channel 1.\nuser> (async/thread\n        (loop []\n          (when-let [v (async/<!! ch-1)]\n            (println \"second ch-1 taker got \" v)\n            (Thread/sleep 1000)\n            (recur))))\n#object[clojure.core.async.impl.channels.ManyToManyChannel ...]\n\n;; put onto ch-1 and sleep after each put... we are interested in how the\n;; pipe works...\nuser> (async/thread\n        (doseq [x (range 10)]\n          (async/>!! ch-1 x)\n          (Thread/sleep 500)))\n#object[clojure.core.async.impl.channels.ManyToManyChannel ...]\n\nch-1 taker got  0\nch-2 taker got  1\nsecond ch-1 taker got  2\nch-2 taker got  3\nch-1 taker got  4\nch-2 taker got  5\nsecond ch-1 taker got  6\nch-2 taker got  7\nch-1 taker got  8\nch-2 taker got  9\n\n;; so a pipe is just a listener that tries to take from the from channel\n;; and put onto the to channel, a pipe does dot restrict the ability to \n;; *take* from the *from* channel."
@@ -15581,7 +15574,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1144,
+  :line 1147,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -16497,7 +16490,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1150,
+  :line 1153,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes
@@ -16661,7 +16654,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -16713,7 +16705,7 @@
    :clojure.core.async/unmix-all
    :clojure.core.async/toggle
    :clojure.core.async/solo-mode],
-  :line 815,
+  :line 816,
   :examples
   ["user=> (def ch-out (chan))\n#'user/ch-out\n\nuser=> (def mix-out (mix ch-out))\n#'user/mix-out\n\nuser=> (def ch-example1 (chan))\n#'user/ch-example1\n\nuser=> (def ch-example2 (chan))\n#'user/ch-example2\n\nuser=> (admix mix-out ch-example1)\ntrue\n\nuser=> (admix mix-out ch-example2)\ntrue\n\nuser=> (put! ch-example1 \"sent to chan 1\")\ntrue\n\nuser=> (put! ch-example2 \"sent to chan 2\")\ntrue\n\nuser=> (<!! ch-out)\n\"sent to chan 1\"\n\nuser=> (<!! ch-out)\n\"sent to chan 2\"\n\n"],
   :notes nil,
@@ -16926,7 +16918,7 @@
   :line 1849,
   :examples nil,
   :notes nil,
-  :arglists ["m__7972__auto__"],
+  :arglists ["m__7585__auto__"],
   :doc
   "Factory function for class clojure.core.logic.SuspendedStream, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
@@ -17136,7 +17128,7 @@
    :clojure.core.async/mix
    :clojure.core.async/toggle
    :clojure.core.async/solo-mode],
-  :line 890,
+  :line 891,
   :examples nil,
   :notes nil,
   :arglists ["mix ch"],
@@ -17483,7 +17475,7 @@
   :type "var",
   :column 1,
   :see-alsos nil,
-  :line 917,
+  :line 918,
   :examples nil,
   :notes nil,
   :arglists [],
@@ -17670,7 +17662,7 @@
   [:clojure.core.async/merge
    :clojure.core.async/map
    :clojure.core.async/into],
-  :line 635,
+  :line 636,
   :examples
   ["(require '[clojure.core.async :as async])\n\n;; some expensive io call\n(defn expensive-call [m] \n  (Thread/sleep 2000) m)\n\n(->> [{:a 1} {:b 2} {:c 3} {:d 4}]\n     (map (fn [m] \n            (async/thread \n               (expensive-call m)))) ; creates a thread per call\n     (async/merge)                   ; merges the 4 chans returned into 1\n     (async/reduce merge {})         ; reduces items in chan with merge\n     (async/<!!))\n;;=> {:a 1, :c 3, :b 2, :d 4}"
    "(require '[clojure.core.async :as async])\n\n(def c \n  (async/to-chan (range 10)))\n\n(async/<!! (async/reduce + 0 c))\n;;=> 45"
@@ -18217,7 +18209,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -18478,7 +18469,7 @@
   [:clojure.core.async/dropping-buffer
    :clojure.core.async/sliding-buffer
    :clojure.core.async/chan],
-  :line 56,
+  :line 58,
   :examples
   ["user=> (def c (chan (buffer 3)))\n#'user/c\n\nuser=> (go (<! (timeout 20000))\n           (println \"Unblocking buffer\")\n           (doseq [_ (range 2)]\n             (<! c)))\n\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@5c350b54>\n\nuser=> (doseq [_ (range 5)] (println (>!! c true)))\ntrue\ntrue\ntrue\nUnblocking buffer\ntrue\ntrue\nnil"],
   :notes nil,
@@ -19017,7 +19008,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this n"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -19029,7 +19019,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 716,
+  :line 717,
   :examples nil,
   :notes nil,
   :arglists ["ch coll" "ch coll close?"],
@@ -19149,7 +19139,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this that"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
@@ -20465,7 +20454,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1190,
+  :line 1193,
   :examples nil,
   :deprecated "0.1.319.0-6b1aca-alpha",
   :notes nil,
@@ -21024,7 +21013,7 @@
   [:clojure.core.async/buffer
    :clojure.core.async/dropping-buffer
    :clojure.core.async/chan],
-  :line 68,
+  :line 70,
   :examples
   ["(require '[clojure.core.async :refer [go-loop <! >!! sliding-buffer chan]])\n\n;; Sliding buffers can be used to discard old values on a chan\n\n;; Define a chan with a sliding buffer of 1 (i.e. we care mainly\n;; about the latest value)\n(def sliding-chan (chan (sliding-buffer 1)))\n\n;; Print the values on the chan forever\n(go-loop []\n  (println \"Received:\" (<! sliding-chan))\n  (recur))\n\n;; Put 100 events onto the chan\n(dotimes [n 100]\n  (>!! sliding-chan n))\n\n;;=> Received: 0 ;; <-- see note below\n;;=> Received: 99\n\n;; Results may vary for values from 0 to n-1\n;; but you should ALWAYS see 'Received: <n-1>'"],
   :notes nil,
@@ -21234,7 +21223,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 689,
+  :line 690,
   :examples nil,
   :notes nil,
   :arglists ["coll"],
@@ -21458,7 +21447,7 @@
   [:clojure.core.async/>!!
    :clojure.core.async/put!
    :clojure.core.async/<!],
-  :line 177,
+  :line 179,
   :examples
   ["user=> (let [c (chan 1)]\n  #_=>   (go (>! c 1)\n  #_=>       (println \"Got => \" (<! c))))\n\nGot =>  1\n\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@4a061708>\n"],
   :notes nil,
@@ -21985,7 +21974,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 614,
+  :line 615,
   :examples
   ["(require '[clojure.core.async :refer :all])\n\n(def c (chan))\n\n(let [[c1 c2] (split odd? c)]\n  (go-loop []\n    (println \"c1: \" (<! c1))\n    (<! (timeout 10))\n    (recur))\n  (go-loop []\n    (println \"c2: \" (<! c2))\n    (<! (timeout 100))\n    (recur)))\n\n(dotimes [n 10]\n  (>!! c n))\n\n;; will prints\nc2: c1:   01\nc2:  2\nc1:  3\nc2:  4\nc1:  5\nc2:  6\nc1:  7\nc2:  8\nc1:  9"],
   :notes nil,
@@ -22041,7 +22030,7 @@
   [:clojure.core.async/tap
    :clojure.core.async/mult
    :clojure.core.async/untap-all],
-  :line 799,
+  :line 800,
   :examples
   ["(def c (chan))\n(def m (mult c))\n\n(def d (chan))\n(tap m d)\n\n\n(put! c 5)\n(go (println (<! d))); PRINTS 5\n\n\n(untap m d)\n(go (println (<! d))) ; PRINTS NOTHING\n\n(put! c 55)\n\n(tap m d)\n(go (println (<! d))) ; STILL PRINTS NOTHING. THE MESSAGE WAS DROPPED \n\n\n"],
   :notes nil,
@@ -22087,7 +22076,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 804,
+  :line 805,
   :examples nil,
   :notes nil,
   :arglists ["mult"],
@@ -22162,7 +22151,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 1051,
+  :line 1054,
   :examples
   ["user=> (def c\n         (clojure.core.async/into [:a :b :c]\n                                  (to-chan\n                                   (range 10))))\n#'user/c\n\nuser=> (<!! c)\n[:a :b :c 0 1 2 3 4 5 6 7 8 9]\n"],
   :notes nil,
@@ -22234,7 +22223,7 @@
   :type "var",
   :column 1,
   :see-alsos nil,
-  :line 744,
+  :line 745,
   :examples nil,
   :notes nil,
   :arglists [],
@@ -22359,7 +22348,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/mix],
-  :line 1033,
+  :line 1036,
   :examples
   ["user=> (def cx (chan))\n#'user/cx\n\nuser=> (def cy (chan))\n#'user/cy\n\nuser=> (def mc (clojure.core.async/merge [cx cy]))\n#'user/mc\n\nuser=> (put! cx \"Going to x\")\ntrue\n\nuser=> (put! cy \"Goint to y\")\ntrue\n\nuser=> (<!! mc)\n\"Going to x\"\n\nuser=> (<!! mc)\n\"Goint to y\"\n"],
   :notes nil,
@@ -22576,7 +22565,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 912,
+  :line 913,
   :examples nil,
   :notes nil,
   :arglists ["mix mode"],
@@ -22771,7 +22760,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 672,
+  :line 673,
   :examples nil,
   :notes nil,
   :arglists ["ch coll" "ch coll close?"],
@@ -22808,7 +22797,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 728,
+  :line 729,
   :examples nil,
   :notes nil,
   :arglists ["coll"],
@@ -23287,7 +23276,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/offer!],
-  :line 434,
+  :line 436,
   :examples
   ["(let [c (chan)]\n  (println (poll! c)))\n\n;; nil\n;;=> nil (it does not block even though there is no buffer!)\n\n(let [c (chan 1)]\n  (println (offer! c 10))\n  (println (poll! c)))\n;; true\n;; 10\n;;=> nil"],
   :notes nil,
@@ -23880,7 +23869,7 @@
   [:clojure.core.async/>!
    :clojure.core.async/put!
    :clojure.core.async/<!!],
-  :line 164,
+  :line 166,
   :examples
   ["user=> (>!! c \"Blocking - not in go-block\")\ntrue\nuser=> (<!! c)\n\"Blocking - not in go-block\"\n"],
   :notes
@@ -24215,7 +24204,7 @@
    :clojure.core.async/dropping-buffer
    :clojure.core.async/sliding-buffer
    :clojure.core.async/promise-chan],
-  :line 81,
+  :line 83,
   :examples
   ["user=> (def c (chan))\n#'user/c\nuser=> (def c (chan 1))\n#'user/c\nuser=> (def c (chan (buffer 2)))\n#'user/c\n;; Clojure 1.7\nuser=> (def c (chan 1 (filter string?)))\n#'user/c\n\n"
    "(let [c (chan 3 (map inc))] ;; providing transducer which increments values by one\n  (>!! c 1)\n  (>!! c 2)\n  (>!! c 3)\n  (println (<!! c))\n  (println (<!! c))\n  (println (<!! c)))\n\n;; 2\n;; 3\n;; 4\n;;=> nil"
@@ -24732,7 +24721,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/poll!],
-  :line 427,
+  :line 429,
   :examples
   ["(let [c (chan)]\n  (offer! c 42))\n;;=> nil (it does not block even though there is no buffer!)\n\n(let [c (chan 1)]\n  (offer! c 42))\n;;=> true"],
   :notes nil,
@@ -24830,7 +24819,7 @@
   [:clojure.core.async/buffer
    :clojure.core.async/sliding-buffer
    :clojure.core.async/chan],
-  :line 62,
+  :line 64,
   :examples
   ["(let [c (chan (dropping-buffer 2))]\n  (future (dotimes [x 3]\n            (>!! c x)\n            (println \"Sent: \" x)))\n  (println \"Done\")\n  (future (dotimes [x 3]\n            (println \"Got: \" (<!! c)))\n          (println \"done getting\")))\n\n;Done\n;Sent:  0\n;Sent:  1\n;Sent:  2 (this one is discarded) this is the reason we did not get `Got: 2`\n;Got:  0\n;Got:  1"],
   :notes nil,
@@ -25086,7 +25075,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 651,
+  :line 652,
   :examples nil,
   :notes nil,
   :arglists ["xform f init ch"],
@@ -25406,7 +25395,7 @@
   :type "macro",
   :column 1,
   :see-alsos [:clojure.core.async/thread-call :clojure.core.async/go],
-  :line 491,
+  :line 493,
   :examples
   ["(defn fake-fetch []\n  (thread \n    (Thread/sleep 5000) \n    \"Ready!\"))\n\n;; returns immediately, prints \"Ready!\" after 5 secs\n(let [c (fake-fetch)]\n  (go (println (<! c))))\n"],
   :macro true,
@@ -25456,7 +25445,7 @@
   :type "function",
   :column 1,
   :see-alsos nil,
-  :line 985,
+  :line 986,
   :examples nil,
   :notes nil,
   :arglists ["p topic ch"],
@@ -26203,7 +26192,7 @@
   [:clojure.core.async/tap
    :clojure.core.async/untap
    :clojure.core.async/mix],
-  :line 749,
+  :line 750,
   :examples
   ["user=> (def sz 20)\n#'user/sz\n\nuser=> (def c (chan sz))\n#'user/c\n\nuser=> (def mult-c (mult c))\n#'user/mult-c\n\nuser=> (def cx (chan sz))\n#'user/cx\n\nuser=> (def cy (chan sz))\n#'user/cy\n\nuser=> (def cz (chan sz))\n#'user/cz\n\nuser=> (tap mult-c cx)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@63942268>\n\nuser=> (tap mult-c cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@1f025346>\n\nuser=> (tap mult-c cz)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@29d4cd91>\n\nuser=> (put! c \"sent to all\")\ntrue\n\nuser=> (<!! cx)\n\"sent to all\"\n\nuser=> (<!! cy)\n\"sent to all\"\n\nuser=> (<!! cz)\n\"sent to all\"\n\n"
    ";; Dont read from the source of mult, or you'll get read race contention\n\nuser> (def a (chan))\nuser> (def m (mult a))\nuser> (def b (chan))\nuser> (tap m b)\nuser> (go-loop [] (when-let [v (<! b)] (do (println \"b got\" v) (recur))))\n;; next line is pain self inflicted \nuser> (go-loop [] (when-let [v (<! a)] (do (println \"a(source) got\" v) (recur))))\nuser> (put! a \"Hello \")\nb got Hello \nuser> (put! a \" World\")\na(source) got  World\n"],
@@ -26364,7 +26353,7 @@
   :type "macro",
   :column 1,
   :see-alsos [:clojure.core.async/alts!],
-  :line 385,
+  :line 387,
   :examples
   [";; attempts to put trade on channel trade-ch within 1 second.\n;; yields :timed-out or :sent.\n\n(let [timeout-ch (timeout 1000)]\n  (alt!\n    timeout-ch :timed-out\n    ;; note use of double-nested vector; [trade-ch trade]\n    ;; would be interpreted as two channels to take from, resulting\n    ;; in an odd error.\n    [[trade-ch trade]] :sent))"
    "(def trade-ch (chan))\n\n(go-loop []\n         (<! (timeout 1000))\n         (print (<! trade-ch))\n         (recur))\n\n(go \n (let [timeout-ch (timeout 1000)\n       trade 100]\n   (->\n    (alt!\n     [[trade-ch trade]] :sent\n     timeout-ch :timed-out)\n    print))) ;;eval this at will\n\n\n;;printout example\ncore.js[38]:\t\n:sent\ncore.js[38]:\t\n100\ncore.js[38]:\t\n100\ncore.js[38]:\t\n:sent\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:timed-out\ncore.js[38]:\t\n:sent\ncore.js[38]:\t\n100\n\n\n\n"
@@ -26782,7 +26771,7 @@
   :type "function",
   :column 1,
   :see-alsos [:clojure.core.async/pub],
-  :line 977,
+  :line 978,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (def sub-c (pub c :route))\n#'user/sub-c\n\nuser=> (def cx (chan 1))\n#'user/cx\n\nuser=> (sub sub-c :up-stream cx)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@526eb67f>\n\nuser=> (def cy (chan 1))\n#'user/cy\n\nuser=> (sub sub-c :down-stream cy)\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@777692ac>\n\nuser=> (go-loop [_ (<! cx)]\n         (println \"Got something coming up!\"))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@49e2e0f9>\n\nuser=> (go-loop [_ (<! cy)]\n         (println \"Got something going down!\"))\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@33498147>\n\nuser=> (put! c {:route :up-stream :data 123})\ntrue\nGot something coming up!\n\nuser=> (put! c {:route :down-stream :data 123})\nGot something going down!\ntrue\n"
    "(defn monitor! [publisher topic]\n  (let [<listen (chan 1)]\n    (async/sub publisher topic <listen)\n    (go-loop []\n      (when-let [{:keys [message]} (<! <listen)]\n        (println topic \\- message)\n        (recur)))))\n\n(defn start []\n  (let [<publish (chan 1)\n        publisher (async/pub <publish :source)\n        ]\n    (monitor! publisher :alice)\n    (monitor! publisher :bob)\n    (put! <publish {:source :alice :message \"Alice says Hi!\"})\n    (put! <publish {:source :bob :message \"Bob says Hi!\"})\n    (put! <publish {:source :john :message \"John says Hi!\"})\n    (put! <publish {:source :alice :message \"Alice says Hi again\"})\n    (close! <publish)\n    ))\n\n(start)\n=> nil\n:alice - Alice says Hi!\n:bob - Bob says Hi!\n:alice - Alice says Hi again"],
@@ -26914,7 +26903,7 @@
   :type "macro",
   :column 1,
   :see-alsos [:clojure.core/loop :clojure.core.async/go],
-  :line 500,
+  :line 502,
   :examples
   ["(go-loop [seconds 1]\n         (<! (timeout 1000))\n         (print \"waited\" seconds \"seconds\")\n         (recur (inc seconds)))\n\n;;waited 1 seconds\n;;waited 2 seconds\n;;waited 3 seconds\n;;..."
    "user=> (def c (chan 1))\n#'user/c\n\nuser=> (go-loop []\n         (let [x (<! c)]\n           (println \"Got a value in this loop:\" x))\n         (recur))\n\n#<ManyToManyChannel clojure.core.async.impl.channels.ManyToManyChannel@30df0e27>\n\nuser=> (doseq [n (range 3)] (put! c n))\nnil\nGot a value in this loop: 0\nGot a value in this loop: 1\nGot a value in this loop: 2\n"],
@@ -26964,14 +26953,14 @@
   :column 1,
   :see-alsos
   [:clojure.core.async/pipeline :clojure.core.async/pipeline-blocking],
-  :line 598,
+  :line 600,
   :examples
   [";; NOTICE!\n;; `pipeline-async` has different syntax, in it's `af` function, \n;; than the other 2 `pipeline` fns\n\n(def ca> (chan 1))\n(def cb> (chan 1))\n(defn c-af [val result] ; notice the signature is different for `pipeline-async`, it includes a channel\n  (go (<! (timeout 1000))\n      (>! result (str val \"!!!\"))\n      (close! result)))\n(pipeline-async\n 1\n cb>\n c-af\n ca>)\n(go (println (<! cb>)))\n(go (>! ca> \"hello\"))"],
   :notes
   ["I think the phrase `af must close! the channel before returning.` is confusing, and should be changed to something along the lines of `af must close! the channel before the async operation completes`."],
   :arglists ["n to af from" "n to af from close?"],
   :doc
-  "Takes elements from the from channel and supplies them to the to\n  channel, subject to the async function af, with parallelism n. af\n  must be a function of two arguments, the first an input value and\n  the second a channel on which to place the result(s). af must close!\n  the channel before returning.  The presumption is that af will\n  return immediately, having launched some asynchronous operation\n  (i.e. in another thread) whose completion/callback will manipulate\n  the result channel. Outputs will be returned in order relative to\n  the inputs. By default, the to channel will be closed when the from\n  channel closes, but can be determined by the close?  parameter. Will\n  stop consuming the from channel if the to channel closes. See also\n  pipeline, pipeline-blocking.",
+  "Takes elements from the from channel and supplies them to the to\n  channel, subject to the async function af, with parallelism n. af\n  must be a function of two arguments, the first an input value and\n  the second a channel on which to place the result(s). The\n  presumption is that af will return immediately, having launched some\n  asynchronous operation whose completion/callback will put results on\n  the channel, then close! it. Outputs will be returned in order\n  relative to the inputs. By default, the to channel will be closed\n  when the from channel closes, but can be determined by the close?\n  parameter. Will stop consuming the from channel if the to channel\n  closes. See also pipeline, pipeline-blocking.",
   :library-url "https://github.com/clojure/clojure",
   :href "/clojure.core.async/pipeline-async"},
  :clojure.core.logic.fd/-distinctc
@@ -27098,7 +27087,7 @@
   :line 197,
   :examples nil,
   :notes nil,
-  :arglists ["m__7972__auto__"],
+  :arglists ["m__7585__auto__"],
   :doc
   "Factory function for class clojure.core.logic.SubstValue, taking a map of keywords to field values.",
   :library-url "https://github.com/clojure/clojure",
@@ -27239,7 +27228,6 @@
   :see-alsos nil,
   :examples nil,
   :notes nil,
-  :tag nil,
   :arglists ["this that"],
   :doc nil,
   :library-url "https://github.com/clojure/clojure",
