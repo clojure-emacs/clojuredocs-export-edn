@@ -278,7 +278,8 @@
   :column 1,
   :see-alsos nil,
   :line 8079,
-  :examples nil,
+  :examples
+  ["(parse-boolean \"true\")\n;; => true\n\n(parse-boolean \"false\")\n;; => false\n\n(parse-boolean \"False\")\n;; => nil\n(parse-boolean \"TRUE\")\n;; => nil\n(parse-boolean \"foo\")\n;; => nil\n(parse-boolean \"\")\n;; => nil"],
   :notes nil,
   :arglists ["s"],
   :doc
@@ -1706,9 +1707,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/uuid? :clojure.core/parse-uuid],
   :line 6861,
-  :examples nil,
+  :examples
+  ["(dotimes [_ 10]\n  (println (random-uuid)))\n#uuid \"66d96ab4-9834-40db-a3cd-42b361503ab9\"\n#uuid \"b555744b-ecfc-4a20-9b2a-84f2b533381e\"\n#uuid \"1435bf8a-4116-4688-97fe-a95f0f86c42d\"\n#uuid \"f2f909b7-97fd-42a3-81de-53bd2c4d5f63\"\n#uuid \"20e3fb86-1c61-4053-a4a4-4beea8163c12\"\n#uuid \"c882f060-87fe-4bd6-9821-f28637c24b7d\"\n#uuid \"1c53f839-e670-4c65-8744-00431ca7f7cc\"\n#uuid \"84609f30-9b70-40c3-a89f-5cf598de011a\"\n#uuid \"3d65a591-08bb-488e-9c31-af74048c31d3\"\n#uuid \"52b18528-bece-4a3b-93a1-9f131508e323\"\n\n;; Notice that the first digit in the 3rd block is always 4\n;; Notice that the first digit in the 4th block is always 8, 9, a, or b\n"],
   :notes nil,
   :arglists [""],
   :doc
@@ -7369,9 +7371,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/not=],
   :line 8090,
-  :examples nil,
+  :examples
+  ["(NaN? (Math/sqrt -1))\n;; => true\n\n(NaN? (* ##Inf 0))\n;; => true\n\n(NaN? (clojure.math/asin 2))\n;; => true\n\n(NaN? (clojure.math/acos -2))\n;; => true\n\n(NaN? (- ##Inf ##Inf))\n;; => true\n\n(NaN? (clojure.math/log -1))\n;; => true\n\n;; Note, NaN is, somewhat confusingly, a property only of numbers (floats and doubles)\n;; So even though a string is \"not a number\" it is not ##NaN…\n(NaN? \"a string\")\n;; => : java.lang.String cannot be cast to java.lang.Number…\n\n;; You'll want to use `number?` for that…\n(def actually-not-a-number? (complement number?))\n(actually-not-a-number? \"string\")\n;; => true\n\n;; But remember…\n(actually-not-a-number? ##NaN)\n;; => false"],
   :notes nil,
   :arglists ["num"],
   :doc "Returns true if num is NaN, else false",
@@ -9029,9 +9032,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/uuid? :clojure.core/random-uuid],
   :line 8068,
-  :examples nil,
+  :examples
+  ["(parse-uuid \"b6883c0a-0342-4007-9966-bc2dfa6b109e\")\n;; => #uuid \"b6883c0a-0342-4007-9966-bc2dfa6b109e\"\n\n;; Note, this is not a commonly valid UUID, but is still parsed…\n(parse-uuid \"b6883c0a-0342-6007-9966-bc2dfa6b109e\")\n;; => #uuid \"b6883c0a-0342-6007-9966-bc2dfa6b109e\"\n\n(parse-uuid \"foo\")\n;; => nil\n(parse-uuid \"\")\n;; => nil"],
   :notes nil,
   :arglists ["s"],
   :doc
@@ -11206,9 +11210,13 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos
+  [:clojure.core/update-vals
+   :clojure.walk/keywordize-keys
+   :clojure.walk/stringify-keys],
   :line 8024,
-  :examples nil,
+  :examples
+  [";; It's quite common to keywordize keys using `keyword`…\n(update-keys {\"foo\" 42 \"bar\" 1337} keyword)\n;; => {:foo 42, :bar 1337}\n\n;; Or stringify them using `name`…\n(update-keys {:foo 42 :bar 1337} name)\n;; => {\"foo\" 42, \"bar\" 1337}\n\n;; But remember this doesn't work recursively for nested structures…\n(update-keys {\"foo\" {\"qux\" 404} \"bar\" 1337} keyword)\n;; => {:foo {\"qux\" 404}, :bar 1337}\n\n;; You'll want to reach for `clojure.walk` instead for that…\n(clojure.walk/keywordize-keys {\"foo\" {\"qux\" 404} \"bar\" 1337})\n;; => {:foo {:qux 404}, :bar 1337}\n\n(clojure.walk/stringify-keys {:foo {:qux 404} :bar 1337})\n;; => {\"foo\" {\"qux\" 404}, \"bar\" 1337}"],
   :notes nil,
   :arglists ["m f"],
   :doc
@@ -15285,7 +15293,8 @@
   :column 1,
   :see-alsos nil,
   :line 8055,
-  :examples nil,
+  :examples
+  ["(parse-double \"4.2\")\n;; => 4.2\n\n(parse-double \"-4.2e4\")\n;; => -42000.0\n\n(parse-double \"4\")\n;; => 4.0\n\n(parse-double \"NaN\")\n;; => ##NaN\n\n(parse-double \"Infinity\")\n;; => ##Inf\n\n(parse-double \"four\")\n;; => nil\n(parse-double \"\")\n;; => nil"],
   :notes nil,
   :arglists ["s"],
   :doc
@@ -18436,7 +18445,8 @@
   :column 1,
   :see-alsos nil,
   :line 8099,
-  :examples nil,
+  :examples
+  [";; This works for doubles…\n(infinite? (/ 1.0 0.0))\n;; => true\n\n;; But infinity is not a concept for longs…\n(infinite? (/ 1 0))\n;; Execution error (ArithmeticException) at…\n;; Divide by zero\n\n;; But it is worth being aware of what is considered to be infinite…\n(infinite? (+ Double/MAX_VALUE 1e292))\n;; => true\n;; And what isn't…\n(infinite? (+ Double/MAX_VALUE 1e291))\n;; => false"],
   :notes nil,
   :arglists ["num"],
   :doc
@@ -20498,7 +20508,8 @@
   :column 1,
   :see-alsos nil,
   :line 7786,
-  :examples nil,
+  :examples
+  [";; Let's set up an atom to act like a paginated data source…\n(def pages\n  (atom {\"a\" {:items [\"Rose\" \"Tulip\" \"Marigold\" \"Lavender\" \"Daffodil\"] :next-page \"b\"}\n         \"b\" {:items [\"Sunflower\" \"Petunia\" \"Chrysanthemum\" \"Dandelion\" \"Pansy\"] :next-page \"c\"}\n         \"c\" {:items [\"Orchid\" \"Daisy\" \"Lily\" \"Geranium\" \"Hyacinth\"] :next-page \"d\"}\n         \"d\" {:items [\"Azalea\" \"Begonia\" \"Iris\" \"Poppy\" \"Jasmine\"]}}))\n\n;; And let's set up a function to access that atom, with a delay to simulate\n;; network slowness…\n(defn get-page! [id]\n  (Thread/sleep 3000)\n  (get @pages id))\n\n;; See that `iteration` allows for a very succinct, lazy way to get pages…\n(-> (iteration get-page! :initk \"a\", :vf :items, :kf :next-page)\n    first\n    time)\n\"Elapsed time: 3000.947447 msecs\"\n;; => [\"Rose\" \"Tulip\" \"Marigold\" \"Lavender\" \"Daffodil\"]\n\n(-> (iteration get-page! :initk \"a\", :vf :items, :kf :next-page)\n    second\n    time)\n\"Elapsed time: 6002.736159 msecs\"\n;; => [\"Sunflower\" \"Petunia\" \"Chrysanthemum\" \"Dandelion\" \"Pansy\"]\n\n;; Note that common methods to lazily concatenate pages can get hit by a\n;; chunking time penalty…\n(->> (iteration get-page! :initk \"a\", :vf :items, :kf :next-page)\n     (sequence cat)\n     second\n     time)\n\"Elapsed time: 12013.729409 msecs\"\n;; => \"Tulip\"\n\n;; So consider using `lazy-seq` and/or `lazy-cat` for lazier performance"],
   :notes nil,
   :arglists
   ["step & {:keys [somef vf kf initk], :or {vf identity, kf identity, somef some?, initk nil}}"],
@@ -23438,7 +23449,7 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/random-uuid :clojure.core/parse-uuid],
   :line 6856,
   :examples
   ["(uuid? (java.util.UUID/randomUUID))\n;;=> true\n(uuid? (read-string \"#uuid \\\"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\\\"\"))\n;;=> true\n\n(uuid? \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\")\n;;=> false"
@@ -23920,9 +23931,10 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/update-keys],
   :line 8008,
-  :examples nil,
+  :examples
+  ["(update-vals {:a 1, :b 2} inc)\n;; => {:a 2, :b 3}\n\n;; To replace each map with its value for a specific key…\n(update-vals {:a {:x 7, :y 100}, :b {:x 8, :y 150}, :c {:x 9, :y 200}} :x)\n;; => {:a 7, :b 8, :c 9}\n\n;; To dissoc a kv pair from each map…\n(update-vals {:a {:x 7, :y 100}, :b {:x 8, :y 150}, :c {:x 9, :y 200}}\n             #(dissoc % :x))\n;; => {:a {:y 100}, :b {:y 150}, :c {:y 200}}\n\n;; To update a value for a key in each map…\n(update-vals {:a {:x 7, :y 100}, :b {:x 8, :y 150}, :c {:x 9, :y 200}}\n             #(update % :x inc))\n;; => {:a {:x 8, :y 100}, :b {:x 9, :y 150}, :c {:x 10, :y 200}}\n"],
   :notes nil,
   :arglists ["m f"],
   :doc
@@ -26007,7 +26019,8 @@
   :column 1,
   :see-alsos nil,
   :line 8044,
-  :examples nil,
+  :examples
+  ["(parse-long \"42\")\n;; => 42\n\n(parse-long \"-42000\")\n;; => -42000\n\n(parse-long (apply str (repeat 18 \\9)))\n;; => 999999999999999999\n\n(parse-long (apply str (repeat 19 \\9)))\n;; => nil\n\n(parse-long \"42.0\")\n;; => nil\n(parse-long \"four\")\n;; => nil\n(parse-long \"\")\n;; => nil"],
   :notes nil,
   :arglists ["s"],
   :doc
