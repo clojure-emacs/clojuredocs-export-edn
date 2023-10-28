@@ -10277,7 +10277,8 @@
   :column 1,
   :see-alsos nil,
   :line 410,
-  :examples nil,
+  :examples
+  [";; Have you ever wanted to calculate the hypotenuse of a triangle with\n;; sides way bigger than the diameter of the universe measured in plank lengths?\n;; Me neither, but this is what happens when you try it the \"normal\" way…\n(math/sqrt (+ (* 2E307 2E307) (* 3E307 3E307)))\n;; => ##Inf\n\n;; Whereas hypot still has you covered…\n(math/hypot 2E307 3E307)\n;; => 3.605551275463989E307\n\n;; The intermediate underflow and overflow avoidance is rarely useful,\n;; but the syntactic brevity is nice"],
   :notes nil,
   :arglists ["x y"],
   :doc
@@ -13405,9 +13406,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/hypot :clojure.math/atan],
   :line 233,
-  :examples nil,
+  :examples
+  [";; Converting Cartesian to polar coordinates…\n\n;; The parameters are listed as `y x` rather than `x y`,\n;; encouraging an East-Counterclockwise Convention, as favored in pure maths:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 y x))\n   :radius (math/hypot x y)})\n;; => {:angle 52.1250163489018, :radius 11.40175425099138}\n\n;; To get the North-Clockwise Convention, which may be a little more intuitive,\n;; swap the argument order:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 x y))\n   :radius (math/hypot x y)})\n;; => {:angle 37.8749836510982, :radius 11.40175425099138}"],
   :notes nil,
   :arglists ["y x"],
   :doc
@@ -15441,9 +15443,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/+ :clojure.core/+'],
   :line 277,
-  :examples nil,
+  :examples
+  [";; `+` uses addExact for longs under the hood, so these are the same:\n(+ Long/MAX_VALUE 7)\n(math/add-exact Long/MAX_VALUE 7)\n;; => Execution error (ArithmeticException) at java.lang.Math/addExact (Math.java:903).\n;;    long overflow\n\n;; However, doubles are treated differently…\n(+ Double/MAX_VALUE Double/MAX_VALUE)\n;; => ##Inf\n\n;; Whereas add-exact coerces to longs…\n(math/add-exact Double/MAX_VALUE Double/MAX_VALUE)\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308\n\n;; Basically the same as:\n(+ (long Double/MAX_VALUE) (long Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308"],
   :notes nil,
   :arglists ["x y"],
   :doc
@@ -19133,9 +19136,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/cos],
   :line 85,
-  :examples nil,
+  :examples
+  [";; Let's find the angles of a triangle with sides 11,17,23\n;; We'll label those side a,b,c respectively,\n;; and the angles opposite them A,B,C respectively\n(let [a 11, b 17, c 23\n      ;; The formula for A is: cos(A) = (b²+c²-a²) / 2bc)\n      ;; Or in Clojure:\n      cos-A (/ (- (+ (* b b) (* c c)) (* a a)) (* 2 b c))\n      ;; and for the other angles:\n      cos-B (/ (- (+ (* a a) (* c c)) (* b b)) (* 2 a c))\n      cos-C (/ (- (+ (* a a) (* b b)) (* c c)) (* 2 a b))\n      ;; We can use acos to give us the angles in radians:\n      A (math/acos cos-A)\n      B (math/acos cos-B)\n      C (math/acos cos-C)]\n  ;; And convert to degrees if we like…\n  {:A (math/to-degrees A)\n   :B (math/to-degrees B)\n   :C (math/to-degrees C)})\n;; => {:A 26.96238899747977, :B 44.48460646749956, :C 108.55300453502066}\n\n;; And let's check that those angles sum to ~180°…\n(let [{A :A B :B C :C} *1] (+ A B C))\n;; => 180.0"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -20609,9 +20613,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/tan],
   :line 95,
-  :examples nil,
+  :examples
+  [";; Given the opposite and adjacent sides of a right-angled triangle…\n(let [opp 7 adj 19\n      ;; The angle betwwen adjacent and hypotenuse is given by:\n      tanθ (/ opp adj)\n      ;; So we can calculate θ by using atan:\n      θ (math/atan tanθ)]\n  ;; And return it in degrees…\n  (math/to-degrees θ))\n;; => 20.224859431168078"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -25502,9 +25507,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/sin],
   :line 74,
-  :examples nil,
+  :examples
+  [";; asin is particularly useful for \"SSA\" (side-side-angle) triangles\n;; That's when you know 2 side lengths, plus an angle not \"included\" between them\n;; (when the angle you know is included between the sides, it's an SAS triangle\n;; and that can be solved more directly using acos)\n\n;; Let's find the angles of a triangle with sides 11 & 7, and an \"excluded\" angle of 30°\n;; We'll label the sides a & b respectively, and the angle A\n(let [a 11, b 7, A (math/to-radians 30.0)\n      ;; The formula for B is: sin(B) = b⋅sin(A) / a\n      ;; Or in Clojure:\n      sin-B (/ (* b (math/sin A)) a)\n      B (math/asin sin-B)\n      ;; We can use the angle sum property of triangles for C:\n      C (- math/PI A B)]\n  ;; And convert to degrees if we like…\n  {:A 30.0\n   :B (math/to-degrees B)\n   :C (math/to-degrees C)})\n;; => {:A 30.0, :B 18.553004535020655, :C 131.44699546497935}\n\n;; Note that if b⋅sin(A) < a < b, then it's an ambiguous case…\n(let [a 11, b 17, A (math/to-radians 30.0)\n      sin-B (/ (* b (math/sin A)) a)\n      B1 (math/asin sin-B)\n      B2 (- math/PI B1)\n      C1 (- math/PI A B1)\n      C2 (- math/PI A B2)]\n  {:A 30.0\n   :B1 (math/to-degrees B1)\n   :B2 (math/to-degrees B2)\n   :C1 (math/to-degrees C1)\n   :C2 (math/to-degrees C2)})\n;; => {:A 30.0,\n;;     :B1 50.59943124626228,\n;;     :B2 129.40056875373773,\n;;     :C1 99.40056875373773,\n;;     :C2 20.599431246262288}"],
   :notes nil,
   :arglists ["a"],
   :doc
