@@ -13410,7 +13410,8 @@
   :see-alsos [:clojure.math/hypot :clojure.math/atan],
   :line 233,
   :examples
-  [";; Converting Cartesian to polar coordinates…\n\n;; The parameters are listed as `y x` rather than `x y`,\n;; encouraging an East-Counterclockwise Convention, as favored in pure maths:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 y x))\n   :radius (math/hypot x y)})\n;; => {:angle 52.1250163489018, :radius 11.40175425099138}\n\n;; To get the North-Clockwise Convention, which may be a little more intuitive,\n;; swap the argument order:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 x y))\n   :radius (math/hypot x y)})\n;; => {:angle 37.8749836510982, :radius 11.40175425099138}"],
+  [";; Converting Cartesian to polar coordinates…\n\n;; The parameters are listed as `y x` rather than `x y`,\n;; encouraging an East-Counterclockwise Convention, as favored in pure maths:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 y x))\n   :radius (math/hypot x y)})\n;; => {:angle 52.1250163489018, :radius 11.40175425099138}\n\n;; To get the North-Clockwise Convention, which may be a little more intuitive,\n;; swap the argument order:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 x y))\n   :radius (math/hypot x y)})\n;; => {:angle 37.8749836510982, :radius 11.40175425099138}"
+   ";; If x>0, then θ = atan2(y, x) = atan(y/x)…\n(math/atan (/ 4.0 3.0))\n;; => 0.9272952180016121\n(math/atan2 4.0 3.0)\n;; => 0.9272952180016122\n\n;; If x<0, then θ = atan2(y, x) = atan(y/x)±π…\n(+ (math/atan (/ 4.0 -3.0)) math/PI)\n;; => 2.214297435588181\n(math/atan2 4.0 -3.0)\n;; => 2.214297435588181\n\n;; i.e. atan2 handles the possible need for this correction"],
   :notes nil,
   :arglists ["y x"],
   :doc
@@ -15814,9 +15815,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/dec :clojure.math/increment-exact],
   :line 313,
-  :examples nil,
+  :examples
+  [";; `dec` uses decrementExact for longs under the hood, so these are the same:\n(dec Long/MIN_VALUE)\n(math/decrement-exact Long/MIN_VALUE)\n;; => Execution error (ArithmeticException) at java.lang.Math/decrementExact (Math.java:1080).\n;;    long overflow\n\n;; Doubles and floats are coerced to longs…\n(math/decrement-exact (- Double/MAX_VALUE)) ; n.b. Double/MIN_VALUE is not negative\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: -1.7976931348623157E308\n\n;; Basically the same as:\n(dec (long (- Double/MAX_VALUE)))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: -1.7976931348623157E308\n\n;; Unlike dec alone, which exhibits this curious (but well documented) behaviour…\n(dec (- Double/MAX_VALUE))\n;; => -1.7976931348623157E308"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -21261,7 +21263,7 @@
   :see-alsos nil,
   :line 385,
   :examples
-  [";; For a 6m cable freely hanging between two points, 5m apart, let's find the\n;; vertical distance between the level of the hanging points and the lowest\n;; point of the cable. This is given by y = (a⋅cosh(x/a)) - a, where x is the\n;; horizontal offset (which will be 2.5m, halfway between the points), and a is\n;; the \"sag parameter\", which can be iteratively approximated.\n(let [cable-length 6\n      hanging-span 5\n      a (iterative-solve (fn [a] (* 2 a (math/sinh (/ hanging-span (* 2 a)))))\n                         cable-length\n                         1e-9)]\n  (- (* a (math/cosh (/ 2.5 a))) a))\n;; => 1.4617189875858645\n\n;; Where iterative-solve is defined below. It's necessary to take an approach\n;; like this, as L = 2a⋅sinh(x/2a) is a transcendental equation.\n(defn iterative-solve\n  \"Greedy algorithm, i.e. assumes f is monotonic.\"\n  ([f target initial-tol] (iterative-solve f target target initial-tol))\n  ([f init target initial-tol]\n   (let [diff (fn [x] (- (f x) target))\n         step (fn [tol Δ] (math/copy-sign tol Δ))]\n     (loop [n init\n            tol init] ; Just get n within init of target to start with\n       (let [Δ (diff n)]\n         (cond (<= (abs Δ) initial-tol) n\n               (<= (abs Δ) tol) (recur n (* 0.1 tol))\n               :else (recur (+ n (step tol Δ)) tol)))))))"],
+  [";; For a 6m cable freely hanging between two points, 5m apart, let's find the\n;; vertical distance between the level of the hanging points and the lowest\n;; point of the cable. This is given by y = (a⋅cosh(x/a)) - a, where x is the\n;; horizontal offset (which will be 2.5m, halfway between the points), and a is\n;; the \"sag parameter\", which can be iteratively approximated.\n(let [cable-length 6\n      hanging-span 5\n      a (iterative-solve (fn [a] (* 2 a (math/sinh (/ hanging-span (* 2 a)))))\n                         cable-length\n                         1e-9)]\n  (- (* a (math/cosh (/ 2.5 a))) a))\n;; => 1.4617189875858645\n\n;; Where iterative-solve is defined below. It's necessary to take an approach\n;; like this, as L = 2a⋅sinh(x/2a) is a transcendental equation.\n(defn iterative-solve\n  \"Greedy algorithm, assuming f is monotonic.\"\n  ([f target initial-tol] (iterative-solve f target target initial-tol))\n  ([f init target initial-tol]\n   (loop [n init\n          tol init] ; Just get n within init of target to start with\n     (let [diff (- (f n) target)]\n       (cond (<= (abs diff) initial-tol) n\n             (<= (abs diff) tol) (recur n (* 0.1 tol))\n             :else (recur (+ n (math/copy-sign tol diff)) tol))))))\n"],
   :notes nil,
   :arglists ["x"],
   :doc
