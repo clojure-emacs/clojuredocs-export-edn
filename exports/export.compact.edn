@@ -442,9 +442,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/expm1],
   :line 124,
-  :examples nil,
+  :examples
+  [";; Let's work out how much money I'll have after 10yrs if I deposit $10,000 in\n;; an account with an annual interest rate of 5%, compounded continuously…\n(let [principal-ammount 10e3\n      annual-interest-rate 0.05\n      years 10]\n  (format \"$%,.2f\"\n          (* principal-ammount (math/exp (* annual-interest-rate years)))))\n;; => \"$16,487.21\""],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -3460,9 +3461,10 @@
   :file "clojure/math.clj",
   :type "var",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/exp :clojure.math/log],
   :line 24,
-  :examples nil,
+  :examples
+  ["(defn calculate-e [n]\n  (letfn [(mid [a b] (math/floor-div (+ a b) 2))\n          (p [a b] (if (= b (inc a))\n                     1\n                     (+ (*' (p a (mid a b)) (q (mid a b) b))\n                        (p (mid a b) b))))\n          (q [a b] (if (= b (inc a))\n                     b\n                     (*' (q a (mid a b)) (q (mid a b) b))))]\n    (double (+ 1 (/ (p 0 n) (q 0 n))))))\n\n(== math/E (calculate-e 20))\n;; => true\n\n;; e is nearly always the base of exponentials or natural logarithms, for which\n;; we have math/exp and math/log respectively. Direct applications of e without\n;; involving an exponent or logarithm are rare"],
   :notes nil,
   :tag "double",
   :arglists [],
@@ -4758,9 +4760,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/quot],
   :line 331,
-  :examples nil,
+  :examples
+  [";; Docstring's mention of \"as opposed to zero\" is comparing with integer division\n\n;; Looks the same for args with the same sign:\n(math/floor-div 10 3)\n;; => 3\n(quot 10 3)\n;; => 3\n\n;; But shows the difference between rounding towards ##-Inf, and truncating\n;; (towards zero) when signs differ:\n(math/floor-div 10 -3)\n;; => -4\n(quot 10 -3)\n;; => -3\n\n;; Note, floor-div expects (and coerces to) longs before division, whereas quot\n;; casts afterwards…\n(math/floor-div 10 3.8)\n;; => 3\n(quot 10 3.8)\n;; => 2.0"],
   :notes nil,
   :arglists ["x y"],
   :doc
@@ -9824,7 +9827,8 @@
   :column 1,
   :see-alsos nil,
   :line 210,
-  :examples nil,
+  :examples
+  ["(math/floor 42.1)\n;; => 42.0\n\n(math/floor 42.8)\n;; => 42.0\n\n(math/floor -42.1)\n;; => -43.0\n\n(math/floor -42.8)\n;; => -43.0"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -11807,9 +11811,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/mod :clojure.core/rem],
   :line 341,
-  :examples nil,
+  :examples
+  [";; For integers, floor-mod is the same as mod…\n(every? true?\n        (for [x (range -100 100)\n              y (remove zero? (range -100 100))]\n          (== (mod x y)\n              (math/floor-mod x y))))\n;; => true\n\n;; Things differ with floats and doubles…\n\n(mod 7.4 -3.2)\n;; => -2.2\n\n(math/floor-mod 7.4 -3.2)\n;; => -2\n\n;; math/floor-mod coerces to longs before dividing, so is the same as:\n(mod (long 7.4) (long -3.2))\n;; => -2"],
   :notes nil,
   :arglists ["x y"],
   :doc
@@ -12489,7 +12494,7 @@
   :see-alsos nil,
   :line 199,
   :examples
-  ["(math/ceil 42.8)\n;; => 43.0\n\n(math/ceil 42.1)\n;; => 43.0\n\n(math/ceil -42.8)\n;; => -42.0\n\n(math/ceil -42.1)\n;; => -42.0"],
+  ["(math/ceil 42.8)\n;; => 43.0\n\n(math/ceil 42.1)\n;; => 43.0\n\n(math/ceil -42.8)\n;; => -42.0\n\n(math/ceil -42.1)\n;; => -42.0\n\n(math/ceil -0.3)\n;; => -0.0"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -14339,7 +14344,8 @@
   [:clojure.core/rem
    :clojure.core/mod
    :clojure.core/unchecked-divide-int
-   :clojure.core//],
+   :clojure.core//
+   :clojure.math/floor-div],
   :line 1275,
   :examples
   [";; (quot m n) is the value of m/n, rounded towards 0 to the nearest integer.\n;; m, n need not be integers.\n\nuser=> (quot 10 3)\n3\n\nuser=> (quot 11 3)\n3\n\nuser=> (quot 12 3)\n4\n\nuser=> (quot -5.9 3)\n-1.0\n\nuser=> (quot 10 -3)\n-3\n\nuser=> (quot 15 0)\nArithmeticException / by zero  clojure.lang.Numbers.quotient (Numbers.java:1764)\n\n\n;; For ClojureScript (at least v1.10.597), `num`, `div` should be integer.\n;; Otherwise, it does not work correctly due to its implementation:\nhttp://cljs.github.io/api/cljs.core/quot\n\n;; in clojure,\nuser=> (quot 286.3 21.2)\n13.0\n\n;; in clojurescript\ncljs.user=> (quot 286.3 21.2)\n12"
@@ -18330,9 +18336,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/exp],
   :line 421,
-  :examples nil,
+  :examples
+  [";; Let's work out how much extra money I'll have after day 1 if I deposit the\n;; entire GDP of the USA in an account with a daily interest rate of 0.0001%,\n;; compounded continuously…\n\n;; Using expm1:\n(let [principal-ammount 26.949e12\n      daily-interest-rate 1e-6]\n  (format \"$%,.3f\"\n          (* principal-ammount (math/expm1 daily-interest-rate))))\n;; => \"26,949,013.475\"\n\n;; Using exp and subtracting 1:\n(let [principal-ammount 26.949e12\n      daily-interest-rate 1e-6]\n  (format \"$%,.3f\"\n          (* principal-ammount (dec (math/exp daily-interest-rate)))))\n;; => \"$26,949,013.473\"\n\n;; There's two tenths of a cent in it.\n;; An unlikely scenario, but it illustrates where expm1 provides better accuracy"],
   :notes nil,
   :arglists ["x"],
   :doc
@@ -20032,7 +20039,7 @@
   :line 7699,
   :examples
   ["(def letters (set \"abcdefghijklmnopqrstuvwxyz\"))\n(def vowels (set \"aeiou\"))\n\n;; Remove the vowels from a string.\n(transduce (remove vowels) str \"hello\")\n;;=> \"hll\"\n\n;; Same, but halt when seeing a non-letter (and return that non-letter).\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello\")\n;;=> \"hll\"\n(transduce (comp (remove vowels) (halt-when (complement letters)))\n           str \"hello world\")\n;;=> \\space\n"
-   ";; \"halt-when\" can only really be used with \"transduce\", but not with other\n;; functions that support transducers like \"into\" or \"sequence\".\n\n(def v (vec (concat (range 5) [:x])))\n(def xf (comp (take 10) (halt-when keyword?) (map inc)))\n\n(transduce xf conj [] v)\n;;=> :x\n\n(into [] xf v)\n;;=> ClassCastException!\n;; Clojure 1.11.0 Alpha 4 updates \"into\" so that this works and produces:\n;;=> :x\n\n(sequence xf v)\n;;=> (1 2 3 4 5), wrong result!\n"
+   ";; \"halt-when\" can only really be used with \"transduce\" (and \"into\" \n;; as of Clojure 1.11.1), but not with other functions that\n;; support transducers like \"sequence\".\n\n(def v (vec (concat (range 5) [:x])))\n(def xf (comp (take 10) (halt-when keyword?) (map inc)))\n\n(transduce xf conj [] v)\n;;=> :x\n\n(into [] xf v)\n;;=> ClassCastException!\n;; Clojure 1.11.0 Alpha 4 updates \"into\" so that this works and produces:\n;;=> :x\n\n(sequence xf v)\n;;=> (1 2 3 4 5), wrong result!\n"
    ";; Using the second argument in halt-when\n\n(transduce\n (comp (halt-when #{30}                ;; stop at 30th item\n                  (fn [acc itm] acc))) ;; return all items so far\n (completing conj #(reduce + %))       ;; sums items on exit\n (range))\n;; 435"
    ";; Like `take-while`'s complement when we return the completed result so far\n(transduce (take-while #(< % 10)) + (range));; => 45\n(transduce (halt-when #(>= % 10) (fn [acc _] acc)) + (range));; => 45\n\n;; So it's similar to medley's `take-upto` when `retf` = transduce's `f`\n(transduce (medley.core/take-upto #(>= % 10)) conj (range))\n;; => [0 1 2 3 4 5 6 7 8 9 10]\n(transduce (halt-when #(>= % 10) conj) conj (range))\n;; => [0 1 2 3 4 5 6 7 8 9 10]"
    ";; Since Clojure 1.11 we can also use this with e.g. into:\n(into {}\n        (comp\n          (map (juxt :l :n))\n          (halt-when (comp (complement number?) second) \n                     (constantly ::invalid)))\n        [{:l \"A\" :n 1}\n         {:l \"B\" :n \"not a number!\"}\n         {:l \"C\" :n 3}])\n;; => ::invalid\n;; (remove the B entry to get `=> {\"A\" 1, \"C\" 3}`)"],
@@ -25879,7 +25886,8 @@
   :column 1,
   :see-alsos nil,
   :line 458,
-  :examples nil,
+  :examples
+  ["(take 16 (map (juxt identity math/get-exponent) (iterate #(* 2 %) 2)))\n;; => ([2 1]\n;;     [4 2]\n;;     [8 3]\n;;     [16 4]\n;;     [32 5]\n;;     [64 6]\n;;     [128 7]\n;;     [256 8]\n;;     [512 9]\n;;     [1024 10]\n;;     [2048 11]\n;;     [4096 12]\n;;     [8192 13]\n;;     [16384 14]\n;;     [32768 15]\n;;     [65536 16])\n\n(take 16 (map (juxt identity math/get-exponent) (iterate #(/ % 2) 1)))\n;; => ([1 0]\n;;     [1/2 -1]\n;;     [1/4 -2]\n;;     [1/8 -3]\n;;     [1/16 -4]\n;;     [1/32 -5]\n;;     [1/64 -6]\n;;     [1/128 -7]\n;;     [1/256 -8]\n;;     [1/512 -9]\n;;     [1/1024 -10]\n;;     [1/2048 -11]\n;;     [1/4096 -12]\n;;     [1/8192 -13]\n;;     [1/16384 -14]\n;;     [1/32768 -15])"],
   :notes nil,
   :arglists ["d"],
   :doc
