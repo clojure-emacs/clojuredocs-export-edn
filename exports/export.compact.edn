@@ -1548,9 +1548,11 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/mod :clojure.core/rem],
   :line 184,
-  :examples nil,
+  :examples
+  [";; Example of the rule in the docstring, for x=10, y=4:\n(/ 10.0 4.0)\n;; => 2.5\n\n;; 2 and 3 are both equally close to 2.5\n;; IEEE 754 chooses 2 because it is even\n\n(- 10.0 (* 4.0 2.0))\n;; => 2.0\n\n(math/IEEE-remainder 10.0 4.0)\n;; => 2.0"
+   ";; You can think of IEEE-remainder as \"what is the least (in magnitude) I have\n;; to subtract from the dividend to make this divide exactly?\"…\n\n(math/IEEE-remainder 10 6)\n;; => -2.0\n(math/IEEE-remainder (- 10 -2.0) 6)\n;; => 0.0\n\n(math/IEEE-remainder -10.5 6)\n;; => 1.5\n(math/IEEE-remainder (- -10.5 1.5) 6)\n;; => -0.0\n\n(math/IEEE-remainder 10 -6.7)\n;; => 3.3\n(math/IEEE-remainder (- 10 3.3) -6.7)\n;; => 0.0\n\n;; Note how it returns the smallest magnitude result, rather than -3.4…\n(mod 10 -6.7)\n;; => -3.4000000000000004\n\n;; …which would also work:\n(math/IEEE-remainder (- 10 -3.4) -6.7)\n;; => 0.0\n\n;; In that way, it's helpful for cicular or periodic operations, where finding\n;; the \"shortest distance\" to exact division is needed"],
   :notes nil,
   :arglists ["dividend divisor"],
   :doc
@@ -9455,11 +9457,12 @@
   :file "clojure/core.clj",
   :type "macro",
   :column 1,
-  :see-alsos [:clojure.core/*math-context*],
+  :see-alsos [:clojure.core/*math-context* :clojure.math/round],
   :line 5111,
   :examples
   [";; The \"M\" suffix denotes a BigDecimal instance\n;; http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html\n\nuser=> (with-precision 10 (/ 1M 6))\n0.1666666667M\n\nuser=> (.floatValue 0.1666666667M)\n0.16666667\n"
-   ";; This may come in handy for example when you use JDBC to grab data\n;; from a database, and numbers comes in as BigDecimal. Notice the\n;; following ArithmeticException, and solution:\n\n(/ 2M 3M)                    ; => ArithmeticException\n(with-precision 2 (/ 2M 3M)) ; => 0.67M\n\n;; To make this error more searchable, here's what it is, exactly:\n;;\n;; Non-terminating decimal expansion; no exact representable decimal result. \n;; java.lang.ArithmeticException: Non-terminating decimal expansion; no exact\n;; representable decimal result.\n"],
+   ";; This may come in handy for example when you use JDBC to grab data\n;; from a database, and numbers comes in as BigDecimal. Notice the\n;; following ArithmeticException, and solution:\n\n(/ 2M 3M)                    ; => ArithmeticException\n(with-precision 2 (/ 2M 3M)) ; => 0.67M\n\n;; To make this error more searchable, here's what it is, exactly:\n;;\n;; Non-terminating decimal expansion; no exact representable decimal result. \n;; java.lang.ArithmeticException: Non-terminating decimal expansion; no exact\n;; representable decimal result.\n"
+   "(with-precision 1 :rounding UP        (*  1.1M 1M)) ;; =>  2M\n(with-precision 1 :rounding CEILING   (*  1.1M 1M)) ;; =>  2M\n(with-precision 1 :rounding UP        (* -1.1M 1M)) ;; => -2M\n(with-precision 1 :rounding CEILING   (* -1.1M 1M)) ;; => -1M\n\n(with-precision 1 :rounding DOWN      (*  1.9M 1M)) ;; =>  1M\n(with-precision 1 :rounding FLOOR     (*  1.9M 1M)) ;; =>  1M\n(with-precision 1 :rounding DOWN      (* -1.9M 1M)) ;; => -1M\n(with-precision 1 :rounding FLOOR     (* -1.9M 1M)) ;; => -2M\n\n(with-precision 1 :rounding HALF_EVEN (*  1.5M 1M)) ;; =>  2M\n(with-precision 1 :rounding HALF_EVEN (*  2.5M 1M)) ;; =>  2M\n(with-precision 1 :rounding HALF_EVEN (* -1.5M 1M)) ;; => -2M\n(with-precision 1 :rounding HALF_EVEN (* -2.5M 1M)) ;; => -2M\n\n(with-precision 1 :rounding HALF_UP   (*  1.5M 1M)) ;; =>  2M\n(with-precision 1 :rounding HALF_DOWN (*  1.5M 1M)) ;; =>  1M\n(with-precision 1 :rounding HALF_UP   (* -1.5M 1M)) ;; => -2M\n(with-precision 1 :rounding HALF_DOWN (* -1.5M 1M)) ;; => -1M\n\n(with-precision 1 :rounding UNNECESSARY (* 1.5M 1M))\n;; => Execution error (ArithmeticException) at…\n;;    Rounding necessary\n(with-precision 1 :rounding UNNECESSARY (* 2M 1M))\n;; => 2M"],
   :macro true,
   :notes nil,
   :arglists ["precision & exprs"],
@@ -13416,7 +13419,7 @@
   :line 233,
   :examples
   [";; Converting Cartesian to polar coordinates…\n\n;; The parameters are listed as `y x` rather than `x y`,\n;; encouraging an East-Counterclockwise Convention, as favored in pure maths:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 y x))\n   :radius (math/hypot x y)})\n;; => {:angle 52.1250163489018, :radius 11.40175425099138}\n\n;; To get the North-Clockwise Convention, which may be a little more intuitive,\n;; swap the argument order:\n(let [x 7.0, y 9.0]\n  {:angle (math/to-degrees (math/atan2 x y))\n   :radius (math/hypot x y)})\n;; => {:angle 37.8749836510982, :radius 11.40175425099138}"
-   ";; If x>0, then θ = atan2(y, x) = atan(y/x)…\n(math/atan (/ 4.0 3.0))\n;; => 0.9272952180016121\n(math/atan2 4.0 3.0)\n;; => 0.9272952180016122\n\n;; If x<0, then θ = atan2(y, x) = atan(y/x)±π…\n(+ (math/atan (/ 4.0 -3.0)) math/PI)\n;; => 2.214297435588181\n(math/atan2 4.0 -3.0)\n;; => 2.214297435588181\n\n;; i.e. atan2 handles the possible need for this correction"],
+   ";; If x>0, then θ = atan2(y, x) = atan(y/x)…\n(math/atan (/ 4.0 3.0))\n;; => 0.9272952180016121\n(math/atan2 4.0 3.0)\n;; => 0.9272952180016122 ; n.b. atan2 is slightly more accurate too\n\n;; If x<0, then θ = atan2(y, x) = atan(y/x)±π…\n(+ (math/atan (/ 4.0 -3.0)) math/PI)\n;; => 2.214297435588181\n(math/atan2 4.0 -3.0)\n;; => 2.214297435588181\n\n;; i.e. atan2 handles the possible need for this correction"],
   :notes nil,
   :arglists ["y x"],
   :doc
@@ -22307,7 +22310,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/with-precision],
   :line 254,
   :examples nil,
   :notes nil,
@@ -26665,7 +26668,8 @@
   :examples
   [";; This should be about as quick as summing up a array of floats in java.\n\nuser=> (defn asum [^floats xs]\n         (areduce xs i ret (float 0)\n                  (+ ret (aget xs i))))\n\nuser=> (asum (float-array [1 2 3]))\n6.0\n"],
   :macro true,
-  :notes nil,
+  :notes
+  ["Unlike `reduce`, `areduce` cannot be short-circuited with `(reduced)`. It's essentially a little macro that constructs a loop over all elements of an array. "],
   :arglists ["a idx ret init expr"],
   :doc
   "Reduces an expression across an array a, using an index named idx,\n  and return value named ret, initialized to init, setting ret to the \n  evaluation of expr at each step, returning ret.",
