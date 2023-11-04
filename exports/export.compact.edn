@@ -8562,7 +8562,8 @@
   :column 1,
   :see-alsos nil,
   :line 136,
-  :examples nil,
+  :examples
+  [";; Let's find out how long it would take my $5000 savings to grow to $6000 at an\n;; annual interest rate of 5.25%, compounded continuously…\n(let [initial 5000\n      goal 6000\n      annual-rate 0.0525]\n  (/ (math/log (/ goal initial))\n     annual-rate))\n;; => 3.4727915579800874\n;; …about 3 years, 5½ months\n\n;; Let's find out how much carbon-14 we'd have after 100yrs if we start with 1kg…\n(let [c14-half-life-yrs 5730\n      initial-mass 1000\n      time-yrs 100\n      ;; First we need the decay constant, which is defined as λ = ln(2) / t(½)…\n      λ (/ (math/log 2.0) c14-half-life-yrs)]\n  ;; Lastly, we use the radioactive decay formula: N(t) = N₀⋅e^-λt\n  (* initial-mass (math/exp (- (* λ time-yrs)))))\n;; => 987.9760628287868\n;; …most of it actually"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -24458,9 +24459,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/inc :clojure.math/decrement-exact],
   :line 304,
-  :examples nil,
+  :examples
+  [";; `inc` uses incrementExact for longs under the hood, so these are the same:\n(inc Long/MAX_VALUE)\n(math/increment-exact Long/MAX_VALUE)\n;; => Execution error (ArithmeticException) at java.lang.Math/incrementExact (Math.java:1042).\n;;    long overflow\n\n;; Doubles and floats are coerced to longs…\n(math/increment-exact Double/MAX_VALUE)\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308\n\n;; Basically the same as:\n(inc (long Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308\n\n;; Unlike inc alone, which exhibits this curious (but well documented) behaviour…\n(inc Double/MAX_VALUE)\n;; => 1.7976931348623157E308"],
   :notes nil,
   :arglists ["a"],
   :doc
