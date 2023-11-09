@@ -10697,7 +10697,7 @@
   :file "clojure/data/csv.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.java.io/writer],
   :line 127,
   :examples nil,
   :notes nil,
