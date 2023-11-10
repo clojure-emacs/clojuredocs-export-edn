@@ -491,7 +491,8 @@
    ";; How :load-ns works.\n;; deftype can be used for AOT generation of classes (with gen-class that would be\n;; the only option). For example:\n\n(spit \"foo.clj\"\n  \"(ns foo)\n   (defn bar [] :bar)\n   (defprotocol P (foo [p]))\n   (deftype Foo [] :load-ns true P\n     (foo [this] (bar)))\")\n\n(binding [*compile-path* \".\"] (compile 'foo))\n\n;; Now close and re-open the REPL to import the newly created class. Note that the\n;; call to (.foo p) doesn't throw exception here because we used \":load-ns true\"\n;; option in deftype. This makes sure that the namespace 'foo is also loaded \n;; forcing the evaluation of the \"bar\" function. This makes especially sense\n;; if Foo is used from a Java application:\n\n(import 'foo.Foo)\n(def p (Foo.))\n(.foo p)\n;; \"bar\""
    ";; To refer to a deftype in another namespace, the deftype needs to be imported \n;; because deftype generate a class.\n;; Using the Foo type defined above:\n(ns bar \n  (:import [foo Foo]))\n\n(defn foo? [x]\n  (instance? Foo x))"
    ";; deftype allow mutable fields, and their values can be changed with set!.\n;; This works:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this o] (set! x o)))\n\n;; Note that these mutable fields are private, so they are not accessible outside,\n;; and they are not even accessible inside nested functions within the type.\n;; This does not compile, throws error about assigning to non-mutable field x:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this] (fn [o] (set! x o))))\n\n;; Need to define a set function in a protocol and implement it in the type \n(defprotocol ISetX (set-x [this o]))\n\n(deftype Test [^:unsynchronized-mutable x]\n    ISetX\n    (set-x [this o] (set! x o))\n    \n    ITestProtocol\n    (act [this] (fn [o] (set-x o))))\n"
-   ";; unlike defrecord, deftype does not include extra method definitions\n;; the following will not compile:\n(defrecord Nr [n]\n Object\n (toString [_] (str \"#\" n))  ;; This does work\n (hashCode [_] (+ 10 n)))    ;; defrecord already generates this function\n\n;; Syntax error (ClassFormatError) compiling deftype* at (REPL:1:1).\n;; Duplicate method name \"hashCode\" with signature \"()I\" in class file user/Nr\n\n\n;; deftype does not implement methods like hashCode, so it can be overridden\n(deftype Nr [n]\n Object\n (toString [_] (str \"#\" n))\n (hashCode [_] (+ 10 n)))\n\n(def v (->Nr 5))\n\n(str \"The number is: \" v)\n;; \"The number is #5\"\n\n(hash v)\n;; 15"],
+   ";; unlike defrecord, deftype does not include extra method definitions\n;; the following will not compile:\n(defrecord Nr [n]\n Object\n (toString [_] (str \"#\" n))  ;; This does work\n (hashCode [_] (+ 10 n)))    ;; defrecord already generates this function\n\n;; Syntax error (ClassFormatError) compiling deftype* at (REPL:1:1).\n;; Duplicate method name \"hashCode\" with signature \"()I\" in class file user/Nr\n\n\n;; deftype does not implement methods like hashCode, so it can be overridden\n(deftype Nr [n]\n Object\n (toString [_] (str \"#\" n))\n (hashCode [_] (+ 10 n)))\n\n(def v (->Nr 5))\n\n(str \"The number is: \" v)\n;; \"The number is #5\"\n\n(hash v)\n;; 15"
+   "(ns my-favorite-drinks.beer)\n\n(deftype Beer [malt hops yeast water])\n\n;; When you do `:import`, Clojure doesn't munge the path names. \n;; So \"my-favorite-drinks.pub Beer\" should be \"my_favorite_drinks.pub Beer\" \n;; for all the imports.\n(ns my-favorite-drinks.pub\n  (:import [my_favorite_drinks.beer Beer]))\n\n"],
   :macro true,
   :notes
   ["There's also some undocumented support for annotations:\r\n\r\n<https://groups.google.com/group/clojure/browse_thread/thread/d2128e1505c0c117?pli=1>"
@@ -3466,7 +3467,7 @@
   :see-alsos [:clojure.math/exp :clojure.math/log],
   :line 24,
   :examples
-  ["(defn calculate-e [n]\n  (letfn [(mid [a b] (math/floor-div (+ a b) 2))\n          (p [a b] (if (= b (inc a))\n                     1\n                     (+ (*' (p a (mid a b)) (q (mid a b) b))\n                        (p (mid a b) b))))\n          (q [a b] (if (= b (inc a))\n                     b\n                     (*' (q a (mid a b)) (q (mid a b) b))))]\n    (double (+ 1 (/ (p 0 n) (q 0 n))))))\n\n(== math/E (calculate-e 20))\n;; => true\n\n;; e is nearly always the base of exponentials or natural logarithms, for which\n;; we have math/exp and math/log respectively. Direct applications of e without\n;; involving an exponent or logarithm are rare"],
+  ["(defn calculate-e [n]\n  (letfn [(mid [a b] (math/floor-div (+ a b) 2))\n          (p [a b] (if (== b (inc a))\n                     1\n                     (+ (*' (p a (mid a b)) (q (mid a b) b))\n                        (p (mid a b) b))))\n          (q [a b] (if (== b (inc a))\n                     b\n                     (*' (q a (mid a b)) (q (mid a b) b))))]\n    (double (+ 1 (/ (p 0 n) (q 0 n))))))\n\n(== math/E (calculate-e 20))\n;; => true\n\n;; e is nearly always the base of exponentials or natural logarithms, for which\n;; we have math/exp and math/log respectively. Direct applications of e without\n;; involving an exponent or logarithm are rare"],
   :notes nil,
   :tag "double",
   :arglists [],
@@ -8560,7 +8561,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/log10],
   :line 136,
   :examples
   [";; Let's find out how long it would take my $5000 savings to grow to $6000 at an\n;; annual interest rate of 5.25%, compounded continuously…\n(let [initial 5000\n      goal 6000\n      annual-rate 0.0525]\n  (/ (math/log (/ goal initial))\n     annual-rate))\n;; => 3.4727915579800874\n;; …about 3 years, 5½ months\n\n;; Let's find out how much carbon-14 we'd have after 100yrs if we start with 1kg…\n(let [c14-half-life-yrs 5730\n      initial-mass 1000\n      time-yrs 100\n      ;; First we need the decay constant, which is defined as λ = ln(2) / t(½)…\n      λ (/ (math/log 2.0) c14-half-life-yrs)]\n  ;; Lastly, we use the radioactive decay formula: N(t) = N₀⋅e^-λt\n  (* initial-mass (math/exp (- (* λ time-yrs)))))\n;; => 987.9760628287868\n;; …most of it actually"],
@@ -15426,9 +15427,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/expm1],
   :line 434,
-  :examples nil,
+  :examples
+  [";; If I have an effective interest rate of 5%, what's the equivalent nominal,\n;; continuously compounded rate?\n(math/log1p 0.05)\n;; => 0.04879016416943201\n\n;; Let's check that for 3 compounding periods\n(== (math/exp (* 3 0.04879016416943201))\n    (math/pow 1.05 3.0))\n;; => true\n\n;; In terms of accuracy, this function is more useful than log(1+x) when rates\n;; are very small…\n(math/log1p 5e-15)\n;; => 4.999999999999987E-15\n(math/log (inc 5e-15))\n;; => 5.107025913275707E-15"],
   :notes nil,
   :arglists ["x"],
   :doc
@@ -18340,7 +18342,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.math/exp],
+  :see-alsos [:clojure.math/exp :clojure.math/log1p],
   :line 421,
   :examples
   [";; Let's work out how much extra money I'll have after day 1 if I deposit the\n;; entire GDP of the USA in an account with a daily interest rate of 0.0001%,\n;; compounded continuously…\n\n;; Using expm1:\n(let [principal-ammount 26.949e12\n      daily-interest-rate 1e-6]\n  (format \"$%,.3f\"\n          (* principal-ammount (math/expm1 daily-interest-rate))))\n;; => \"26,949,013.475\"\n\n;; Using exp and subtracting 1:\n(let [principal-ammount 26.949e12\n      daily-interest-rate 1e-6]\n  (format \"$%,.3f\"\n          (* principal-ammount (dec (math/exp daily-interest-rate)))))\n;; => \"$26,949,013.473\"\n\n;; There's two tenths of a cent in it.\n;; An unlikely scenario, but it illustrates where expm1 provides better accuracy"],
@@ -19022,9 +19024,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/log],
   :line 148,
-  :examples nil,
+  :examples
+  [";; Let's calculate the pH when 1g of hydrochloric acid is added to 2L of water…\n(let [HCl-grams 1\n      H2O-litres 2\n      HCl-molar-mass 36.46\n      HCl-moles (/ HCl-grams HCl-molar-mass)\n      ;; HCl is a strong acid, so dissociates completely in water\n      molarity (/ HCl-moles H2O-litres)]\n  ;; pH is calculated as pH = -log₁₀([H⁺])\n  (- (math/log10 molarity)))\n;; => 1.8628466599829387"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -22366,7 +22369,7 @@
   :line 7687,
   :examples
   [";; cat is handy for untangling nested collections when using transducers\n\n(into [] (comp cat cat (map inc)) [[[1] [2]] [[3] [4]]])\n;; => [2 3 4 5]"
-   ";; Remove the need of (mapcat identity coll) idiom:\n(def rota (sequence cat (repeat [\"tom\" \"nick\" \"jane\"])))\n(nth rota 7) ; who's up next week?\n;; nick"
+   ";; Remove the need of (mapcat identity coll) idiom:\n(def rota (sequence cat (repeat [\"tom\" \"nick\" \"jane\"])))\n(nth rota 7) ; who's up next week?\n;; nick\n\n;; Although `cycle` would have done just fine here"
    ";; combining map-indexed with cat for a \"mapcat-indexed\"\n(into []\n  (comp\n    (map-indexed (fn [index val]\n                   (repeat index val)))\n    cat)\n  (range 5))\n;; => [1 2 2 3 3 3 4 4 4 4]"
    ";;; a concise and performant way to concat into a vector\n\n(into [] cat [[1 2 3] [4] [5 6 7]])\n;; => [1 2 3 4 5 6 7]\n\n(defn concatv\n  \"Concatenate `xs` and return the result as a vector.\"\n  [& xs]\n  (into [] cat xs))\n\n(concatv '(1 2) [3] [4 5])\n;; => [1 2 3 4 5]\n\n;;; this xducer form is equivalent to the `(vec (concat...` pattern\n(let [x [1 2 3]\n      y 4\n      z [5 6 7]]\n  (= \n    (into [] cat [x [y] z])\n    (vec (concat x [y] z))))\n\n;; => true"],
   :notes nil,
