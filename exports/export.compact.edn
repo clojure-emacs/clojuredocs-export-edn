@@ -492,7 +492,7 @@
    ";; To refer to a deftype in another namespace, the deftype needs to be imported \n;; because deftype generate a class.\n;; Using the Foo type defined above:\n(ns bar \n  (:import [foo Foo]))\n\n(defn foo? [x]\n  (instance? Foo x))"
    ";; deftype allow mutable fields, and their values can be changed with set!.\n;; This works:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this o] (set! x o)))\n\n;; Note that these mutable fields are private, so they are not accessible outside,\n;; and they are not even accessible inside nested functions within the type.\n;; This does not compile, throws error about assigning to non-mutable field x:\n(deftype Test [^:unsynchronized-mutable x]\n    ITestProtocol\n    (act [this] (fn [o] (set! x o))))\n\n;; Need to define a set function in a protocol and implement it in the type \n(defprotocol ISetX (set-x [this o]))\n\n(deftype Test [^:unsynchronized-mutable x]\n    ISetX\n    (set-x [this o] (set! x o))\n    \n    ITestProtocol\n    (act [this] (fn [o] (set-x o))))\n"
    ";; unlike defrecord, deftype does not include extra method definitions\n;; the following will not compile:\n(defrecord Nr [n]\n Object\n (toString [_] (str \"#\" n))  ;; This does work\n (hashCode [_] (+ 10 n)))    ;; defrecord already generates this function\n\n;; Syntax error (ClassFormatError) compiling deftype* at (REPL:1:1).\n;; Duplicate method name \"hashCode\" with signature \"()I\" in class file user/Nr\n\n\n;; deftype does not implement methods like hashCode, so it can be overridden\n(deftype Nr [n]\n Object\n (toString [_] (str \"#\" n))\n (hashCode [_] (+ 10 n)))\n\n(def v (->Nr 5))\n\n(str \"The number is: \" v)\n;; \"The number is #5\"\n\n(hash v)\n;; 15"
-   "(ns my-favorite-drinks.beer)\n\n(deftype Beer [malt hops yeast water])\n\n;; When you do `:import`, Clojure doesn't munge the path names. \n;; So \"my-favorite-drinks.pub Beer\" should be \"my_favorite_drinks.pub Beer\" \n;; for all the imports.\n(ns my-favorite-drinks.pub\n  (:import [my_favorite_drinks.beer Beer]))\n\n"],
+   "(ns my-favorite-drinks.beer)\n\n(deftype Beer [malt hops yeast water])\n\n;; When you do `:import`, Clojure doesn't munge the path names. \n;; So \"my-favorite-drinks.pub Beer\" should be \"my_favorite_drinks.pub Beer\" \n;; for all the imports.\n;; Also note that you have to `require` the ns as well.\n(ns my-favorite-drinks.pub\n  (:require [my-favorite-drinks.beer])\n  (:import [my_favorite_drinks.beer Beer]))\n\n"],
   :macro true,
   :notes
   ["There's also some undocumented support for annotations:\r\n\r\n<https://groups.google.com/group/clojure/browse_thread/thread/d2128e1505c0c117?pli=1>"
@@ -4601,7 +4601,7 @@
   ["user=> (def x (promise))\n#'user/x\n;; Trying to deref at this point will make your repl wait forever\n\n\nuser=> (deliver x 100)\n#&lt;core$promise$reify__5534@4369a50b: 100&gt;\n\n;; the promise has been delivered, deref x will return immediately\nuser=> @x\n100\n"
    ";; Create a promise\nuser> (def p (promise))\n#'user/p ; p is our promise\n\n;; Check if was delivered/realized\nuser> (realized? p)\nfalse ; No yet\n\n;; Delivering the promise\nuser> (deliver p 42)\n#<core$promise$reify__5727@47122d: 42>\n\n;; Check again if it was delivered\nuser> (realized? p)\ntrue ; Yes!\n\n;; Deref to see what has been delivered\nuser> @p\n42\n\n;; Note that @ is shorthand for deref\nuser> (deref p)\n42"
    ";; Illustrates how threads can work together via promises\n;; First, an example to show a future that delivers\n\nuser=> (def p (promise))\n#'user/p\n\n;; future that will deliver the promise from another thread after 10 sec delay\nuser=> (future\n         (Thread/sleep 10000)\n         (deliver p 123))\n#future[{:status :pending, :val nil} 0x9a51df1]\n\n;; within 10 seconds dereference p, and wait for delivery of the value\nuser=> @p\n123\n\n\n;; Now, an example to show a future that blocks while waiting for a promise\n;; to be delivered -- this is used to achieve callback-style functionality\n\n;; redefine p\nuser=> (def p (promise))\n#'user/p\n\n;; create a new 'callback' thread that will wait for a promise to be delivered\nuser=> (future\n         (println \"About to block while waiting for 'p'\")\n         (println \"Now I can do some work with the value \" @p))\nAbout to block while waiting for 'p'\n#future[{:status :pending, :val nil} 0x1737df29]\n\n;; deliver the promise, triggering the blocking callback thread\nuser=> (deliver p 123)\nNow I can do some work with the value  123\n#promise[{:status :ready, :val 123} 0x674a4c4a]"
-   ";; `deliver` returns the promise and can be dereffed directly.\n\n(def my-prom (promise))  \nmy-prom                       ;;=> #promise[{:status :pending, :val nil} 0x2570a72d]\n@(deliver my-prom \"Huzzah!\")  ;;=> \"Huzzah!\"\nmy-prom                       ;;=> #promise[{:status :ready, :val nil} 0x2570a72d]\n@my-prom                      ;;=> \"Huzzah!\""],
+   ";; `deliver` returns the promise and can be dereffed directly.\n\n(def my-prom (promise))  \nmy-prom                       ;;=> #promise[{:status :pending, :val nil} 0x2570a72d]\n@(deliver my-prom \"Huzzah!\")  ;;=> \"Huzzah!\"\nmy-prom                       ;;=> #promise[{:status :ready, :val \"Huzzah!\"} 0x2570a72d]\n@my-prom                      ;;=> \"Huzzah!\""],
   :notes
   ["As of Clojure 1.3 `deliver` does not throw an exception when it is called multiple times on the same promise. See [CLJ-1038](http://dev.clojure.org/jira/browse/CLJ-1038)."],
   :arglists ["promise val"],
@@ -13598,9 +13598,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/-],
   :line 322,
-  :examples nil,
+  :examples
+  [";; `-` uses negateExact for a single long under the hood, so these are the same:\n(- Long/MIN_VALUE)\n(math/negate-exact Long/MIN_VALUE)\n;; => Execution error (ArithmeticException) at java.lang.Math/negateExact (Math.java:1118).\n;;    long overflow\n\n;; However, doubles are treated differently…\n(- (- Double/MAX_VALUE)) ; n.b. Double/MIN_VALUE is not negative\n;; => 1.7976931348623157E308\n\n;; Whereas negate-exact coerces to longs…\n(math/negate-exact (- Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: -1.7976931348623157E308\n\n;; Basically the same as:\n(- (long Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -13826,9 +13827,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/next-up :clojure.math/next-down],
   :line 469,
-  :examples nil,
+  :examples
+  [";; The frequency of \"strange\" numbers increases as we get bigger.\n;; The strangeness is a consequence of using binary to store decimal numbers…\n\n(take 20 (iterate #(math/next-after % 6.0) 5.0))\n;; => (5.0\n;;     5.000000000000001\n;;     5.000000000000002\n;;     5.000000000000003\n;;     5.0000000000000036 ; <- strange\n;;     5.000000000000004\n;;     5.000000000000005\n;;     5.000000000000006\n;;     5.000000000000007\n;;     5.000000000000008\n;;     5.000000000000009\n;;     5.00000000000001\n;;     5.000000000000011\n;;     5.0000000000000115 ; <- strange\n;;     5.000000000000012\n;;     5.000000000000013\n;;     5.000000000000014\n;;     5.000000000000015\n;;     5.000000000000016\n;;     5.000000000000017)\n\n(take 20 (iterate #(math/next-after % 6.0) 5.0e200))\n;; => (5.0E200\n;;     4.9999999999999995E200 ; <- strange\n;;     4.999999999999999E200\n;;     4.999999999999998E200\n;;     4.9999999999999975E200 ; <- strange\n;;     4.999999999999997E200\n;;     4.999999999999996E200\n;;     4.9999999999999954E200 ; <- strange\n;;     4.999999999999995E200\n;;     4.999999999999994E200\n;;     4.9999999999999934E200 ; <- strange\n;;     4.999999999999993E200\n;;     4.999999999999992E200\n;;     4.9999999999999914E200 ; <- strange\n;;     4.999999999999991E200\n;;     4.99999999999999E200\n;;     4.999999999999989E200\n;;     4.9999999999999886E200 ; <- strange\n;;     4.999999999999988E200\n;;     4.999999999999987E200)"],
   :notes nil,
   :arglists ["start direction"],
   :doc
@@ -18279,9 +18281,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/*],
   :line 295,
-  :examples nil,
+  :examples
+  [";; `*` uses multiplyExact for longs under the hood, so these are the same:\n(* Long/MAX_VALUE 7)\n(math/multiply-exact Long/MAX_VALUE 7)\n;; => Execution error (ArithmeticException) at java.lang.Math/multiplyExact (Math.java:1004).\n;;    long overflow\n\n;; However, doubles are treated differently…\n(* Double/MAX_VALUE Double/MAX_VALUE)\n;; => ##Inf\n\n;; Whereas multiply-exact coerces to longs…\n(math/multiply-exact Double/MAX_VALUE Double/MAX_VALUE)\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308\n\n;; Basically the same as:\n(* (long Double/MAX_VALUE) (long Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: 1.7976931348623157E308"],
   :notes nil,
   :arglists ["x y"],
   :doc
@@ -19141,7 +19144,8 @@
   :column 1,
   :see-alsos nil,
   :line 33,
-  :examples nil,
+  :examples
+  ["(defn circle-area [radius]\n  (* math/PI radius radius))\n(circle-area 50)\n;; => 7853.981633974483\n\n(defn sphere-volume [radius]\n  (* math/PI 4/3 (math/pow radius 3.0)))\n(sphere-volume 50)\n;; => 523598.7755982987\n\n(defn deg->rad [deg]\n  (* deg (/ math/PI 180)))\n(== (deg->rad 45.0) (math/to-radians 45.0))\n;; => true\n\n(math/sin (/ math/PI 2))\n;; => 1.0\n\n(math/cos math/PI)\n;; => -1.0"],
   :notes nil,
   :tag "double",
   :arglists [],
@@ -23349,9 +23353,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/next-after :clojure.math/next-down],
   :line 487,
-  :examples nil,
+  :examples
+  [";; Longs are coerced to doubles:\n(math/next-up Long/MAX_VALUE)\n;; => 9.223372036854778E18\n\n;; Negative infinity is just the next thing below the smallest double:\n(== (- Double/MAX_VALUE) (math/next-up ##-Inf)) ; n.b. Double/MIN_VALUE is not negative\n;; => true\n\n;; Infinity is the next thing above the biggest:\n(math/next-up Double/MAX_VALUE)\n;; => ##Inf\n\n;; The direction we're coming from dictates the sign for zero:\n(math/next-up -4.9E-324)\n;; => -0.0\n(math/next-down 4.9E-324)\n;; => 0.0"],
   :notes nil,
   :arglists ["d"],
   :doc
@@ -27614,9 +27619,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/next-up :clojure.math/next-after],
   :line 499,
-  :examples nil,
+  :examples
+  [";; Longs are coerced to doubles:\n(math/next-down Long/MIN_VALUE)\n;; => -9.223372036854778E18\n\n;; Infinity is just the next thing above the biggest double:\n(== Double/MAX_VALUE (math/next-down ##Inf))\n;; => true\n\n;; Negative infninty is the next thing below the smallest:\n(math/next-down (- Double/MAX_VALUE)) ; n.b. Double/MIN_VALUE is not negative\n;; => ##-Inf\n\n;; The direction we're coming from dictates the sign for zero:\n(math/next-down 4.9E-324)\n;; => 0.0\n(math/next-up -4.9E-324)\n;; => -0.0"],
   :notes nil,
   :arglists ["d"],
   :doc
