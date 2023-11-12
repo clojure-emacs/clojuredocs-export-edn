@@ -11188,9 +11188,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/round],
   :line 222,
-  :examples nil,
+  :examples
+  [";; The `r` in `rint` stands for \"round\" not \"random\"\n;; and it returns a double, not an int…\n\n(math/rint 10.5)\n;; => 10.0\n\n(math/rint 11.5)\n;; => 12.0"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -16118,7 +16119,8 @@
   :line 4944,
   :examples
   ["user=> (rand-int 30)\n10\n\nuser=> (rand-int 30)\n7\n\n; is equivalent to\nuser=> (int (rand 30))\n"
-   "(require '[clojure.set :as set])\n\n; random generation of unique series of random numbers from 0 to n-1 \n\n(defn unique-random-numbers [n]\n  (let [a-set (set (take n (repeatedly #(rand-int n))))]\n    (concat a-set (set/difference (set (take n (range)))\n                                  a-set))))\n\nuser=> (unique-random-numbers 20)\n(0 1 3 6 7 8 9 12 14 16 17 19 2 4 5 10 11 13 15 18)\n\n"],
+   "(require '[clojure.set :as set])\n\n; random generation of unique series of random numbers from 0 to n-1 \n\n(defn unique-random-numbers [n]\n  (let [a-set (set (take n (repeatedly #(rand-int n))))]\n    (concat a-set (set/difference (set (take n (range)))\n                                  a-set))))\n\nuser=> (unique-random-numbers 20)\n(0 1 3 6 7 8 9 12 14 16 17 19 2 4 5 10 11 13 15 18)\n\n"
+   ";; It'll allow you to supply an arg > Integer/MAX_VALUE, but the incidence of\n;; integer overflow is proportional to how far you go over…\n(dotimes [n 10]\n  (try (println (rand-int (* Integer/MAX_VALUE 2.0)))\n       (catch ArithmeticException _ (println \"A\"))))\nA\nA\n1854263459\n83487894\n629497223\nA\n1311192557\nA\nA\n2112963130\n\n;; The docstring uses the word \"integer\" to mean a Java integer, rather than a\n;; math integer, confusingly unlike `integer?`\n\n;; If you want to extend into the full Long range, repimplement like so…\n(defn rand-long [n] (long (rand n)))\n\n(dotimes [n 10]\n  (try (println (rand-long (* Integer/MAX_VALUE 2.0)))\n       (catch ArithmeticException _ (println \"A\"))))\n2843734446\n3705237344\n2260635666\n1353888982\n2353595107\n1511365943\n2605201990\n2533357711\n2501246267\n1330427847"],
   :notes nil,
   :arglists ["n"],
   :doc
@@ -21335,9 +21337,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/rand],
   :line 267,
-  :examples nil,
+  :examples
+  [";; clojure.core/rand calls this directly with no args, so…\n(rand)\n;; => 0.20968475424191757\n;; …and…\n(math/random)\n;; => 0.02184624324577189\n;; …are exactly the same, although you couldn't know that emperically\n\n;; So I can't think of a single reason you would ever use this"],
   :notes nil,
   :arglists [""],
   :doc
@@ -22318,7 +22321,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/with-precision],
+  :see-alsos [:clojure.core/with-precision :clojure.math/rint],
   :line 254,
   :examples nil,
   :notes nil,
@@ -23097,7 +23100,8 @@
   :column 1,
   :see-alsos nil,
   :line 244,
-  :examples nil,
+  :examples
+  [";; Let's calculate how much I'd have after a year if I invested $5000 at an\n;; annual rate of 5%, compounded monthly…\n(let [principal 5000\n      annual-rate 0.05\n      years 1\n      compounding-periods 12]\n  ;; Formula: A = P * (1 + r/k)^(n * k)\n  (->> (* principal (math/pow (inc (/ annual-rate compounding-periods))\n                              (* years compounding-periods)))\n       (format \"$%,.2f\")))\n;; => \"$5,255.81\""],
   :notes nil,
   :arglists ["a b"],
   :doc
