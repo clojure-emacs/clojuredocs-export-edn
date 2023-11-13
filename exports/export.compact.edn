@@ -4804,7 +4804,10 @@
   [:clojure.core/swap!
    :clojure.core/reset!
    :clojure.core/compare-and-set!
-   :clojure.core/atom],
+   :clojure.core/atom
+   :clojure.core/pop!
+   :clojure.core/peek
+   :clojure.core/pop],
   :line 2374,
   :examples
   [";; You can use `swap-vals` to perform an atomic `deref`\n;; and `swap!` without a race condition.\n\n(def queue (atom '(1 2 3)))\n(let [head (ffirst (swap-vals! queue pop))]\n  (println head)     ;; 1\n  (println @queue))  ;; (2 3)"],
@@ -14828,7 +14831,8 @@
   [:clojure.core/peek
    :clojure.core/rest
    :clojure.core/conj
-   :clojure.core/butlast],
+   :clojure.core/butlast
+   :clojure.core/pop!],
   :line 1481,
   :examples
   ["user=> (peek [1 2 3])\n3\nuser=> (pop [1 2 3])\n[1 2]\nuser=> (peek '(1 2 3))\n1\nuser=> (pop '(1 2 3))\n(2 3)"
@@ -21988,7 +21992,8 @@
   :column 1,
   :see-alsos nil,
   :line 364,
-  :examples nil,
+  :examples
+  ["(math/signum 42.0)\n;; => 1.0\n\n(math/signum -42.0)\n;; => -1.0\n\n(math/signum 0.0)\n;; => 0.0\n\n(math/signum -0.0)\n;; => -0.0\n\n(math/signum ##NaN)\n;; => ##NaN"],
   :notes nil,
   :arglists ["d"],
   :doc
@@ -22323,7 +22328,8 @@
   :column 1,
   :see-alsos [:clojure.core/with-precision :clojure.math/rint],
   :line 254,
-  :examples nil,
+  :examples
+  ["(math/round 43.5)\n;; => 44\n\n(math/round -43.5)\n;; => -43\n\n;; Compare with `rint`…\n(math/rint 43.5)\n;; => 44.0\n\n(math/rint -43.5)\n;; => -44.0"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -25260,7 +25266,8 @@
   :column 1,
   :see-alsos nil,
   :line 511,
-  :examples nil,
+  :examples
+  [";; SCALe Binary:\n(map #(math/scalb 1.0 %) (range 10))\n;; => (1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 512.0)\n\n;; In theory, scalb is optimized for scaling by powers of two, but in reality,\n;; JVM optimizations may mean you don't see any benefit…\n\n(== (* 12345678.9 32.0) (math/scalb 12345678.9 5))\n;; => true\n\n(time (dotimes [_ 1e9] (* 12345678.9 32.0)))\n\"Elapsed time: 489.551751 msecs\"\n\n(time (dotimes [_ 1e9] (math/scalb 12345678.9 5)))\n\"Elapsed time: 6545.436254 msecs\""],
   :notes nil,
   :arglists ["d scaleFactor"],
   :doc
