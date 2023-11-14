@@ -10400,7 +10400,7 @@
    ";; Conj new-element into nested structures \"conj-in\"\n\n(def db {:users [{:name \"Eduardo\"}]})\n(def new-element {:name \"Eva\"})\n\n(assoc db :users (conj (:users db) new-element))\n;; => {:users [{:name \"Eduardo\"} {:name \"Eva\"}]}"
    ";; implement stack semantics with conj, peek and pop.\n\n;; we start with a list\n(def stack '(2 1 0))\n\n(peek stack)\n;; => 2\n(pop stack)\n;; => (1 0)\n(type (pop stack))\n;; => cljs.core/List\n;; push = conj\n(conj stack 3)\n;; => (3 2 1 0)\n(type (conj stack 3))\n;; => cljs.core/List\n\n;; now let us try a vector\n(def stack [0 1 2])\n\n(peek stack)\n;; => 2\n(pop stack)\n;; => [0 1]\n(type (pop stack))\n;; => clojure.lang.PersistentVector\n;; push = conj\n(conj stack 3)\n;; => [0 1 2 3]\n(type (conj stack 3))\n;; => clojure.lang.PersistentVector\n"
    ";; Based on examples from the great book CLOJURE for the BRAVE and TRUE\n;; https://www.braveclojure.com/core-functions-in-depth/\n\n(defn add-first-vec\n\t[target addition]\n\t(apply conj (if (vector? addition) addition [addition]) target))\n\n(add-first-vec [3 4 5 6] 1)\n;; [1 3 4 5 6]\n\n(add-first-vec [3 4 5 6] [1 2])\n;; [1 2 3 4 5 6]"
-   ";; conj also has other, undocumented arities:\n\n(conj)\n;; => []\n\n(conj [1 2 3])\n;; => [1 2 3]\n\n;; Which are particularly useful when transducing, as the nullary form can be\n;; used to produce init, and the unary form for completion"],
+   ";; conj also has other arities:\n\n(conj)\n;; => []\n\n(conj [1 2 3])\n;; => [1 2 3]\n\n;; Which are particularly useful when transducing, as the nullary form can be\n;; used to produce init, and the unary form for completion"],
   :notes ["list prepend\nvector append"],
   :arglists ["" "coll" "coll x" "coll x & xs"],
   :doc
@@ -11097,7 +11097,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/cosh :clojure.math/tanh],
   :line 374,
   :examples nil,
   :notes nil,
@@ -17533,7 +17533,7 @@
   :examples
   ["user=> (not= 1 1)\nfalse\n\nuser=> (not= 1 2)\ntrue\n\nuser=> (not= true true)\nfalse\n\nuser=> (not= true false)\ntrue\n\nuser=> (not= true true true true)\nfalse\n\nuser=> (not= true true false true)\ntrue\n"
    ";; See the Clojure Equality guide for more details:\n;; https://clojure.org/guides/equality"
-   ";; An exception to the docstring:\n\n(not= ##NaN ##NaN)\n;; => false\n\n(not (= ##NaN ##NaN))\n;; => true\n\n;; This is because of various shortcuts for checking identity when checking equality.\n;; As a rule of thumb, don't rely on either for testing against the ##NaN literal.\n;; Decide on which logic you want, and explicitly test. E.g.\n\n(defn != [x y]\n  (or (not= x y)\n      (Double/isNaN x)\n      (Double/isNaN y)))\n\n(!= ##NaN ##NaN)\n;; => true"],
+   ";; An exception to the docstring:\n\n(not= ##NaN ##NaN)\n;; => false\n\n(not (= ##NaN ##NaN))\n;; => true\n\n;; This is because of various shortcuts for checking identity when checking equality.\n;; As a rule of thumb, don't rely on either for testing against the ##NaN literal.\n;; Decide on which logic you want, and explicitly test. E.g.\n\n(defn != [x y]\n  (or (not= x y)\n      (NaN? x)\n      (NaN? y)))\n\n(!= ##NaN ##NaN)\n;; => true"],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x" "x y" "x y & more"],
@@ -21284,7 +21284,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/sinh :clojure.math/tanh],
   :line 385,
   :examples
   [";; For a 6m cable freely hanging between two points, 5m apart, let's find the\n;; vertical distance between the level of the hanging points and the lowest\n;; point of the cable. This is given by y = (a⋅cosh(x/a)) - a, where x is the\n;; horizontal offset (which will be 2.5m, halfway between the points), and a is\n;; the \"sag parameter\", which can be iteratively approximated.\n(let [cable-length 6\n      hanging-span 5\n      a (iterative-solve (fn [a] (* 2 a (math/sinh (/ hanging-span (* 2 a)))))\n                         cable-length\n                         1e-9)]\n  (- (* a (math/cosh (/ 2.5 a))) a))\n;; => 1.4617189875858645\n\n;; Where iterative-solve is defined below. It's necessary to take an approach\n;; like this, as L = 2a⋅sinh(x/2a) is a transcendental equation.\n(defn iterative-solve\n  \"Greedy algorithm, assuming f is monotonic.\"\n  ([f target initial-tol] (iterative-solve f target target initial-tol))\n  ([f init target initial-tol]\n   (loop [n init\n          tol init] ; Just get n within init of target to start with\n     (let [diff (- (f n) target)]\n       (cond (<= (abs diff) initial-tol) n\n             (<= (abs diff) tol) (recur n (* 0.1 tol))\n             :else (recur (+ n (math/copy-sign tol diff)) tol))))))\n"],
@@ -25020,9 +25020,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/cos :clojure.math/tan],
   :line 42,
-  :examples nil,
+  :examples
+  [";; Let's find the other side lengths of a right-angled triangle, where we\n;; know an acute angle, O and the hypotenuse, h…\n(let [O (math/to-radians 29.0)\n      h 19\n      ;; The formula we need for the opposite is o = sin(O)⋅h, or in Clojure:\n      o (* (math/sin O) h)\n      ;; We can use a = sin(A)·h to get the 3rd side length:\n      A (- (/ math/PI 2) O)\n      a (* (math/sin A) h)]\n  ;; And return the dimensions, and the angles in degrees:\n  {:o o, :h h, :a a\n   :O 29.0, :H 90.0 :A (math/to-degrees A)})\n;; => {:o 9.211382784680405,\n;;     :h 19,\n;;     :a 16.61777443564852,\n;;     :O 29.0,\n;;     :H 90.0,\n;;     :A 61.0}"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -26847,7 +26848,7 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/sin :clojure.math/tan],
   :line 53,
   :examples
   [";; Let's find the other side lengths of a right-angled triangle, where we\n;; know an acute angle, O and one side, a…\n(let [O (math/to-radians 29.0)\n      a 17.0\n      ;; The formula we need for the hypotenuse is h = a/cos(O), or in Clojure:\n      h (/ a (math/cos O))\n      ;; We can use o = cos(A)·h to get the 3rd side length:\n      A (- (/ math/PI 2) O)\n      o (* (math/cos A) h)]\n  ;; And return the dimensions, and the angles in degrees:\n  {:o o, :h h, :a a\n   :O 29.0, :H 90.0 :A (math/to-degrees A)})\n;; => {:o 9.423253874697075,\n;;     :h 19.437019153846443,\n;;     :a 17.0,\n;;     :O 29.0,\n;;     :H 90.0,\n;;     :A 61.0}"],
