@@ -27796,7 +27796,8 @@
   :examples
   ["(use '[clojure.string :only [index-of]])\n\n(index-of \"ababc\" \"\")\n;;=> 0\n\n(index-of \"ababc\" \"a\")\n;;=> 0\n\n(index-of \"ababc\" \"ab\")\n;;=> 0\n\n(index-of \"ababc\" \"ab\" 1)\n;;=> 2\n\n(index-of \"ababc\" \"abc\")\n;;=> 2\n\n(index-of \"ababc\" \"abcd\")\n;;=> nil\n\n(index-of \"ababc\" \\c)\n;;=> 4\n\n\n;; same as .indexOf method\n\n(.indexOf \"ababc\" \"ab\")\n;;=> 0\n\n(.indexOf \"ababc\" \"ab\" 1)\n;;=> 2\n\n\n;; different from .indexOf method\n\n(.indexOf \"ababc\" \"abcd\")\n;;=> -1\n\n(.indexOf \"ababc\" \\c)\n;;=> IllegalArgumentException No matching method found: indexOf for class java.lang.String  clojure.lang.Reflector.invokeMatchingMethod (Reflector.java:80)\n\n"
    ";; Also works with other java.lang.CharSequence impls:\n\n(import 'java.lang.StringBuffer)\n(require '[clojure.string :as s])\n\n(s/index-of (StringBuffer. \"Bonjure Clojure\") \\j)\n;; 3"],
-  :notes nil,
+  :notes
+  ["If you want do something similar with Clojure sequences, you can sometimes use Java's `.indexOf`:\n```\n(.indexOf [:a :b :c :d :e] :d) ;=> 3\n(.indexOf [:a :b :c :d :e] :z) ;=> -1\n(.indexOf (list :a :b :c :d :e) :d) ;=> 3\n(.indexOf (range 10) 5) ;=> 5\n```\nNote that failure is indicated with -1.\n\n(It works with strings too, but we already have `index-of` for that.)"],
   :arglists ["s value" "s value from-index"],
   :doc
   "Return index of value (string or char) in s, optionally searching\n  forward from from-index. Return nil if value not found.",
