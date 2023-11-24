@@ -7009,7 +7009,7 @@
   :see-alsos [:clojure.core/get],
   :line 4072,
   :examples
-  ["(defstruct car-struct :make :model :year :color)\n\n(def car (struct car-struct \"Toyota\" \"Prius\" 2010))\n\n(def make (accessor car-struct :make))\n\nuser=> (make car)  ; Same as both (car :make) and (:make car)\n\"Toyota\"           \n\n"],
+  ["(defstruct car-struct :make :model :year :color)\n\n(def car (struct car-struct \"Toyota\" \"Prius\" 2010))\n\n(def make (accessor car-struct :make))\n\n; Same as both (car :make) and (:make car)\n(make car) \n;;=> \"Toyota\"           \n\n"],
   :notes nil,
   :arglists ["s key"],
   :doc
@@ -10639,7 +10639,7 @@
   :column 1,
   :see-alsos nil,
   :line 1137,
-  :examples nil,
+  :examples ["(abs -10) ;; => 10"],
   :notes nil,
   :arglists ["a"],
   :doc
