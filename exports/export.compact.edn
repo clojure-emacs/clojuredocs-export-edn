@@ -21950,7 +21950,8 @@
   ["user=> (clojure.string/join \", \" [1 2 3])\n\"1, 2, 3\""
    ";; Splits a string on space character and joins \n;; the resulting collection with a line feed character\n\n(use '[clojure.string :only (join split)])\n\nuser=> (println\n         (join \"\\n\"\n           (split \"The Quick Brown Fox\" #\"\\s\")))\nThe\nQuick\nBrown\nFox\nnil"
    ";; Note that empty strings and nils will appear as blank items\n;; in the result:\n\n(require '[clojure.string :as string])\n\n(string/join \", \" [\"spam\" nil \"eggs\" \"\" \"spam\"])\n;;=> \"spam, , eggs, , spam\"\n\n;; If you'd like to avoid this, you might do something like this:\n\n(string/join \", \" (remove string/blank? [\"spam\" nil \"eggs\" \"\" \"spam\"]))\n;;=> \"spam, eggs, spam\""
-   "(require '[clojure.string :as string])\n\n;; No separator means no separation\n(string/join [1 2 3])\n;; => \"123\""],
+   "(require '[clojure.string :as string])\n\n;; No separator means no separation\n(string/join [1 2 3])\n;; => \"123\""
+   "(require '[clojure.string :as string])\n\n;; One element coll returns just that element\n(string/join \", \" [\"single\"])\n;; => \"single\""],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["coll" "separator coll"],
