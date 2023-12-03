@@ -7956,9 +7956,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/pow],
   :line 160,
-  :examples nil,
+  :examples
+  [";; Given power (in Watts) and resistance (in Ohms), let's find the\n;; current in an electric circuit…\n(let [P 25\n      R 100]\n  ;; The formula is P = I²R or rearranged, I = √P/R\n  (math/sqrt (/ P R)))\n;; => 0.5"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -11099,7 +11100,9 @@
   :column 1,
   :see-alsos [:clojure.math/cosh :clojure.math/tanh],
   :line 374,
-  :examples nil,
+  :examples
+  [";; ;; For a cable hanging between two points, 5m apart, let's calculate the\n;; ;; length of that cable. We also need to know the \"sag parameter\", which is\n;; ;; mainly determined by the tension in the cable and its density. The formula\n;; ;; is L = 2a⋅sinh(x/2a), where L is cable length, a is the sag parameter, and\n;; ;; x is the  the distance between the points…\n(let [hanging-span 5\n      a 2.8] ; a rough estimate, under ideal conditions\n  (* 2 a (math/sinh (/ hanging-span (* 2 a)))))\n;; => 5.691316366972261"
+   ";; java.lang.Math, and therefore clojure.math, doesn't have a hyperbolic\n;; arcsine function, but we can implement a simple version like so…\n(defn asinh\n  \"asinh(x) = log(2⋅x + 1/(√(x² + 1) + x))\"\n  [x]\n  (math/log (+ (* 2 x)\n               (/ 1 (+ x (math/sqrt (inc (* x x))))))))"],
   :notes nil,
   :arglists ["x"],
   :doc
