@@ -19911,10 +19911,14 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/with-local-vars :clojure.core/var-get],
+  :see-alsos
+  [:clojure.core/with-local-vars
+   :clojure.core/var-get
+   :clojure.core/binding],
   :line 4334,
   :examples
-  ["(with-local-vars [x 1]\n  (println @x)\n  (var-set x 2)\n  (println @x))\n;;=> 1\n;;=> 2\n"],
+  ["(with-local-vars [x 1]\n  (println @x)\n  (var-set x 2)\n  (println @x))\n;;=> 1\n;;=> 2\n"
+   ";; This can also be used with `binding`…\n(def ^:dynamic *foo* 42)\n\n*foo*\n;; => 42\n\n(binding [*foo* 43]\n  (print *foo*)\n  (var-set #'*foo* 44)\n  *foo*)\n;; 43\n;; => 44\n\n*foo*\n;; => 42"],
   :notes nil,
   :arglists ["x val"],
   :doc
@@ -21614,7 +21618,8 @@
   :examples
   ["user=> (intern 'user 'x \"Foobar\")\n#'user/x\n\nuser=> x\n\"Foobar\"\n"
    ";; being able to define fn as a val\nuser=> (intern 'user 'sum (fn [a b c]\n                            (+ a b c)))\n#'user/sum\n\nuser=> (sum 1 2 3)\n6"
-   ";; you can defind defmethod as well by using intern.\n;; firstly, define defmulti so that upper-case can convert string and keyword into upper-case, respectively.\nuser=> (defmulti upper-case [this]\n         (type this))\n\n;; defmethods can be created as a var by clojure.core/intern\nuser=> (intern 'user 'upper-case (defmethod upper-case java.lang.String [this]\n                                   (clojure.string/upper-case this)))\n\nuser=> (intern 'user 'upper-case (defmethod upper-case clojure.lang.Keyword [this]\n                                   (-> this name clojure.string/upper-case keyword)))\n\nuser=> (upper-case \"abc\")\n\"ABC\"\n\nuser=> (upper-case :abc)\n:ABC"],
+   ";; you can defind defmethod as well by using intern.\n;; firstly, define defmulti so that upper-case can convert string and keyword into upper-case, respectively.\nuser=> (defmulti upper-case [this]\n         (type this))\n\n;; defmethods can be created as a var by clojure.core/intern\nuser=> (intern 'user 'upper-case (defmethod upper-case java.lang.String [this]\n                                   (clojure.string/upper-case this)))\n\nuser=> (intern 'user 'upper-case (defmethod upper-case clojure.lang.Keyword [this]\n                                   (-> this name clojure.string/upper-case keyword)))\n\nuser=> (upper-case \"abc\")\n\"ABC\"\n\nuser=> (upper-case :abc)\n:ABC"
+   ";; `intern` can be used to allow defining in other namespaces…\nuser> (create-ns 'other-ns)\n#namespace[other-ns]\n\nuser> (intern 'other-ns 'foo 42)\n#'other-ns/foo\n\nuser> (inc other-ns/foo)\n43"],
   :notes
   ["\"The Namespace system maintains global maps of symbols to Var objects (see Namespaces). If a def expression does not find an interned entry in the current namespace for the symbol being def-ed, it creates one, otherwise it uses the existing Var. This find-or-create process is called interning. This means that, unless they have been unmap-ed, Var objects are stable references and need not be looked up every time. It also means that namespaces constitute a global environment in which, as described in Evaluation, the compiler attempts to resolve all free symbols as Vars.\n\n\"The var special form or the #' reader macro (see Reader) can be used to get an interned Var object instead of its current value.\"\n\n-- [https://clojure.org/reference/vars]"],
   :arglists ["ns name" "ns name val"],
