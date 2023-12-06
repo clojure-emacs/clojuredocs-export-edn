@@ -2419,7 +2419,8 @@
   :column 1,
   :see-alsos nil,
   :line 351,
-  :examples nil,
+  :examples
+  ["(def a (/ 3.0 10.0))\na ;; => 0.3\n(def b (+ 0.1 0.2))\nb ;; => 0.30000000000000004\n;; This is famous enough to have its own website: 0.30000000000000004.com\n\n(defn close-enough? [a b]\n  (<= (abs (- a b))\n      (math/ulp a)))\n\n(close-enough? a b)\n;; => true\n\n;; I.e. it's a useful way to determine if differences are within the bounds of\n;; floating-point precision."],
   :notes nil,
   :arglists ["d"],
   :doc
@@ -3496,9 +3497,11 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/cosh :clojure.math/sinh],
   :line 397,
-  :examples nil,
+  :examples
+  [";; For a cable hanging between two points, with a \"sag parameter\" of 2.8m, let's\n;; calculate the slope of the cable 2m from the center (lowest point)…\n(let [a 2.8 ; a rough estimate, under ideal conditions\n      offset 2\n      ;; dy/dx = tanh(x/a) or in Clojure:\n      slope (math/tanh (/ offset a))]\n  ;; Let's convert to an angle (from horizontal, counterclockwise)\n  (math/to-degrees (math/atan slope)))\n;; => 31.523173415331186"
+   ";; java.lang.Math, and therefore clojure.math, doesn't have a hyperbolic\n;; arctangent function, but we can implement a simple version like so…\n(defn atanh\n  \"atanh(x) = 0.5 * log(1 + (2x / 1-x)\"\n  [x]\n  (* 0.5 (math/log1p (* 2 (/ x (- 1 x))))))"],
   :notes nil,
   :arglists ["x"],
   :doc
@@ -12947,9 +12950,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/to-radians],
   :line 115,
-  :examples nil,
+  :examples
+  ["(math/to-degrees math/PI)\n;; => 180.0\n\n(math/to-degrees (- math/PI))\n;; => -180.0\n\n(math/to-degrees -0.0)\n;; => -0.0\n\n;; Bascially the same as:\n(def ^:const rad->deg (/ 180.0 math/PI))\n(fn [x] (* x rad->deg))"],
   :notes nil,
   :arglists ["r"],
   :doc
@@ -18495,9 +18499,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/to-degrees],
   :line 106,
-  :examples nil,
+  :examples
+  ["(== math/PI (math/to-radians 180))\n;; => true\n\n(math/to-radians -0.0)\n;; => -0.0\n\n;; Bascially the same as:\n(def ^:const deg->rad (/ math/PI 180.0))\n(fn [x] (* x deg->rad))"],
   :notes nil,
   :arglists ["deg"],
   :doc
@@ -20163,9 +20168,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.math/cos :clojure.math/sin],
   :line 63,
-  :examples nil,
+  :examples
+  [";; Let's find the other side lengths of a right-angled triangle, where we\n;; know an acute angle, O and the \"adjacent\" side…\n(let [O (math/to-radians 29.0)\n      a 19\n      ;; The formula we need for the opposite is o = a/tan(O), or in Clojure:\n      o (/ a (math/tan O))\n      ;; We can use h = a/sin(O) to get the hypotenuse length:\n      h (/ a (math/sin O))\n      ;; And the angle sum property of triangles for A:\n      A (- (/ math/PI 2) O)]\n  ;; And return the dimensions, and the angles in degrees:\n  {:o o, :h h, :a a\n   :O 29.0, :H 90.0 :A (math/to-degrees A)})\n;; => {:o 34.27690735015705\n;;     :h 39.19064145291897\n;;     :a 19\n;;     :O 29.0\n;;     :H 90.0\n;;     :A 61.0}"],
   :notes nil,
   :arglists ["a"],
   :doc
@@ -26058,9 +26064,10 @@
   :file "clojure/math.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/- :clojure.core/-'],
   :line 286,
-  :examples nil,
+  :examples
+  [";; `-` uses subtractExact for longs under the hood, so these are the same:\n(- Long/MIN_VALUE 7)\n(math/subtract-exact Long/MIN_VALUE 7)\n;; => Execution error (ArithmeticException) at java.lang.Math/subtractExact (Math.java:973).\n;;    long overflow\n\n;; However, doubles are treated differently…\n(- (- Double/MAX_VALUE) Double/MAX_VALUE) ; n.b. Double/MIN_VALUE is not negative\n;; => ##-Inf\n\n;; Whereas subtract-exact coerces to longs…\n(math/subtract-exact (- Double/MAX_VALUE) Double/MAX_VALUE)\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: -1.7976931348623157E308\n\n;; Basically the same as:\n(- (long (- Double/MAX_VALUE)) (long Double/MAX_VALUE))\n;; => Execution error (IllegalArgumentException) at…\n;;    Value out of range for long: -1.7976931348623157E308"],
   :notes nil,
   :arglists ["x y"],
   :doc
