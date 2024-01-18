@@ -7552,7 +7552,7 @@
   :file "clojure/template.clj",
   :type "macro",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.template/apply-template],
   :line 45,
   :examples
   [";; Because it is expanded at compile time, you can also use special \n;; forms as in full blown macros:\n\nuser=> (use 'clojure.template)\nuser=> (do-template [a b] (def a b) d 1 e 2 f 3)\n#'user/f\nuser=> d\n1\nuser=> e\n2\nuser=> f\n3\n\n;; and if you are curious why\nuser=> (use 'clojure.walk)\nuser=> (macroexpand-all '(do-template [a b] (def a b) d 1 e 2 f 3))\n(do (def d 1) (def e 2) (def f 3))\n\n"],
