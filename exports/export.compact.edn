@@ -12208,8 +12208,7 @@
   :examples
   ["user=> (def a (atom 0))\n#'user/a\nuser=> @a\n0\nuser=> (deref a)\n0\n\nuser=> (def b (ref 1))\n#'user/b\nuser=> @b\n1\nuser=> (deref b)\n1\n\nuser=> (def c (agent 2))\n#'user/c\nuser=> @c\n2\nuser=> (deref c)\n2\n\nuser=> (def d (future 3))\n#'user/d\nuser=> @d\n3\nuser=> (deref d)\n3"
    "user=> (def a (promise))\n#'user/a\nuser=> (deref a) ;; blocking until a delivery occurs <ctrl-c>\n\nuser=> (deref a 100 :timeout) ;; block for at most 100ms\n:timeout"
-   "user=> (def b 1)\n#'user/b\nuser=> (var b)\n#'user/b\nuser=> (deref (var b))\n1"
-   "user=> (def accumulator (atom #{}))\n#'user/accumulator\n\nuser=> (defn simple \n         [i]\n         (swap! accumulator conj i))\n#'user/simple\n\nuser=> (defn parallel\n         []\n         (pmap simple (range 10))\n         @accumulator) ;; swap! from other threads might not have completed \n#'user/parallel\n\nuser=> (= (parallel) #{0 1 2 3 4 5 6 8 7 9})\nfalse\n;; sometimes it will be true\n"],
+   "user=> (def b 1)\n#'user/b\nuser=> (var b)\n#'user/b\nuser=> (deref (var b))\n1"],
   :notes nil,
   :arglists ["ref" "ref timeout-ms timeout-val"],
   :doc
