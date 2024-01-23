@@ -25337,7 +25337,8 @@
   :name "*err*",
   :type "var",
   :see-alsos nil,
-  :examples nil,
+  :examples
+  [";; All functions that normally write to *out* can write to *err* by binding\n;; *out* to *err*:\n\nuser> (binding [*out* *err*]\n        (prn \"prn can be used\")\n        (println \"println can also be used\"))\n\"prn can be used\"\nprintln can also be used\n;; => nil"],
   :notes nil,
   :arglists [],
   :doc
