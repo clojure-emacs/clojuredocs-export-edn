@@ -464,7 +464,8 @@
    :clojure.core.async/>!!],
   :line 189,
   :examples
-  ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (take! c\n              (fn [x]\n                (println \"Clojure callback value \" x)))\nnil\n\nuser=> (put! c \"XYZ\") ; return true unless the channel is closed.\nClojure callback value  XYZ\ntrue\n\nuser=> (put! c \"XYZ\")\ntrue\n"],
+  ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (take! c\n              (fn [x]\n                (println \"Clojure callback value \" x)))\nnil\n\nuser=> (put! c \"XYZ\") ; return true unless the channel is closed.\nClojure callback value  XYZ\ntrue\n\nuser=> (put! c \"XYZ\")\ntrue\n"
+   ";; There is a maximum queue size of 1024\n(def foo-chan (chan))\n\n(dotimes [x 1025]\n  (put! foo-chan x))\n\nExecution error (AssertionError) at clojure.core.async…\nAssert failed: No more than 1024 pending puts are allowed on a single channel. Consider using a windowed buffer…\n"],
   :notes
   ["The documentation here is somewhat out of date, the real documentation for more recent versions of core.async (0.1.346.0-17112a-alpha, at the time of this note) removes the bit about throwing when the channel is closed.  \n\nInstead, put! returns true unless the port is already closed, in which case false is returned.\n\nAn exception *is* thrown is you attempt to put! nil."],
   :arglists ["port val" "port val fn1" "port val fn1 on-caller?"],
@@ -18594,7 +18595,7 @@
    :clojure.core/concat],
   :line 255,
   :examples
-  [";; The example showcase use of r/cat to build HashSets (instead \n;; of the default ArrayList) of distinct words in parallel \n;; and then merge all together walking the binary tree produced by r/fold.\n(require '[clojure.core.reducers :as r])\n(require '[clojure.string :refer [lower-case blank? split split-lines]])\n(import  'java.util.HashSet)\n\n(def book\n  (-> \"http://www.gutenberg.org/files/2600/2600-0.txt\"\n      slurp\n      split-lines))\n\n(def r-word (comp\n  (r/map lower-case)\n  (r/remove blank?)\n  (r/map #(re-find #\"\\w+\" %))\n  (r/mapcat #(split % #\"\\s+\"))))\n\n(def btree\n  (r/fold\n    (r/cat #(HashSet.))\n    r/append!\n    (r-word book)))\n\n(defn merge-tree [root res]\n  (cond\n    (instance? clojure.core.reducers.Cat root)\n    (do (merge-tree (.left root) res) (merge-tree (.right root) res))\n    (instance? HashSet root)\n    (doto res (.addAll root))\n    :else res))\n\n(def distinct-words (merge-tree btree (HashSet.)))\n(count distinct-words)\n;; 17200"],
+  [";; The example showcase use of r/cat to build HashSets (instead \n;; of the default ArrayList) of distinct words in parallel \n;; and then merge all together walking the binary tree produced by r/fold.\n(require '[clojure.core.reducers :as r])\n(require '[clojure.string :refer [lower-case blank? split split-lines]])\n(import  'java.util.HashSet)\n\n(def book\n  (-> \"https://www.gutenberg.org/files/2600/2600-0.txt\"\n      slurp\n      split-lines))\n\n(def r-word\n  (comp\n   (r/map lower-case)\n   (r/remove blank?)\n   (r/map #(re-find #\"\\w+\" %))\n   (r/mapcat #(split % #\"\\s+\"))))\n\n(def btree\n  (r/fold (r/cat #(HashSet.))\n          r/append!\n          (r-word book)))\n\n(defn merge-tree [root res]\n  (cond\n    (instance? clojure.core.reducers.Cat root)\n    (do (merge-tree (.left root) res) (merge-tree (.right root) res))\n    (instance? HashSet root)\n    (doto res (.addAll root))\n    :else res))\n\n(def distinct-words (merge-tree btree (HashSet.)))\n(count distinct-words)\n;; 17200"],
   :notes nil,
   :arglists ["" "ctor" "left right"],
   :doc
