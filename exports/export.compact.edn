@@ -465,7 +465,7 @@
   :line 189,
   :examples
   ["user=> (def c (chan 1))\n#'user/c\n\nuser=> (take! c\n              (fn [x]\n                (println \"Clojure callback value \" x)))\nnil\n\nuser=> (put! c \"XYZ\") ; return true unless the channel is closed.\nClojure callback value  XYZ\ntrue\n\nuser=> (put! c \"XYZ\")\ntrue\n"
-   ";; There is a maximum queue size of 1024\n(def foo-chan (chan))\n\n(dotimes [x 1025]\n  (put! foo-chan x))\n\nExecution error (AssertionError) at clojure.core.async…\nAssert failed: No more than 1024 pending puts are allowed on a single channel. Consider using a windowed buffer…\n"],
+   ";; There is a maximum queue size of 1024\n(def foo-chan (chan))\n\n(dotimes [x 1025]\n  (put! foo-chan x))\n\nExecution error (AssertionError) at clojure.core.async…\nAssert failed: No more than 1024 pending puts are allowed on a single channel.\nConsider using a windowed buffer…"],
   :notes
   ["The documentation here is somewhat out of date, the real documentation for more recent versions of core.async (0.1.346.0-17112a-alpha, at the time of this note) removes the bit about throwing when the channel is closed.  \n\nInstead, put! returns true unless the port is already closed, in which case false is returned.\n\nAn exception *is* thrown is you attempt to put! nil."],
   :arglists ["port val" "port val fn1" "port val fn1 on-caller?"],
