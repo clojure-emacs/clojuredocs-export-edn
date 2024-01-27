@@ -4470,7 +4470,8 @@
    "user=> (spit \"event.log\" \"test 1\\n\" :append true)\nnil\n\nuser=> (spit \"event.log\" \"test 2\\n\" :append true)\nnil\n\nuser=> (println (slurp \"event.log\"))\ntest 1\ntest 2\n\nnil\n"
    "(defn append-to-file\n  \"Uses spit to append to a file specified with its name as a string, or\n   anything else that writer can take as an argument.  s is the string to\n   append.\"     \n  [file-name s]\n  (spit file-name s :append true))"
    ";;Create a record and save a log message to a log file\n;;Constructor with side effects\n\n;;define a Person record\n(defrecord Person [fname lname])\n\n;;define a function to save a log message into the log.txt using spit and :append\n(defn log-entry [msg] (spit \"log.txt\" (apply str msg \"\\n\") :append true))\n\n;;build the constructor which: 1) log the message; 2)create a Person\n(defn make-person [fname lname]\n  (log-entry (apply str \"[log] New Person created : \" lname \",\" fname))\n    (->Person fname lname))\n\n;;create a person\n(def person (make-person \"John\" \"Smith\"))\n\n;;print the content of the log.txt to the console\n(println  (slurp \"log.txt\"))"
-   "; ClojureCLR doesn't use :append, use this instead\n(spit \"hi.txt\" \"Test 1\\n\" :file-mode System.IO.FileMode/Append)\n"],
+   "; ClojureCLR doesn't use :append, use this instead\n(spit \"hi.txt\" \"Test 1\\n\" :file-mode System.IO.FileMode/Append)\n"
+   ";; Spitting map, adds \",\" between key-value pairs\n(spit \"hi.txt\" {:a 1 :b 2})\n\n;; Now let's read it\n(slurp \"hello.txt\")\n;; => \"{:a 1, :b 2}\"\n"],
   :notes
   ["The only valid options for `spit` are `:append` and `:encoding`."
    "Valid options include:\n\n    :append    true to open stream in append mode\n    :encoding  string name of encoding to use, e.g. \\\"UTF-8\\\"."],
@@ -6995,7 +6996,8 @@
   [:clojure.string/trim :clojure.string/triml :clojure.string/trimr],
   :line 275,
   :examples
-  ["<pre>\r\nuser=> (clojure.string/trim-newline \"test\\n\\r\")\r\n\"test\"\r\n</pre>"],
+  ["<pre>\r\nuser=> (clojure.string/trim-newline \"test\\n\\r\")\r\n\"test\"\r\n</pre>"
+   ";; Just like trim, it works only on the end of the string\n(str/trim-newline \"a\\nb\")\n;; => \"a\\nb\"\n\n(str/trim-newline \"a\\nb\\n\")\n;; => \"a\\nb\"\n(str/trim-newline \"ab\\n\")\n;; => \"ab\"\n\n"],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["s"],
@@ -11368,10 +11370,11 @@
   :file "clojure/core/reducers.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/reduce],
   :line 38,
   :examples
-  ["(+ 1 2 3 4)\n;;=> 10\n\nuser> (reduce + (range 1 5))\n;;=> 10\n\n(reduce + (range 1 13))\n;;=> 78\n\n(reduce + (range 1 101))\n;;=> 5050\n\n"],
+  ["(+ 1 2 3 4)\n;;=> 10\n\nuser> (reduce + (range 1 5))\n;;=> 10\n\n(reduce + (range 1 13))\n;;=> 78\n\n(reduce + (range 1 101))\n;;=> 5050\n\n"
+   ";; core/reduce applies f to the first 2 elements of coll if init isn't provided…\n\n(clojure.core/reduce conj '(1 2 3))\n;; => Execution error (ClassCastException) at…\n;;    class java.lang.Long cannot be cast to class clojure.lang.IPersistentCollection…\n\n\n;; reducers/reduce calls (f) to produce an initial value, if init isn't provided…\n\n(clojure.core.reducers/reduce conj '(1 2 3))\n;; => [1 2 3]"],
   :notes nil,
   :arglists ["f coll" "f init coll"],
   :doc
