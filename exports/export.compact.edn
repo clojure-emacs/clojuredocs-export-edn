@@ -6997,7 +6997,7 @@
   :line 275,
   :examples
   ["<pre>\r\nuser=> (clojure.string/trim-newline \"test\\n\\r\")\r\n\"test\"\r\n</pre>"
-   ";; Just like trim, it works only on the end of the string\n(str/trim-newline \"a\\nb\")\n;; => \"a\\nb\"\n\n(str/trim-newline \"a\\nb\\n\")\n;; => \"a\\nb\"\n(str/trim-newline \"ab\\n\")\n;; => \"ab\"\n\n"],
+   ";; Just like trim, it works only on the end of the string\n(str/trim-newline \"a\\nb\")\n;; => \"a\\nb\"\n\n(str/trim-newline \"a\\nb\\n\")\n;; => \"a\\nb\"\n(str/trim-newline \"ab\\n\")\n;; => \"ab\""],
   :notes nil,
   :tag "java.lang.String",
   :arglists ["s"],
