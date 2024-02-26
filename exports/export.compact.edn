@@ -3581,7 +3581,7 @@
   :file "clojure/core_proxy.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/proxy],
   :line 328,
   :examples
   ["(def my-proxy\n  (proxy [java.lang.Object] []\n    (equals [_] false)\n    (toString [] \"I'm an object\")))\n;; => #'user/my-proxy\n\n(proxy-mappings my-proxy)\n;; => {\"equals\" #function[user/fn--43785/fn--43786],\n;;     \"toString\" #function[user/fn--43785/fn--43788]}\n\n(let [to-string-fn (-> my-proxy proxy-mappings (get \"toString\"))]\n  (to-string-fn :foo))\n;; => \"I'm an object\"\n"],
