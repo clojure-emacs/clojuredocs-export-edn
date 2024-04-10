@@ -27510,7 +27510,8 @@
    ";; give function another name\nuser=> (def sys-map map)\n\n;; give macro another name\nuser=> (def #^{:macro true} sys-loop #'loop)"
    ";;Assign a Function to a Variable\n\n(def say-hello\n (fn [name]\n   (str \"Hello \" name)))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;the same but using an anonymous function\n(def say-hello\n #(str \"Hello \" %))\n\n(say-hello \"World\")\n;;\"Hello World\"\n\n\n;;anonymous function using two arguments\n(def hello-doc #(str \"Hello \" %1 %2))\n\n(hello-doc \"Dr.\" \"House\")\n;;\"Hello Dr.House\"\n\n"
    ";; Private var\n(def ^:private foobar\n  \"I am the docstring.\"\n  \"I am the value.\")\n"
-   "\n;; function checks: variable = 9 or not\nuser=> (def ?9 #(= % 9))\n#'user/?9\nuser=> (?9 9)\ntrue\nuser=> (?9 5)\nfalse"],
+   "\n;; function checks: variable = 9 or not\nuser=> (def ?9 #(= % 9))\n#'user/?9\nuser=> (?9 9)\ntrue\nuser=> (?9 5)\nfalse"
+   "; add a doc-string to your def variable\n(def my-var \"this is doc string for my var\" \"hello\")\n\n; add a doc-string using meta key `:doc` \n(def ^{:doc \"this is doc string for my var\"} my-var \"hello\") "],
   :notes nil,
   :arglists [],
   :doc
