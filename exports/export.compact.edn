@@ -17260,7 +17260,8 @@
    :clojure.core/remove-watch
    :clojure.core/set-validator!
    :clojure.core/swap-vals!
-   :clojure.core/reset-vals!],
+   :clojure.core/reset-vals!
+   :clojure.core/ref-set],
   :line 2344,
   :examples
   ["user=> (def my-atom (atom 0))\n#'user/my-atom\n\nuser=> @my-atom\n0\n\nuser=> (swap! my-atom inc)\n1\n\nuser=> @my-atom\n1\n\nuser=> (swap! my-atom (fn [n] (* (+ n n) 2)))\n4\n\nuser=> (reset! my-atom 0)\n0\n\nuser=> @my-atom\n0"
