@@ -11264,7 +11264,8 @@
   [:clojure.core/when-not
    :clojure.core/when-let
    :clojure.core/if
-   :clojure.core/boolean],
+   :clojure.core/boolean
+   :clojure.core/when-some],
   :line 495,
   :examples
   ["user=> (when (= 1 1) true)\ntrue\n\nuser=> (when (not= 1 1) true)\nnil"
@@ -20764,7 +20765,7 @@
   :file "clojure/core.clj",
   :type "macro",
   :column 1,
-  :see-alsos [:clojure.core/when-let],
+  :see-alsos [:clojure.core/when-let :clojure.core/when],
   :line 4624,
   :examples
   ["user=> (when-first [a [1 2 3]] a)\n1\nuser=> (when-first [a []] :x)\nnil\nuser=> (when-first [a nil] :x)\nnil"
@@ -25384,7 +25385,8 @@
   [:clojure.core/if-some
    :clojure.core/when-let
    :clojure.core/some
-   :clojure.core/let],
+   :clojure.core/let
+   :clojure.core/when],
   :line 1913,
   :examples
   ["user=> (when-some [x 1] [x :ok])\n[1 :ok]\n\nuser=> (when-some [x nil] [x :ok])\nnil"
