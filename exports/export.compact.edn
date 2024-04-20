@@ -17865,7 +17865,8 @@
   [:clojure.core/assoc
    :clojure.core/disj
    :clojure.core/select-keys
-   :clojure.core/update-in],
+   :clojure.core/update-in
+   :clojure.core/remove],
   :line 1519,
   :examples
   ["(dissoc {:a 1 :b 2 :c 3}) ; dissoc nothing \n;;=> {:a 1, :b 2, :c 3} \n\n(dissoc {:a 1 :b 2 :c 3} :b) ; dissoc key :b\n;;=> {:a 1, :c 3} \n\n(dissoc {:a 1 :b 2 :c 3} :d) ; dissoc not existing key\n;;=> {:a 1, :b 2, :c 3} \n\n(dissoc {:a 1 :b 2 :c 3} :c :b) ; several keys at once\n;;=> {:a 1} \n"
@@ -21472,7 +21473,10 @@
   :type "function",
   :column 1,
   :see-alsos
-  [:clojure.core/filter :clojure.core/group-by :clojure.core/keep],
+  [:clojure.core/filter
+   :clojure.core/group-by
+   :clojure.core/keep
+   :clojure.core/dissoc],
   :line 2843,
   :examples
   ["(remove pos? [1 -2 2 -1 3 7 0])\n;;=> (-2 -1 0)\n\n(remove nil? [1 nil 2 nil 3 nil])\n;;=> (1 2 3)\n\n;; remove items that are evenly divisible by 3\n(remove #(zero? (mod % 3)) (range 1 21))\n;;=> (1 2 4 5 7 8 10 11 13 14 16 17 19 20)"
@@ -24945,7 +24949,8 @@
    ";; Since clojure 1.9, if all keys in a map have the same namespace qualifier\n;; then the common namespace become the prefix of the map.\nuser> 'org.clojure/clojure\norg.clojure/clojure\n\nuser> '{org.clojure/clojure 3}\n#:org.clojure{clojure 3}        ;; expecting {org.clojure/clojure 3} but not\n\nuser> '{org.clojure/clojure 3 :k 8}\n{org.clojure/clojure 3, :k 8}   ;; Because of the keys' different namespaces  \n\n;; If you want to avoid second case then flip *print-namespace-maps* temporally.\nuser> (binding [*print-namespace-maps* false]\n        (pprint '{org.clojure/clojure 3}))\n{org.clojure/clojure 3}\nnil\n\n;; 'This is not a thing about quote. It is about map with key of namespaced keyword.'\n;; (@ShiTianshu's reply is quoted from below link)\n;; To know the detail reason, go to the below link and see the reply of @didibus.\n;; https://clojureverse.org/t/the-quote-special-form-behaves-strangely-on-maps/4879#post_2"],
   :notes
   ["Quote gives you the unevaluated form.  That is:\r\n\r\n<pre>user=&gt; '(foo bar baz)</pre>\r\n\r\nWill not attempt to evaluate foo as a function but rather just return the data structure as is (with the three symbols unevaluated).</pre></pre>"
-   "I found this blog post interesting: http://blog.8thlight.com/colin-jones/2012/05/22/quoting-without-confusion.html\r\n\r\nCheers"],
+   "I found this blog post interesting: http://blog.8thlight.com/colin-jones/2012/05/22/quoting-without-confusion.html\r\n\r\nCheers"
+   "The blog-post linked above has moved to https://8thlight.com/insights/quoting-without-confusion"],
   :arglists [],
   :doc
   "Yields the unevaluated form. See http://clojure.org/special_forms for more\ninformation.",
