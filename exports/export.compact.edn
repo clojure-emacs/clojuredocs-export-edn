@@ -299,7 +299,8 @@
    :clojure.core/dissoc
    :clojure.core/merge
    :clojure.core/update
-   :clojure.core/associative?],
+   :clojure.core/associative?
+   :clojure.core/into],
   :line 183,
   :examples
   ["(assoc {} :key1 \"value\" :key2 \"another value\")\n;;=> {:key2 \"another value\", :key1 \"value\"}\n\n;; Here we see an overwrite by a second entry with the same key\n(assoc {:key1 \"old value1\" :key2 \"value2\"} \n        :key1 \"value1\" :key3 \"value3\")\n;;=> {:key3 \"value3\", :key2 \"value2\", :key1 \"value1\"}\n\n;; We see a nil being treated as an empty map\n(assoc nil :key1 4)\n;;=> {:key1 4}\n\n;; 'assoc' can be used on a vector (but not a list), in this way: \n;; (assoc vec index replacement)\n(assoc [1 2 3] 0 10)     ;;=> [10 2 3]\n(assoc [1 2 3] 2 '(4 6)) ;;=> [1 2 (4 6)]\n;; Next, 0 < index <= n, so the following will work\n(assoc [1 2 3] 3 10)     ;;=> [1 2 3 10]\n;; However, when index > n, an error is thrown\n(assoc [1 2 3] 4 10)\n;; java.lang.IndexOutOfBoundsException (NO_SOURCE_FILE:0)\n\n;; From http://clojure-examples.appspot.com/clojure.core/assoc"
@@ -10055,7 +10056,8 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/conj :clojure.core/concat],
+  :see-alsos
+  [:clojure.core/conj :clojure.core/concat :clojure.core/assoc],
   :line 6950,
   :examples
   ["; Maps can be constructed from a sequence of 2-vectors or a sequence \n; of maps\nuser=> (into (sorted-map) [ [:a 1] [:c 3] [:b 2] ] )\n{:a 1, :b 2, :c 3}\nuser=> (into (sorted-map) [ {:a 1} {:c 3} {:b 2} ] )\n{:a 1, :b 2, :c 3}\n\n; When maps are the input source, they convert into an unordered sequence \n; of key-value pairs, encoded as 2-vectors\nuser=> (into [] {1 2, 3 4})\n[[1 2] [3 4]]\n"
