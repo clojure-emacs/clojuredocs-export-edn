@@ -20011,7 +20011,8 @@
    "(partition-all 2 4 [0 1 2 3 4 5 6 7 8 9])\n;;=> ((0 1) (4 5) (8 9))"
    ";; Caution: Partitioning lazy sequence code freeze\n;; Edit: Only because (rdr l) is buggy and returns an infinite sequence!\n\n(def l [1 2 3 4 5])\n;create a simple lazy sequence function testing only\n;(rdr l) returns a lazy sequence from l\n(def rdr (fn reader[x] (cons (first x) (lazy-seq (reader  (rest x))))))\n\n;the line below will freeze\n(doall (partition-all 2 (rdr l)) )\n\n;add-in a take-while statement do exit the lazy sequence on nil\n(doall (partition-all 2 (take-while (complement nil?) (rdr l))))"
    ";; When the step parameter is provided, the starting index value of the first item in the \n;; next group steps relative to the current index value\n;; 提供step参数时，下一个分组的第一项的起始索引值相对于当前索引值的步进(+ pre-index step)\n(println (partition-all 2 3 '(0 1 2 3 4 5 6 7 8 9)))\n;; => ((0 1) (3 4) (6 7) (9))\n(println (partition-all 4 3 '(0 1 2 3 4 5 6 7 8 9)))\n;; => ((0 1 2 3) (3 4 5 6) (6 7 8 9) (9))\n;; When n is equal to step, it is equivalent to no step parameter\n;; 当n与step相等，相当于无step参数\n(println (partition-all 3 3 '(0 1 2 3 4 5 6 7 8 9)))\n;; => ((0 1 2) (3 4 5) (6 7 8) (9))"],
-  :notes nil,
+  :notes
+  ["be aware of the case of n is 0\n\n(partition-all 0 '(1 2 3))\n\nwill cause repl blocked and cpu 100%"],
   :arglists ["n" "n coll" "n step coll"],
   :doc
   "Returns a lazy sequence of lists like partition, but may include\n  partitions with fewer than n items at the end.  Returns a stateful\n  transducer when no collection is provided.",
