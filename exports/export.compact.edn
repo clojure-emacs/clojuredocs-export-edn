@@ -1098,7 +1098,7 @@
    :clojure.core/bit-shift-right],
   :line 1370,
   :examples
-  ["<pre>user=> (bit-shift-left 1 10)\n1024\n</pre>\n\n<pre>user=> (bit-shift-left 2r1101 2) ; fill rightmost bits with 0s\n52 \n;; 52 = 2r110100\n</pre>\n"
+  ["user=> (bit-shift-left 1 10)\n1024\n\nuser=> (bit-shift-left 2r1101 2) ; fill rightmost bits with 0s\n52 \n;; 52 = 2r110100"
    ";;a bogus bit-array implementation\n\n(def ba (atom (long 0)))\n\n(defn set-ba \n\"sets bit n in long atom ba\"\n  [n]\n  (let [number-set (bit-shift-left 1 n)\n\t_ (println \"number to set: \" number-set)\n\tnew-array (bit-or @ba number-set)]\n    (reset! ba new-array)))\n\n(defn get-ba \n\"gets bit n in long atom ba\"\n[n]\n  (not (zero? (bit-and (bit-shift-left 1 n) @ba))))\n\n(comment\n  (set-ba 0) ;; 0 [....0001]\n  (set-ba 3) ;; 2^3 = 8  [....1001]\n  (get-ba 0) ;; (bit-and ba 2^0) = 1\n  (get-ba 1) ;; (bit-and ba 2^1) = 0\n  (get-ba 3) ;; (bit-and ba 2^3) = 1\n  ;;but:\n  (set-ba 65) ;; [....1011]\n  ;;number to set:  2\n  ;;modulo because long has only 64 bit\n  ;;also note that long always is two-complemented (signed) in java implementation\n  )"],
   :notes nil,
   :arglists ["x n"],
@@ -25314,7 +25314,7 @@
   :see-alsos nil,
   :line 511,
   :examples
-  [";; SCALe Binary:\n(map #(math/scalb 1.0 %) (range 10))\n;; => (1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 512.0)\n\n;; In theory, scalb is optimized for scaling by powers of two, but in reality,\n;; JVM optimizations may mean you don't see any benefit…\n\n(== (* 12345678.9 32.0) (math/scalb 12345678.9 5))\n;; => true\n\n(time (dotimes [_ 1e9] (* 12345678.9 32.0)))\n\"Elapsed time: 489.551751 msecs\"\n\n(time (dotimes [_ 1e9] (math/scalb 12345678.9 5)))\n\"Elapsed time: 6545.436254 msecs\""],
+  [";; SCALe Binary:\n(map #(math/scalb 1.0 %) (range 10))\n;; => (1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 512.0)\n\n(== (* 12345678.9 32.0) (math/scalb 12345678.9 5))\n;; => true\n\n;; and for integers:\n(== (* 12345678 32.0) (math/scalb 12345678 5) (bit-shift-left 12345678 5))\n;; => true"],
   :notes nil,
   :arglists ["d scaleFactor"],
   :doc
