@@ -12198,7 +12198,8 @@
   ["(count nil)\n;;=> 0\n\n(count [])\n;;=> 0\n\n(count [1 2 3])\n;;=> 3\n\n(count {:one 1 :two 2})\n;;=> 2\n\n(count [1 \\a \"string\" [1 2] {:foo :bar}])\n;;=> 5\n\n(count \"string\")\n;;=> 6"
    "(count '(1 2 3 3 1))\n;;=> 5\n\n;; and as a koan\n(= (count '(1 2 3 3 1)) 5)\n;;=> true"
    ";; count can't count beyond (Integer/MAX_VALUE)\n;; (in partial compliance with Java's Collection::size() returning int)\n\n(count (range (inc (Integer/MAX_VALUE))))\n;; Execution error (ArithmeticException)\n;; integer overflow"
-   "(def items-to-buy {:milk 2 :bread 10 :chocolate 1})\n\n(count items-to-buy)\n\n;;=> 3"],
+   "(def items-to-buy {:milk 2 :bread 10 :chocolate 1})\n\n(count items-to-buy)\n\n;;=> 3"
+   ";;be aware that calling count on lazy sequences realizes them\n\n(type (map #(println \"lazy\" %) [1 2 3]))\n;clojure.lang.LazySeq\n\n(type (count (map #(println \"not-lazy-anymore\" %) [1 2 3])))\n;not-lazy-anymore 1\n;not-lazy-anymore 2\n;not-lazy-anymore 3\n;java.lang.Integer\n"],
   :notes nil,
   :arglists ["coll"],
   :doc
