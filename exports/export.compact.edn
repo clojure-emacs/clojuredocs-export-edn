@@ -26354,7 +26354,8 @@
    ";; Sometimes it's useful to create a reader from a string, but strings\n;; are locations for \"reader\", so we turn them into char-arrays first:\n\n(require '[clojure.java.io :as io])\n\n(with-open [r (io/reader (char-array \"hello\"))] (slurp r))\n;; \"hello\""],
   :notes
   ["Java documentation links for the listed argument types that have â€œdefault implementationsâ€�:\r\n\r\n* [`Reader`](http://docs.oracle.com/javase/7/docs/api/java/io/Reader.html)\r\n* [`BufferedReader`](http://docs.oracle.com/javase/7/docs/api/java/io/BufferedReader.html)\r\n* [`InputStream`](http://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html)\r\n* [`File`](http://docs.oracle.com/javase/7/docs/api/java/io/File.html)\r\n* [`URI`](http://docs.oracle.com/javase/7/docs/api/java/net/URI.html)\r\n* [`URL`](http://docs.oracle.com/javase/7/docs/api/java/net/URL.html)\r\n* [`Socket`](http://docs.oracle.com/javase/7/docs/api/java/net/Socket.html)\r\n* byte arrays (`byte[]`)\r\n* character arrays (`char[]`)\r\n* [`String`](http://docs.oracle.com/javase/7/docs/api/java/lang/String.html) (resolved as a URI or a local file name)"
-   "`opts` depend on the type of the reader but [common ones include](https://github.com/clojure/clojure/blob/cc69d19bd471c48d441071fff43e768ffa7eb8e5/src/clj/clojure/java/io.clj) `:encoding` and, where applicable, `:buffer-size`."],
+   "`opts` depend on the type of the reader but [common ones include](https://github.com/clojure/clojure/blob/cc69d19bd471c48d441071fff43e768ffa7eb8e5/src/clj/clojure/java/io.clj) `:encoding` and, where applicable, `:buffer-size`."
+   "Warning, it does not work with `java.nio.file.Path` (as of 1.11.1)."],
   :tag "java.io.Reader",
   :arglists ["x & opts"],
   :doc
