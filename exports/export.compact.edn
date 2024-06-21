@@ -1761,7 +1761,7 @@
   :see-alsos [:clojure.core/map-indexed :clojure.core/keep],
   :line 7414,
   :examples
-  ["user=> (keep-indexed #(if (odd? %1) %2) [:a :b :c :d :e])\n(:b :d)"
+  ["user=> (keep-indexed #(when (odd? %1) %2) [:a :b :c :d :e])\n(:b :d)"
    "user=> (keep-indexed #(if (pos? %2) %1) [-9 0 29 -7 45 3 -8])\n(2 4 5)\n;; f takes 2 args: 'index' and 'value' where index is 0-based\n;; when f returns nil the index is not included in final result\nuser=> (keep-indexed (fn [idx v]\n                       (if (pos? v) idx)) [-9 0 29 -7 45 3 -8])\n(2 4 5)"
    "(defn position [x coll & {:keys [from-end all] :or {from-end false all false}}]\n  (let [all-idxs (keep-indexed (fn [idx val] (when (= val x) idx)) coll)]\n  (cond\n   (true? from-end) (last all-idxs)\n   (true? all)      all-idxs\n   :else            (first all-idxs))))\n\nuser> (position [1 1] [[1 0][1 1][2 3][1 1]])\n1\nuser> (position [1 1] [[1 0][1 1][2 3][1 1]] :from-end true)\n3\nuser> (position [1 1] [[1 0][1 1][2 3][1 1]] :all true)\n(1 3)\n\nuser> (def foo (shuffle (range 10)))\n#'user/foo\nuser> foo\n(5 8 9 1 2 7 0 6 3 4)\nuser> (position 5 foo)\n0\nuser> (position 0 foo)\n6"
    ";; Simpler version of \"position\" above\n;; Get position of first element that satisfies the predicate\n(let [predicate #(= 1 %)\n      sequence [3 2 4 1 5 6 7]]\n  (first (keep-indexed (fn [i x] (when (predicate x) i)) \n                sequence)))\n\n;; The same logic but implemented with map-indexed\n(let [predicate #(= 1 %)\n      sequence [3 2 4 1 5 6 7]]\n  (some identity \n        (map-indexed (fn [i x] (when (predicate x) i)) \n                     sequence)))"
