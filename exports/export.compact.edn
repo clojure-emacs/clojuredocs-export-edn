@@ -24062,7 +24062,8 @@
   :line 564,
   :examples
   ["user=> (defprotocol P (id [this]))\nP\nuser=> (extend-protocol P \n         String \n         (id [this] this)\n         clojure.lang.Symbol \n         (id [this] (name this))\n         clojure.lang.Keyword\n         (id [this] (name this)))\nnil\nuser=> (extenders P)\n(java.lang.String clojure.lang.Symbol clojure.lang.Keyword)\n"],
-  :notes nil,
+  :notes
+  [";;; it doesn't cover defrecord or deftype\n;;; (Using example of the P protocol defined above)\n(defrecord PP []\n    P\n    (id [this] (str this \":\" this)))\n\n(deftype PPP []\n    P\n  (id [this] (str this \":\" this \":\" this)))\n\n(extenders P)\n;; => (java.lang.String clojure.lang.Symbol clojure.lang.Keyword)\n"],
   :arglists ["protocol"],
   :doc
   "Returns a collection of the types explicitly extending protocol",
