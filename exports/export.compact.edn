@@ -5267,7 +5267,8 @@
    "user=> (doseq  [y (range 10)] \n         (dotimes [z y] (print (inc z)))\n         (newline))\n\n1\n12\n123\n1234\n12345\n123456\n1234567\n12345678\n123456789\nnil"
    ";; nothing will print\n(doseq [x []\n        y [1 2 3]]\n    (prn x y))\n\n;; if any bindings have empty sequences, the body will never execute\n"
    ";; to iterate across a map\n(doseq [[k v] {:a 1 :b 10 :c 100}]\n  (println (list k v)))\n\n;; outputs\n(:a 1)\n(:b 10)\n(:c 100)\nnil"
-   ";; Iterate through a simple list\n(doseq  [number [1 2 3 4]] \n    (println number))\n;; Output\n1\n2\n3\n4\nnil\n"],
+   ";; Iterate through a simple list\n(doseq  [number [1 2 3 4]] \n    (println number))\n;; Output\n1\n2\n3\n4\nnil\n"
+   ";; The `:while` modifier triggers the inner-most loop to be aborted.\n;; (to break out of the inner most loop).\n\n(doseq [a (range 5)\n        b (range 5)\n        :while (even? b) ;; when be fails to be even, then break out of b loop\n       ]\n  (println {:a a :b b})\n;; Output\n{:a 0, :b 0}\n{:a 1, :b 0}\n{:a 2, :b 0}\n{:a 3, :b 0}\n{:a 4, :b 0}"],
   :macro true,
   :notes nil,
   :arglists ["seq-exprs & body"],
@@ -9788,7 +9789,8 @@
   :line 533,
   :examples
   ["user> (some? nil)\n;; => false\n\nuser> (some? 42)\n;; => true\nuser> (some? false)\n;; => true\nuser> (some? [])\n;; => true\nuser> (some? {})\n;; => true\nuser> (some? '())\n;; => true"
-   ";; equivalent to implementing not-nil?\n(some? :kw)\n;; => true\n(not (nil? :kw))\n;; => true\n\n(some? nil)\n;; => false\n(not (nil? nil))\n;; => false"],
+   ";; equivalent to implementing not-nil?\n(some? :kw)\n;; => true\n(not (nil? :kw))\n;; => true\n\n(some? nil)\n;; => false\n(not (nil? nil))\n;; => false"
+   ";; good companion with \"some\" if you want boolean return\n\n(some #{1 2 3} [4])\n;; => nil\n(some? (some #{1 2 3} [4]))\n;; => false\n\n(some #{1 2 3} [1])\n;; => 1\n(some? (some #{1 2 3} [1]))\n;; => true"],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x"],
