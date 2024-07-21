@@ -3720,7 +3720,7 @@
   :static true,
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/println],
   :line 3698,
   :examples
   [";; This is equivalent to System.out.println() in Java\nuser=> (newline)\n\nnil\n; Calling println w/o args is equivalent.\nuser=> (println)\n\nnil\nuser=>"],
