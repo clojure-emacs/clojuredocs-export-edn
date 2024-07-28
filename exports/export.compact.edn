@@ -9175,7 +9175,8 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/unchecked-dec-int],
+  :see-alsos
+  [:clojure.core/unchecked-dec-int :clojure.core/unchecked-inc],
   :line 1163,
   :examples
   ["(unchecked-inc-int 42);; => 43\n(unchecked-inc-int 42.8);; => 43\n(unchecked-inc-int Integer/MAX_VALUE);; => -2147483648"],
@@ -19284,7 +19285,8 @@
   ["user=> (max-key count \"asd\" \"bsd\" \"dsd\" \"long word\")\n\"long word\""
    "; find the key that has the highest value in a map\nuser=> (key (apply max-key val {:a 3 :b 7 :c 9}))\n:c"
    ";; find the index of the highest value. Equivalent to an 'argmax' function\nuser=> (first (apply max-key second (map-indexed vector '(2 1 6 5 4))))\n2"
-   ";; find the max :timestamp in a collection of maps.\nuser=> (def mmm [\n  {:timestamp 1 :name \"v\"} \n  {:timestamp 2 :name \"q\"} \n  {:timestamp 3 :name \"r\"}])\n\nuser=> (apply max-key :timestamp mmm)\n{:timestamp 3, :name \"r\"}\n\nuser=> (:timestamp (apply max-key :timestamp mmm))\n3\n\n;;if the map is indexed by item-id, use an anonymous function where the key goes.\n\nuser=> (def map-with-index {\n  \"gary\" {:timestamp 1 :name \"v\"} \n  \"carl\" {:timestamp 2 :name \"q\"} \n  \"lola\" {:timestamp 3 :name \"r\"}})\n\nuser=> (apply max-key #(:timestamp (val %)) map-with-index)\n[\"lola\" {:timestamp 3, :name \"r\"}]\n\n;notice how we replaced :timestamp with #(:timestamp (val %)) \n;to get the inner value [and not the (key %)] of the indexed version."],
+   ";; find the max :timestamp in a collection of maps.\nuser=> (def mmm [\n  {:timestamp 1 :name \"v\"} \n  {:timestamp 2 :name \"q\"} \n  {:timestamp 3 :name \"r\"}])\n\nuser=> (apply max-key :timestamp mmm)\n{:timestamp 3, :name \"r\"}\n\nuser=> (:timestamp (apply max-key :timestamp mmm))\n3\n\n;;if the map is indexed by item-id, use an anonymous function where the key goes.\n\nuser=> (def map-with-index {\n  \"gary\" {:timestamp 1 :name \"v\"} \n  \"carl\" {:timestamp 2 :name \"q\"} \n  \"lola\" {:timestamp 3 :name \"r\"}})\n\nuser=> (apply max-key #(:timestamp (val %)) map-with-index)\n[\"lola\" {:timestamp 3, :name \"r\"}]\n\n;notice how we replaced :timestamp with #(:timestamp (val %)) \n;to get the inner value [and not the (key %)] of the indexed version."
+   ";; filter out the the biggest map based on the size\n\nuser=>  (def maps [{:a 1 :b 2}\n                   {:a 1}\n                   {:a 1 :b 2 :c 3}\n                   {:a 1 :b 2 :c 3 :d 4}])\n\nuser=> (apply max-key count maps)\n{:a 1 :b 2 :c 3 :d 4}\n\n;; in a case when multiple maps are of the same size, returns the last\n;; biggest map it encounters "],
   :notes nil,
   :arglists ["k x" "k x y" "k x y & more"],
   :doc
