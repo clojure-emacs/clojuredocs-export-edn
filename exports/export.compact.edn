@@ -4820,7 +4820,8 @@
    :clojure.core/atom
    :clojure.core/pop!
    :clojure.core/peek
-   :clojure.core/pop],
+   :clojure.core/pop
+   :clojure.core/reset-vals!],
   :line 2374,
   :examples
   [";; You can use `swap-vals` to perform an atomic `deref`\n;; and `swap!` without a race condition.\n\n(def queue (atom '(1 2 3)))\n(let [head (ffirst (swap-vals! queue pop))]\n  (println head)     ;; 1\n  (println @queue))  ;; (2 3)"],
@@ -7990,7 +7991,7 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.core/swap-vals!],
   :line 2400,
   :examples
   [";; An atom is defined\n(def open-sockets (atom []))\n;;=> #'user/open-sockets\n\n;; Conjoin a value or two onto the atom\n(swap! open-sockets conj socket)\n;;=> [<< stream: 1 >> << stream: 2 >>]\n\n;; Knock the first socket out of open-sockets\n(reset-vals! open-sockets (subvec @open-sockets 1))\n;;=> [[<< stream: 1 >> << stream: 2 >>][<< stream: 2 >>]]\n\n;; Knock the last socket out of open-sockets\n(reset-vals! open-sockets (pop @open-sockets))\n;;=> [[<< stream: 2 >>] []]"],
