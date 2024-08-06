@@ -9339,7 +9339,8 @@
   :line 3505,
   :examples
   ["user=> (def x (byte-array [(byte 0x43) \n                           (byte 0x6c)\n                           (byte 0x6f)\n                           (byte 0x6a)\n                           (byte 0x75)\n                           (byte 0x72)\n                           (byte 0x65)\n                           (byte 0x21)]))\n#'user/x\n\nuser=> (String. x)\n\"Clojure!\"\n"
-   ";; Casting a string does not work\n(byte \"123\")\n;;=> Execution error (ClassCastException) at user/eval157 (REPL:1).\n;;java.lang.String cannot be cast to java.lang.Number\n\n;; Use Java interop instead\n(Byte/parseByte \"123\")\n;;=> 123\n\n;; Content originally posted by u/didibus on https://clojuredocs.org/clojure.core/num"],
+   ";; Casting a string does not work\n(byte \"123\")\n;;=> Execution error (ClassCastException) at user/eval157 (REPL:1).\n;;java.lang.String cannot be cast to java.lang.Number\n\n;; Use Java interop instead\n(Byte/parseByte \"123\")\n;;=> 123\n\n;; Content originally posted by u/didibus on https://clojuredocs.org/clojure.core/num"
+   ";; Supports casting within the range -128 to 127.\n(byte -128) ;;=> -128\n(byte 127) ;; => 127\n\n;; Casting outside of this range throws IllegalArgumentException\n(byte 142)\n;; => Execution error (IllegalArgumentException) at core/eval11809 (REPL.1).\n;;    Value out of range for byte: 142\n\n\n;; Use unchecked-byte when rounding or truncation is desired"],
   :notes nil,
   :arglists ["x"],
   :doc "Coerce to byte",
@@ -9792,7 +9793,8 @@
   :examples
   ["user> (some? nil)\n;; => false\n\nuser> (some? 42)\n;; => true\nuser> (some? false)\n;; => true\nuser> (some? [])\n;; => true\nuser> (some? {})\n;; => true\nuser> (some? '())\n;; => true"
    ";; equivalent to implementing not-nil?\n(some? :kw)\n;; => true\n(not (nil? :kw))\n;; => true\n\n(some? nil)\n;; => false\n(not (nil? nil))\n;; => false"
-   ";; good companion with \"some\" if you want boolean return\n\n(some #{1 2 3} [4])\n;; => nil\n(some? (some #{1 2 3} [4]))\n;; => false\n\n(some #{1 2 3} [1])\n;; => 1\n(some? (some #{1 2 3} [1]))\n;; => true"],
+   ";; good companion with \"some\" if you want boolean return\n\n(some #{1 2 3} [4])\n;; => nil\n(some? (some #{1 2 3} [4]))\n;; => false\n\n(some #{1 2 3} [1])\n;; => 1\n(some? (some #{1 2 3} [1]))\n;; => true"
+   "(some? 0)\n;; => true"],
   :notes nil,
   :tag "java.lang.Boolean",
   :arglists ["x"],
