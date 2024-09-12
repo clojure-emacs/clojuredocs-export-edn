@@ -8042,7 +8042,7 @@
   :file "clojure/spec/alpha.clj",
   :type "function",
   :column 1,
-  :see-alsos nil,
+  :see-alsos [:clojure.spec.alpha/assert],
   :line 1957,
   :examples nil,
   :notes
@@ -20165,7 +20165,11 @@
   :file "clojure/spec/alpha.clj",
   :type "macro",
   :column 1,
-  :see-alsos [:clojure.core/assert],
+  :see-alsos
+  [:clojure.core/assert
+   :clojure.spec.alpha/check-asserts
+   :clojure.spec.alpha/*compile-asserts*
+   :clojure.spec.alpha/check-asserts?],
   :line 1977,
   :examples
   ["; Notice that if you try to execute assert it will always return the given value:\n\n(require ['clojure.spec.alpha :as 's])\n\n(s/assert even? 1)\n=> 1\n\n; This is because asserts are turned off by default:\n(s/check-asserts?)\n=> false\n\n; To enable asserts, run this\n(s/check-asserts true)\n=> true\n\n; Now your asserts will properly fail\n(s/assert even? 3)\n; ExceptionInfo Spec assertion failed...\n\n```"],
