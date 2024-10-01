@@ -1537,7 +1537,8 @@
   :column 1,
   :see-alsos nil,
   :line 4392,
-  :examples nil,
+  :examples
+  ["(seq-to-map-for-destructuring [:a 1 :b 2])\n;;=> {:a 1, :b 2}\n\n(seq-to-map-for-destructuring [:a 1 :b 2 {:a 99 :c 3}])\n;;=> {:a 99, :b 2, :c 3}\n"],
   :notes nil,
   :arglists ["s"],
   :doc
