@@ -10730,9 +10730,10 @@
   :file "clojure/data/csv.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.java.io/writer],
+  :see-alsos [:clojure.java.io/writer :clojure.core/with-open],
   :line 127,
-  :examples nil,
+  :examples
+  [";; Typical usage, with a header row, and a vector of vectors of strings\n;; Although you might prefer a clojure.java.io/writer to output to a file…\n(with-open [s (java.io.StringWriter.)]\n  (csv/write-csv s [[\"col header 1\" \"col header 2\"]\n                    [\"r1c1\"         \"r1c2\"]\n                    [\"r2c1\"         \"r2c2\"]])\n  (str s))\n;; => \"col header 1,col header 2\\nr1c1,r1c2\\nr2c1,r2c2\\n\"\n\n;; Non-strings will be stringified\n;; Note that symbols and strings usually look the same…\n(with-open [s (java.io.StringWriter.)]\n  (csv/write-csv s [[\"foo\" 42 'foo {:nested :map} \"a \\\"quoted\\\" string\"]])\n  (str s))\n;; => \"foo,42,foo,{:nested :map},\\\"a \\\"\\\"quoted\\\"\\\" string\\\"\\n\"\n\n;; With a clojure.java.io/writer, you can write to a file…\n(with-open [w (clojure.java.io/writer \"foo.csv\")]\n  (csv/write-csv w [[\"foo\" 42 'foo {:nested :map} \"a \\\"quoted\\\" string\"]]))\n;; => nil"],
   :notes nil,
   :arglists ["writer data & options"],
   :doc
@@ -12121,7 +12122,8 @@
    ";; When the producer function produces a collection, not an element,\n;; lazy-cat is usable.\nuser=> (defn n-repeat [n] (lazy-cat (repeat n n) (n-repeat (inc n))))\n#'user/n-repeat\n\nuser=> (take 6 (n-repeat 1))\n(1 2 2 3 3 3)\n\nuser=> (take 12 (n-repeat 1))\n(1 2 2 3 3 3 4 4 4 4 5 5)\n"
    "(lazy-cat (seq [\"lazy-cat\" \"is\" \"my\" \"favorite\" \"function\"]))"
    "user=> (defn loop-endlessly\n         \"Block thread with endless loop when evaluated\"\n         []\n         (while true))\n#'user/loop-endlessly\n\nuser=> (take 3 (lazy-cat [\"will\" \"it\" \"return?\"] (loop-endlessly)))\n(\"will\" \"it\" \"return?\")\n\nuser=> (take 4 (lazy-cat [\"will\" \"it\" \"return?\"] (loop-endlessly)))\n;; This gets stuck on loop-endlessly and never returns"
-   ";; Prefer lazy-cat to build a lazy seq out of \n;; non-lazy collections with different creation costs\n\n(time (first (concat (sort > (range 10)) (sort > (range 1e7)))))\n;; \"Elapsed time: 17442.084309 msecs\"\n(time (first (lazy-cat (sort > (range 10)) (sort > (range 1e7)))))\n;; \"Elapsed time: 0.458283 msecs\""],
+   ";; Prefer lazy-cat to build a lazy seq out of \n;; non-lazy collections with different creation costs\n\n(time (first (concat (sort > (range 10)) (sort > (range 1e7)))))\n;; \"Elapsed time: 17442.084309 msecs\"\n(time (first (lazy-cat (sort > (range 10)) (sort > (range 1e7)))))\n;; \"Elapsed time: 0.458283 msecs\""
+   ";; Be aware that lazy-cat can be slower on smaller collections\n\n(time (first (concat (sort > (range 100)) (sort > (range 100)))))\n;; \"Elapsed time: 0.058254 msecs\"\n(time (first (lazy-cat (sort > (range 100)) (sort > (range 100)))))\n;; \"Elapsed time: 0.182578 msecs\"\n\n(time (first (concat (sort > (range 10)) (sort > (range 100)))))\n;; \"Elapsed time: 0.051935 msecs\"\n(time (first (lazy-cat (sort > (range 10)) (sort > (range 100)))))\n;; \"Elapsed time: 0.149794 msecs\""],
   :macro true,
   :notes
   ["It looks like `lazy-cat` is on deprecation path in favor of `lazy-seq`."],
