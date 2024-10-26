@@ -49,7 +49,8 @@
   :examples
   ["user=> (number? 1)\ntrue\nuser=> (number? 1.0)\ntrue\nuser=> (number? :a)\nfalse\nuser=> (number? nil)\nfalse\nuser=> (number? \"23\")\nfalse\n\n"
    ";; map number? over the vector\n(map number? [1 0.44 3e6 0xFF])\n;;=> (true true true true)\n\n;; map number? over the vector created by converting a list into a vector \n;; with the function \"into\"\n(map number? (into [] '(1 0.44 3e6 0xFF)))\n;;=> (true true true true)\n\n"
-   ";; Works for rationals\nuser=> (number? (/ 2 3))\ntrue"],
+   ";; Works for rationals\nuser=> (number? (/ 2 3))\ntrue"
+   ";; Warning! NaN is considered as a number in member of the class Double.\n;; this may be confusing, but it's good to know,\n;; especially if you are working with filters\nuser=> (number? Double/NaN)\ntrue\nuser=> (filter number? [nil 0 1.1 \"String\" {:key :val} Double/NaN])\n(0 1.1 ##NaN)"],
   :notes nil,
   :arglists ["x"],
   :doc "Returns true if x is a Number",
