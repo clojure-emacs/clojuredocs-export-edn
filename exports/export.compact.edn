@@ -26471,7 +26471,9 @@
   :see-alsos nil,
   :line 1327,
   :examples
-  [";; convert lvars into values\nuser=> (cl/project [a b] (cl/== % (str a \" proposed to \" b)))\n\"Jack proposed to Mira\""],
+  [";; convert lvars into values\nuser=> (cl/project [a b] (cl/== % (str a \" proposed to \" b)))\n\"Jack proposed to Mira\""
+   ";; print lvar value\n(run 1 [q]\n  (== q 1)\n  (project [q] (do (println (str \"hi, q=\" q)) fail)))\n;; => hi, q=1"
+   "(defne interval-0-3 [x]\n  ([0])\n  ([1])\n  ([2]))\n\n(run 1 [q]\n  (interval-0-3 q)\n  (project [q] (do (println (str \"hi, q=\" q)) fail)))\n;; => hi, q=0\n;;    hi, q=1\n;;    hi, q=2"],
   :macro true,
   :notes nil,
   :arglists ["[& vars] & goals"],
