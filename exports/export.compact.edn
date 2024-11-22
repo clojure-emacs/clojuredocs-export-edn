@@ -1676,7 +1676,8 @@
   :file "clojure/core.clj",
   :type "function",
   :column 1,
-  :see-alsos [:clojure.core/constantly :clojure.core/some?],
+  :see-alsos
+  [:clojure.core/constantly :clojure.core/some? :clojure.core/some],
   :line 540,
   :examples
   [";; All known practical uses are in the context of core.spec\n;; Specifically indicates that any type is allowed.\n\n;; https://clojure.org/guides/spec#_macros\n(s/fdef clojure.core/declare\n    :args (s/cat :names (s/* simple-symbol?))\n    :ret any?)\n"
