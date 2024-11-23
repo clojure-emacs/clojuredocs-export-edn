@@ -11244,7 +11244,7 @@
   :ns "clojure.core",
   :name "*print-dup*",
   :type "var",
-  :see-alsos nil,
+  :see-alsos [:clojure.edn/read],
   :examples
   [";; `*print-dup*` is very handy when we want to write clojure code/data\n;; to a file to read it in later.\n\n(defn serialize\n  \"Print a data structure to a file so that we may read it in later.\"\n  [data-structure #^String filename]\n  (with-out-writer\n    (java.io.File. filename)\n    (binding [*print-dup* true] (prn data-structure))))\n\n\n;; This allows us to then read in the structure at a later time, like so:\n(defn deserialize [filename]\n  (with-open [r (PushbackReader. (FileReader. filename))]\n    (read r)))\n\n\nuser=> (deserialize \"config.clj\")\n{:name \"Fred\", :age \"23\"}\n"],
   :notes
